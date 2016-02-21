@@ -62,6 +62,21 @@ module.exports = function(grunt) {
         },
         src: ['src/**/tests/**/*.js']
       }
+    },
+    antlr4: {
+      generate: {
+        grammar: 'src/query/antlr/Query.g4',
+        options: {
+            o: 'src/query/antlr/generated',
+            grammarLevel: {
+                language: 'JavaScript'
+            },
+            flags: [
+                'visitor',
+                'no-listener'
+            ]
+        },
+      }
     }
   });
 
@@ -71,6 +86,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-jsdoc');
+  grunt.loadNpmTasks('grunt-antlr4');
 
   // Create & configure tasks
   grunt.registerTask('default', ['clean:build', 'mochaTest', 'uglify']);
