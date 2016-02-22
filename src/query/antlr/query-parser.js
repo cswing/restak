@@ -3,6 +3,7 @@
 var log4js = require('log4js'),
 	logger = log4js.getLogger('XYZframework.query.antlr.query-parser'),
 	antlr4 = require('antlr4'),
+	walker = antlr4.tree.ParseTreeWalker.DEFAULT,
 	QueryLexer = require('./generated/QueryLexer').QueryLexer,
 	_QueryParser = require('./generated/QueryParser').QueryParser,
 	QueryErrorListener = require('./query-error-listener');
@@ -12,12 +13,12 @@ var log4js = require('log4js'),
  * heavy lifting is delegated to the {@link QueryVisitor|visitor}.
  *
  * @constructor
- * @param {QueryVisitor} visitor - a visitor that responds to the parsing of the filter string.  The visitor will be specific to the underlying technology.
+ * @param {QueryListener} listener - a listener that responds to the parsing of the filter string.  The listener will be specific to the underlying technology.
  * @param {QueryRequest} request - the query request
  */
-var QueryParser = function(visitor, request){
+var QueryParser = function(listener, request){
 	
-	this.visitor = visitor;
+	this.listener = listener;
 	this.request = request || {};
 	this.errorListener = new QueryErrorListener();
 
@@ -34,10 +35,10 @@ var QueryParser = function(visitor, request){
 		var parser = new _QueryParser(tokens);
 		parser.removeErrorListeners();
 		parser.addErrorListener(this.errorListener);
-		parser.buildParseTrees = true;
+		//parser.buildParseTrees = true;
 
 		var tree = parser.parse();
-		this.visitor.visitParse(tree);
+		walker.walk(this.listener, tree);
 	}
 };
 

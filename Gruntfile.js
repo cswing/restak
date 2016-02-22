@@ -72,8 +72,6 @@ module.exports = function(grunt) {
                 language: 'JavaScript'
             },
             flags: [
-                'visitor',
-                'no-listener'
             ]
         },
       }

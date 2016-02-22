@@ -4,45 +4,21 @@ var expect = require('chai').expect,
 	assert = require('chai').assert,
 	util = require('util'),
 	QueryParser = require('../query-parser'),
-	QueryVisitor = require('../generated/QueryVisitor').QueryVisitor;
+	QueryListener = require('../generated/QueryListener').QueryListener;
 
 
-var MockQueryVisitor = function() {
-	QueryVisitor.apply(this, arguments);
+var MockQueryListener = function() {
+	QueryListener.apply(this, arguments);
 };
-util.inherits(MockQueryVisitor, QueryVisitor);
-
-MockQueryVisitor.prototype.visitParse = function(ctx) {
-	
-};
-
-MockQueryVisitor.prototype.visitCondition = function(ctx) {
-	
-};
-
-MockQueryVisitor.prototype.visitPredicate = function(ctx) {
-	
-};
-
-MockQueryVisitor.prototype.visitExpression = function(ctx) {
-	
-};
-
-MockQueryVisitor.prototype.visitExpression_list = function(ctx) {
-	
-};
-
-MockQueryVisitor.prototype.visitComparison_operator = function(ctx) {
-	
-};
+util.inherits(MockQueryListener, QueryListener);
 
 
 describe('query > antlr > query-parser', function() {
 	
 	it('should work with a null request', function(done) {
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, null);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, null);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -53,8 +29,8 @@ describe('query > antlr > query-parser', function() {
 
 		var queryRequest = {};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -67,8 +43,8 @@ describe('query > antlr > query-parser', function() {
 			filter: '   '
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -81,8 +57,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'INVALID QUERY'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(false);
 		expect(parser.getErrorMessages()).to.have.deep.members([
@@ -98,8 +74,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo < 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -112,8 +88,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo = 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -126,8 +102,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo > 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -140,8 +116,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo <= 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -154,8 +130,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo >= 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -168,8 +144,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo <> 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -182,8 +158,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo != 3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -196,8 +172,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo>3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -210,8 +186,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo > -3.5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -224,8 +200,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo > 3'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -238,8 +214,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo ~ "test"'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -252,8 +228,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo ~ \'test\''
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -266,8 +242,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo ~ \'test\\\'s\''
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -280,8 +256,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo ~ "test\\"s"'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -294,8 +270,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo = \'test with multiple words\''
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -308,8 +284,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo.bar = \'test\''
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -322,8 +298,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo < 3 AND bar > 3'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -336,8 +312,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo < 3 AND bar > 3 AND foobar = 5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -350,8 +326,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo < 3 OR bar > 3'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -364,8 +340,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo < 3 OR bar > 3 OR foobar = 5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -378,8 +354,8 @@ describe('query > antlr > query-parser', function() {
 			filter: '(foo < 3 OR bar > 3) AND foo.bar = 5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -392,8 +368,8 @@ describe('query > antlr > query-parser', function() {
 			filter: '(foo < 3 AND bar > 3) OR foo.bar = 5'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -406,8 +382,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo.bar = 5 AND (foo < 3 OR bar > 3)'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -420,8 +396,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo.bar = 5 OR (foo < 3 AND bar > 3)'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
@@ -434,8 +410,8 @@ describe('query > antlr > query-parser', function() {
 			filter: 'foo.bar = 5 OR ( foo < 3 AND bar > 3 )'
 		};
 
-		var visitor = new MockQueryVisitor(),
-			parser = new QueryParser(visitor, queryRequest);
+		var listener = new MockQueryListener(),
+			parser = new QueryParser(listener, queryRequest);
 
 		expect(parser.isValid()).to.equal(true);
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
