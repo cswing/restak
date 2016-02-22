@@ -1,39 +1,21 @@
 grammar Query;
 
 parse  
-    : predicate EOF
+    : condition EOF
     ;
 
-//condition
-//	: predicate
-//	;
+condition
+	: condition_or (AND condition_or)*
+	;
 
-//condition
-//	: condition_or (AND condition_or)*
-//	;
-
-//condition_or
-//	: condition_not (OR condition_not)*
-//	;
-
-//condition_not
-//	: NOT? predicate
-//	;
+condition_or
+	: predicate (OR predicate)*
+	;
 
 predicate
 	: identifier comparison_operator literal
+	| '(' condition ')'
 	;
-
-//expression
-//	: STRING
-//	| ID
-//	| number
-//	| '(' expression ')'
-//	;
-
-//expression_list
-//    : expression (',' expression)*
-//	;
 
 identifier
 	: ID
@@ -44,6 +26,7 @@ literal
 	: identifier
 	| stringLiteral
 	| numericLiteral
+//	| '(' literal ')'	
 	;
 
 stringLiteral
@@ -72,14 +55,19 @@ singleQuotedString
 	: '\'' ( '\\\'' | ~('\r' | '\n') )*? '\''
 	;
 
-//AND:					A N D;
-//OR:						O R;
+//Lexer
+
+// Keywords
+AND:					A N D;
+OR:						O R;
+NOT: 					N O T;
 
 ID:						[a-zA-Z_#][a-zA-Z_#$@0-9]*;
 DECIMAL:				DECIMAL_DIGIT+;
 FLOAT:					DEC_DOT_DEC;
 PLUS:					'+';
 MINUS:					'-';
+
 DOT:					'.';
 SPACE:					[ \t\r\n]+	-> skip;
 
@@ -90,3 +78,30 @@ fragment DECIMAL_DIGIT
 fragment DEC_DOT_DEC
 	: (DECIMAL_DIGIT+ '.' DECIMAL_DIGIT+ |  DECIMAL_DIGIT+ '.' | '.' DECIMAL_DIGIT+)
 	;
+
+fragment A: [aA];
+fragment B: [bB];
+fragment C: [cC];
+fragment D: [dD];
+fragment E: [eE];
+fragment F: [fF];
+fragment G: [gG];
+fragment H: [hH];
+fragment I: [iI];
+fragment J: [jJ];
+fragment K: [kK];
+fragment L: [lL];
+fragment M: [mM];
+fragment N: [nN];
+fragment O: [oO];
+fragment P: [pP];
+fragment Q: [qQ];
+fragment R: [rR];
+fragment S: [sS];
+fragment T: [tT];
+fragment U: [uU];
+fragment V: [vV];
+fragment W: [wW];
+fragment X: [xX];
+fragment Y: [yY];
+fragment Z: [zZ];

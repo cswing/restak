@@ -220,8 +220,6 @@ describe('query > antlr > query-parser', function() {
 
 	it('should work with filter: foo > 3', function(done) {
 
-
-
 		var queryRequest = {
 			filter: 'foo > 3'
 		};
@@ -317,4 +315,131 @@ describe('query > antlr > query-parser', function() {
 		expect(parser.getErrorMessages()).to.have.deep.members([]);
 		done();
 	});
+
+	it('should work with filter: foo < 3 AND bar > 3', function(done) {
+
+		var queryRequest = {
+			filter: 'foo < 3 AND bar > 3'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: foo < 3 AND bar > 3 AND foobar = 5', function(done) {
+
+		var queryRequest = {
+			filter: 'foo < 3 AND bar > 3 AND foobar = 5'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: foo < 3 OR bar > 3', function(done) {
+
+		var queryRequest = {
+			filter: 'foo < 3 OR bar > 3'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: foo < 3 OR bar > 3 OR foobar = 5', function(done) {
+
+		var queryRequest = {
+			filter: 'foo < 3 OR bar > 3 OR foobar = 5'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: (foo < 3 OR bar > 3) AND foo.bar = 5', function(done) {
+
+		var queryRequest = {
+			filter: '(foo < 3 OR bar > 3) AND foo.bar = 5'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: (foo < 3 AND bar > 3) OR foo.bar = 5', function(done) {
+
+		var queryRequest = {
+			filter: '(foo < 3 AND bar > 3) OR foo.bar = 5'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: foo.bar = 5 AND (foo < 3 OR bar > 3)', function(done) {
+
+		var queryRequest = {
+			filter: 'foo.bar = 5 AND (foo < 3 OR bar > 3)'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: foo.bar = 5 OR (foo < 3 AND bar > 3)', function(done) {
+
+		var queryRequest = {
+			filter: 'foo.bar = 5 OR (foo < 3 AND bar > 3)'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with filter: foo.bar = 5 OR ( foo < 3 AND bar > 3 )', function(done) {
+
+		var queryRequest = {
+			filter: 'foo.bar = 5 OR ( foo < 3 AND bar > 3 )'
+		};
+
+		var visitor = new MockQueryVisitor(),
+			parser = new QueryParser(visitor, queryRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+	
 });
