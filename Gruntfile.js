@@ -20,7 +20,7 @@ module.exports = function(grunt) {
     clean: {
       options: { force: true },
       build: ['build'],
-      release: ['../../release/<%= pkg.name %>-<%= pkg.version %>/**/*']
+      release: ['../../release/<%= pkg.name %>-<%= pkg.version %>/']
     },
     copy: {
       'release-scripts': {
