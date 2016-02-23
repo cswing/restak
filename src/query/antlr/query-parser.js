@@ -10,11 +10,12 @@ var log4js = require('log4js'),
 
 /**
  * Parses the filter string on a query request.  This is a convience class to set up the antlr stuff.  Most of the 
- * heavy lifting is delegated to the {@link QueryVisitor|visitor}.
+ * heavy lifting is delegated to the {@link restak.query.antlr.QueryListener|listener}.
  *
  * @constructor
- * @param {QueryListener} listener - a listener that responds to the parsing of the filter string.  The listener will be specific to the underlying technology.
- * @param {QueryRequest} request - the query request
+ * @memberof restak.query.antlr
+ * @param {restak.query.antlr.QueryListener} listener - a listener that responds to the parsing of the filter string.  The listener will be specific to the underlying technology.
+ * @param {restak.query.QueryRequest} request - the query request
  */
 var QueryParser = function(listener, request){
 	
@@ -35,15 +36,14 @@ var QueryParser = function(listener, request){
 		var parser = new _QueryParser(tokens);
 		parser.removeErrorListeners();
 		parser.addErrorListener(this.errorListener);
-		//parser.buildParseTrees = true;
-
+		
 		var tree = parser.parse();
 		walker.walk(this.listener, tree);
 	}
 };
 
 /**
- * Whether or not the {@link QueryRequest} is valid.
+ * Whether or not the {@link restak.query.QueryRequest} is valid.
  * 
  * @returns {boolean} true if valid, otherwise false.
  */

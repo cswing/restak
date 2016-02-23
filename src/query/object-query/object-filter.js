@@ -7,6 +7,10 @@ var log4js = require('log4js'),
 	QueryParser = require('../antlr/query-parser'),
 	QueryListener = require('../antlr/generated/QueryListener').QueryListener;
 
+/**
+ * @namespace restak.query.object
+ */
+
 var comparisonMap = {
 	'_FALSE': function(lhs, rhs){
 		return function(item){ return false; };
@@ -68,7 +72,8 @@ var comparisonMap = {
  * execute the specified query.
  *
  * @constructor
- * @implements QueryListener
+ * @memberof restak.query.object
+ * @implements restak.query.antlr.QueryListener
  */
 var ObjectQueryListener = function() {
 	QueryListener.apply(this, arguments);
@@ -261,7 +266,8 @@ ObjectQueryListener.prototype.enterNumericLiteral = function(ctx) {
  * Given a {@link QueryRequest|request}, provide a way to apply the filter to an object.
  *
  * @constructor
- * @param {QueryRequest} request - The query request.
+ * @memberof restak.query.object
+ * @param {restak.query.QueryRequest} request - The query request.
  */
 var ObjectFilter = function(request){
 	this.request = request;
@@ -270,12 +276,12 @@ var ObjectFilter = function(request){
 };
 
 /**
- * Applies the filter specified in the {@link QueryRequest|request} to the item.  If the filter is valid,
- * this function delegates to the {@link ObjectQueryListener#filter}.
+ * Applies the filter specified in the {@link restak.query.QueryRequest|request} to the item.  If the filter is valid,
+ * this function delegates to the {@link restak.query..object.ObjectQueryListener#filter}.
  *
  * @param {Object} item - the item to test the filter on.
  * @returns {boolean} true if the parser is valid and all filters are all satisifed, otherwise false.
- * @see ObjectQueryListener#filter
+ * @see restak.query.object.ObjectQueryListener#filter
  */
 ObjectFilter.prototype.filter = function(item){
 	

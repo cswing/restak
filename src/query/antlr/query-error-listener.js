@@ -10,6 +10,7 @@ var log4js = require('log4js'),
  * have been any parsing errors.
  *
  * @constructor
+ * @memberof restak.query.antlr
  * @implments {antlr4.error.ErrorListener}
  */
 var QueryErrorListener = function() {
