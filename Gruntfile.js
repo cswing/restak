@@ -25,20 +25,13 @@ module.exports = function(grunt) {
     copy: {
       'release-scripts': {
         cwd: 'build/',
-        src: '**/*',
+        src: ['**/*', '!**/tests/**'],
         dest: '../../release/<%= pkg.name %>-<%= pkg.version %>',
         expand: true
       },
-      'release-config': {
-        cwd: 'src/',
-        src: ['**/*.properties', '**/log4js.json'],
-        dest: '../../release/<%= pkg.name %>-<%= pkg.version %>/',
-        expand: true
-      },
-      'release-modules': {
-        cwd: 'node_modules/',
-        src: '**/*',    
-        dest: '../../release/<%= pkg.name %>-<%= pkg.version %>/node_modules',
+      'release-package': {
+        src: ['package.json'],
+        dest: '../../release/<%= pkg.name %>-<%= pkg.version %>',
         expand: true
       }
     },
