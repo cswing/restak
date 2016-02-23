@@ -56,3 +56,6 @@
  * @interface QueryListener
  * @memberof restak.query.antlr
  */
+
+ module.exports.antlr = require('./antlr');
+ module.exports.objectQuery = require('./object-query');

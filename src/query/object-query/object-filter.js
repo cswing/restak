@@ -4,8 +4,8 @@ var log4js = require('log4js'),
 	logger_filter = log4js.getLogger('XYZframework.query.object-query.object-filter'),
 	logger_listener = log4js.getLogger('XYZframework.query.object-query.object-query-listener'),
 	util = require('util'),
-	QueryParser = require('../antlr/query-parser'),
-	QueryListener = require('../antlr/generated/QueryListener').QueryListener;
+	QueryParser = require('../antlr').QueryParser,
+	QueryListener = require('../antlr').QueryListener;
 
 /**
  * @namespace restak.query.object

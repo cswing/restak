@@ -8,10 +8,9 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-
         expand: true,     // Enable dynamic expansion.
         cwd: 'src/',      // Src matches are relative to this path.
-        src: ['**/*.js'], // Actual pattern(s) to match.
+        src: ['**/*.js', '!**/tests/**', '!sample-server/**'], // Actual pattern(s) to match.
         dest: 'build/',   // Destination path prefix.
         ext: '.js',   // Dest filepaths will have this extension.
         extDot: 'first'   // Extensions in filenames begin after the first dot
@@ -25,12 +24,7 @@ module.exports = function(grunt) {
     copy: {
       'release-scripts': {
         cwd: 'build/',
-        src: ['**/*', '!**/tests/**'],
-        dest: '../../release/<%= pkg.name %>-<%= pkg.version %>',
-        expand: true
-      },
-      'release-package': {
-        src: ['package.json'],
+        src: ['**/*'],
         dest: '../../release/<%= pkg.name %>-<%= pkg.version %>',
         expand: true
       }
@@ -68,6 +62,16 @@ module.exports = function(grunt) {
             ]
         },
       }
+    },
+    replace: {
+      build: {
+        src: ['package.json'],
+        dest: 'build/',
+        replacements: [{
+          from: 'src/index.js',
+          to: 'index.js'
+        }]
+      }
     }
   });
 
@@ -78,10 +82,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-antlr4');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   // Create & configure tasks
-  grunt.registerTask('default', ['clean:build', 'mochaTest', 'uglify']);
-  grunt.registerTask('release', ['uglify', 'clean:release', 'copy']);
+  grunt.registerTask('default', ['mochaTest', 'clean:build', 'uglify', 'replace:build', 'jsdoc']);
+  grunt.registerTask('release-only', ['clean:release', 'copy']);
+  grunt.registerTask('release', ['default', 'release-only']);
   grunt.registerTask('tests', ['mochaTest']);
 
 };

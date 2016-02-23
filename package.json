@@ -2,7 +2,7 @@
   "name": "restak",
   "version": "0.1.0-dev.1",
   "description": "Restak REST Framework",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "Craig Swing",
   "dependencies": {
     "antlr4": "^4.5.2",
@@ -21,8 +21,9 @@
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-nodeunit": "~0.4.1",
     "grunt-contrib-uglify": "^0.10.0",
-    "grunt-mocha-test": "^0.12.7",
     "grunt-jsdoc": "^1.1.0",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-text-replace": "^0.4.0",
     "ink-docstrap": "^1.1.1",
     "mocha": "^2.3.4",
     "mock-fs": "^3.6.0"
