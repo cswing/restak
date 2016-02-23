@@ -1,3 +1,4 @@
-# Framework
+# Restak REST Framework
 
-A framework to be named later.
+A REST Framework that provides a common framework for providing consistent REST endpoint implementation.
+

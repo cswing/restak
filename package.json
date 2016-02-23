@@ -1,7 +1,7 @@
 {
-  "name": "framework",
+  "name": "restak",
   "version": "0.1.0-dev.1",
-  "description": "A framework to be named later",
+  "description": "Restak REST Framework",
   "main": "index.js",
   "author": "Craig Swing",
   "dependencies": {
