@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @namespace restak.query.object
+ * @namespace restak.query.objectQuery
  */
  
 var ofModule = require('./object-filter');

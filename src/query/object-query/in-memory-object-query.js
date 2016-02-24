@@ -11,7 +11,7 @@ var DEFAULT_PAGE_SIZE = 25;
  * An implementation of {@link restak.query.Query|Query} that uses and array of javascript objects for it's backing store.
  *
  * @implements restak.query.Query
- * @memberof restak.query.object
+ * @memberof restak.query.objectQuery
  * @constructor
  * @param {Array} data - The backing data use when querying
  */
