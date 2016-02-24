@@ -82,8 +82,14 @@ var RestServer = function(endpoints, config){
 		appVersion: this.config.appVersion
 	};
 
-	// setup middleware
-	var _t = this;
+	// Configure expressjs app
+	var _t = this,
+		app = this.app;
+
+	logger.debug('Registering endpoints');
+	(this.endpoints || []).forEach(function(ep){ ep.register(app, _t); });
+
+	logger.debug('Registering middleware');
 	
 	// use morgan to build the log, but log4js to write the data.
 	this.app.use(morgan('combined', {
@@ -104,20 +110,23 @@ var RestServer = function(endpoints, config){
  * http://expressjs.com/en/guide/error-handling.html
  *
  * @protected
- * @param {String} err - the unhandled error.
+ * @param {Error} err - the unhandled error.
  * @param {Request} req - The HTTP request from the expressjs server.
  * @param {Response} res - The HTTP response from the expressjs server.
  * @param {Function} next - the next function in the chain.
  */
 RestServer.prototype.onUnhandledError = function(err, req, res, next){
 	
+	logger.error('Unhandled Error: ' + err.message);
+
 	if (res.headersSent) {
+		logger.debug('Headers previously sent.  Deferring error handling.');
 		return next(err);
 	}
 
 	var errCode = this.config.unhandledErrorCode || 'SYS-0000',
-		response = this.buildResponseEnvelope(req, res, null, 
-		messageBuilder.buildErrorMessage(errCode, err));
+		errMessage = messageBuilder.buildErrorMessage(errCode, err.message),
+		response = this.buildRestResponse(req, res, null, errMessage);
 
 	res.status(500).send(response);
 };
@@ -162,13 +171,8 @@ RestServer.prototype.start = function() {
 		port = this.config.port || 3000,
 		app = this.app;
 
-	logger.debug(applicationName + ' starting');
-	logger.debug('Registering endpoints');
-
-	(this.endpoints || []).forEach(function(ep){
-		ep.register(app, _t);
-	});
-
+	logger.debug(applicationName + ' starting REST server on port ' + port);
+	
 	app.listen(port, function () {
 		logger.debug(applicationName + ' listening on port ' + port);
 		logger.info(applicationName + ' startup complete');

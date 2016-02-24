@@ -49,7 +49,7 @@ var MessageBuilder = function(){};
  * @returns {restak.rest.messages.Message} the error message object.
  */
 MessageBuilder.prototype.buildErrorMessage = function(code, message){
-	return this.buildMessage(RestMessageType.error, code, message);
+	return this.buildMessage(MessageType.error, code, message);
 };
 
 /**
@@ -60,7 +60,7 @@ MessageBuilder.prototype.buildErrorMessage = function(code, message){
  * @returns {restak.rest.messages.Message} the warning message object.
  */
 MessageBuilder.prototype.buildWarningMessage = function(code, message){
-	return this.buildMessage(RestMessageType.warn, code, message);
+	return this.buildMessage(MessageType.warn, code, message);
 };
 
 /**
@@ -71,7 +71,7 @@ MessageBuilder.prototype.buildWarningMessage = function(code, message){
  * @returns {restak.rest.messages.Message} the informational message object.
  */
 MessageBuilder.prototype.buildInfoMessage = function(code, message){
-	return this.buildMessage(RestMessageType.info, code, message);
+	return this.buildMessage(MessageType.info, code, message);
 };
 
 /**
