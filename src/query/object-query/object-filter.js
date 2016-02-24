@@ -7,10 +7,6 @@ var log4js = require('log4js'),
 	QueryParser = require('../antlr').QueryParser,
 	QueryListener = require('../antlr').QueryListener;
 
-/**
- * @namespace restak.query.object
- */
-
 var comparisonMap = {
 	'_FALSE': function(lhs, rhs){
 		return function(item){ return false; };

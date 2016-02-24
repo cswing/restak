@@ -22,8 +22,9 @@ var QueryParser = function(listener, request){
 	this.listener = listener;
 	this.request = request || {};
 	this.errorListener = new QueryErrorListener();
+	this.filter = (this.request.filter || '').trim();
 
-	if((this.request.filter || '').trim().length > 0){ // build filter function if filter is provided
+	if(this.filter.length > 0){ // build filter function if filter is provided
 
 		var chars = new antlr4.InputStream(this.request.filter);
 		

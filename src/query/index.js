@@ -21,13 +21,19 @@
  * @param {restak.query.Query~QueryCallback} callback - The callback that handles the response.
  */
 
+/*
+	TODO add sort fields, direction to request, result
+*/
+
 /**
  * Instructions for executing a query.
  *
  * @typedef QueryRequest
  * @memberof restak.query
  * @type {object}
- * @property {string} filter
+ * @property {string} filter - The filter to apply when querying the data
+ * @property {Number} pageSize - The number of items to return
+ * @property {Number} page - The page of the filtered dataset to return
  */
 
 /**
@@ -35,8 +41,12 @@
  * 
  * @typedef QueryResult
  * @memberof restak.query
- * @property {string} filter
- * @property {Array} data
+ * @property {string} filter - The filter that was applied when querying the data
+ * @property {Array} data - The data
+ * @property {Number} pageSize - The number of items in the page
+ * @property {?Number} pageCount - The number of pages, if available
+ * @property {?Number} totalCount - The total number of items, if available
+ * @property {Number} page - The page of data that was returned
  */
 
 /**
