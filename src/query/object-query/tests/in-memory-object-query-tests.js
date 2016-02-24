@@ -16,7 +16,7 @@ var data = [
 	{ foo: 8 }
 ];
 
-describe.only('query > object-query > in-memory-query', function() {
+describe('query > object-query > in-memory-query', function() {
 
 	describe('#execute', function(){
 

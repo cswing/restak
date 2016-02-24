@@ -12,6 +12,7 @@ var DEFAULT_PAGE_SIZE = 25;
  *
  * @implements restak.query.Query
  * @memberof restak.query.object
+ * @constructor
  * @param {Array} data - The backing data use when querying
  */
 var InMemoryObjectQuery = function(data){
