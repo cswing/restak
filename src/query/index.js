@@ -33,7 +33,7 @@
 /**
  * The result of executing a query.
  * 
- * @typedef QueryResponse
+ * @typedef QueryResult
  * @memberof restak.query
  * @property {string} filter
  * @property {Array} data
@@ -45,7 +45,7 @@
  * @callback Query~QueryCallback
  * @memberof restak.query
  * @param {Object} error - An error if one occurred, otherwise null.
- * @param {restak.query.QueryResponse} response - The result of the query.
+ * @param {restak.query.QueryResult} result - The result of the query.
  * @see Query#execute
  */
 
