@@ -22,26 +22,6 @@ var log4js = require('log4js'),
   */ 
 
 /**
- * A set of properties that describes the application being served by a {@link restak.rest.RestServer | REST server}.
- *
- * @typedef ApplicationDescriptor
- * @memberof restak.rest
- * @property {String} appName - The name of the application.
- * @property {String} appVersion - The version of the application.
- * @see restak.rest.RestServer
- */
-
-/**
- * Data structure for all responses from {@link restak.rest.endpoints.Endpoint|endpoints}.
- *
- * @typedef RestResponse
- * @memberof restak.rest
- * @property {restak.rest.ApplicationDescriptor} application - The application descriptor.
- * @property {Object} data - The data to return to the caller; specific to the endpoint.
- * @property {restak.rest.messages.Message[]} messages - Any messages to return to the caller; specific to the endpoint.
- */
-
-/**
  * Wraps an express application to provide REST services defined via {@link restak.rest.endpoints.Endpoint|endpoints}.
  * 
  * @constructor
@@ -154,6 +134,27 @@ RestServer.prototype.buildRestResponse = function(req, res, data, messages){
 		application: 	this.appDescriptor,
 		data: 			data,
 		messages: 		msgs
+	};
+};
+
+/**
+ * Utility method to build a {restak.rest.ResourceLink}.
+ * 
+ * @param {Request} req - The HTTP request from the expressjs server.
+ * @param {String} name - The name of the resource that the link represents.
+ * @param {String} rel - The relationship of this resource in context of the resource presenting the link.
+ * @param {String} url - The url that will take the user to the resource described by the link.
+ * @return {restak.rest.ResourceLink} Returns the resource link.
+ */
+RestServer.prototype.buildResourceLink = function(req, name, rel, url) {
+
+	// TODO better handling of url building
+	//  test for trialing slash
+
+	return {
+		name: name,
+		rel: rel,
+		url: req.protocol + '://' + req.headers.host + url
 	};
 };
 

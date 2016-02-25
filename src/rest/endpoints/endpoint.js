@@ -102,4 +102,17 @@ Endpoint.prototype.buildRestResponse = function(req, res, data, messages){
 	return this.server.buildRestResponse(req, res, data, messages);
 };
 
+/**
+ * Utility method to build a {restak.rest.ResourceLink}.  This function delegates to {restak.rest.Server#buildResourceLink}.
+ * 
+ * @param {Request} req - The HTTP request from the expressjs server.
+ * @param {String} name - The name of the resource that the link represents.
+ * @param {String} rel - The relationship of this resource in context of the resource presenting the link.
+ * @param {String} url - The url that will take the user to the resource described by the link.
+ * @return {restak.rest.ResourceLink} Returns the resource link.
+ */
+Endpoint.prototype.buildResourceLink = function(req, name, rel, url) {
+	return this.server.buildResourceLink(req, name, rel, url);
+};
+
 module.exports = Endpoint;
