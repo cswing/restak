@@ -42,7 +42,7 @@
  * @typedef QueryResult
  * @memberof restak.query
  * @property {string} filter - The filter that was applied when querying the data
- * @property {Array} data - The data
+ * @property {Array} items - The items being returned from the query
  * @property {Number} pageSize - The number of items in the page
  * @property {?Number} pageCount - The number of pages, if available
  * @property {?Number} totalCount - The total number of items, if available

@@ -67,7 +67,7 @@ InMemoryObjectQuery.prototype.execute = function(req, callback){
 	var begin = (page - 1) * pageSize,
 		end = begin + pageSize;
 
-	qResult.data = filteredData.slice(begin, end);
+	qResult.items = JSON.parse(JSON.stringify(filteredData.slice(begin, end)));
 
 	callback(null, qResult);
 };

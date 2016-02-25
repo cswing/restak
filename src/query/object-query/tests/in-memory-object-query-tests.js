@@ -31,9 +31,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 25);
 				expect(qResult).to.have.property('pageCount', 1);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 9);
-				expect(qResult.data).to.have.deep.members(data);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				expect(qResult.items).to.have.deep.members(data);
 	
 				done();	
 			});
@@ -50,9 +50,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 25);
 				expect(qResult).to.have.property('pageCount', 1);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 9);
-				expect(qResult.data).to.have.deep.members(data);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				expect(qResult.items).to.have.deep.members(data);
 
 				done();	
 			});
@@ -87,9 +87,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 3);
 				expect(qResult).to.have.property('pageCount', 3);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 3);
-				expect(qResult.data).to.have.deep.members([data[0], data[1], data[2]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 3);
+				expect(qResult.items).to.have.deep.members([data[0], data[1], data[2]]);
 
 				done();	
 			});
@@ -110,9 +110,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 4);
 				expect(qResult).to.have.property('pageCount', 3);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 4);
-				expect(qResult.data).to.have.deep.members([data[0], data[1], data[2], data[3]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 4);
+				expect(qResult.items).to.have.deep.members([data[0], data[1], data[2], data[3]]);
 
 				done();	
 			});
@@ -133,9 +133,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 25);
 				expect(qResult).to.have.property('pageCount', 1);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 9);
-				expect(qResult.data).to.have.deep.members(data);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				expect(qResult.items).to.have.deep.members(data);
 
 				done();	
 			});
@@ -156,9 +156,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 25);
 				expect(qResult).to.have.property('pageCount', 1);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 9);
-				expect(qResult.data).to.have.deep.members(data);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				expect(qResult.items).to.have.deep.members(data);
 
 				done();	
 			});
@@ -179,9 +179,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 25);
 				expect(qResult).to.have.property('pageCount', 1);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 9);
-				expect(qResult.data).to.have.deep.members(data);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				expect(qResult.items).to.have.deep.members(data);
 
 				done();	
 			});
@@ -203,9 +203,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 3);
 				expect(qResult).to.have.property('pageCount', 3);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 3);
-				expect(qResult.data).to.have.deep.members([data[3], data[4], data[5]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 3);
+				expect(qResult.items).to.have.deep.members([data[3], data[4], data[5]]);
 
 				done();	
 			});
@@ -227,9 +227,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 4);
 				expect(qResult).to.have.property('pageCount', 3);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 4);
-				expect(qResult.data).to.have.deep.members([data[4], data[5], data[6], data[7]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 4);
+				expect(qResult.items).to.have.deep.members([data[4], data[5], data[6], data[7]]);
 
 				done();	
 			});
@@ -251,9 +251,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 3);
 				expect(qResult).to.have.property('pageCount', 3);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 3);
-				expect(qResult.data).to.have.deep.members([data[6], data[7], data[8]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 3);
+				expect(qResult.items).to.have.deep.members([data[6], data[7], data[8]]);
 
 				done();	
 			});
@@ -275,9 +275,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 4);
 				expect(qResult).to.have.property('pageCount', 3);
 				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 1);
-				expect(qResult.data).to.have.deep.members([data[8]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 1);
+				expect(qResult.items).to.have.deep.members([data[8]]);
 
 				done();	
 			});
@@ -298,9 +298,9 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('pageSize', 25);
 				expect(qResult).to.have.property('pageCount', 1);
 				expect(qResult).to.have.property('totalCount', 1);
-				expect(qResult).to.have.property('data');
-				expect(qResult).to.have.deep.property('data.length', 1);
-				expect(qResult.data).to.have.deep.members([data[8]]);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 1);
+				expect(qResult.items).to.have.deep.members([data[8]]);
 
 				done();	
 			});
