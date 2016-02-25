@@ -10,7 +10,7 @@ var log4js = require('log4js'),
  * Create's an endpoint to handle a REST collection, delegating to the query that is provided.
  *
  * @constructor
- * @extends Endpoint
+ * @extends restak.rest.endpoints.Endpoint
  * @memberof restak.rest.endpoints
  * @param {Logger} logger - A log4js logger to use when logging.
  * @param {String} path - The path to register the endpoint to.
@@ -61,13 +61,6 @@ CollectionEndpoint.prototype.buildQueryRequest = function(req){
 	return queryRequest;
 };
 
-var buildCollectionResponse = function(data, messages){
-	return buildResponse({
-		count: data.length,
-		items: data
-	}, messages);
-};
-
 /**
  * Handles a HTTP request for a REST collection.
  *
@@ -86,6 +79,26 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 			_t.handleError(req, res, err);
 			return;
 		}
+
+		var buildUrl = function(page) {
+			var result = req._parsedUrl.pathname + '?page=' + page + '&pageSize=' + queryResult.pageSize;
+			if(queryResult.filter && queryResult.filter != '') {
+				result = result + '&filter=' + encodeURIComponent(filter) + '&'
+			}
+			return result;
+		};
+
+		var links = [];
+		links.push(_t.buildResourceLink(req, 'First', 'first', buildUrl(1)));
+		if(queryResult.page > 1) {
+			links.push(_t.buildResourceLink(req, 'Previous', 'prev', buildUrl(queryResult.page - 1)));
+		}
+		if(queryResult.page < queryResult.pageCount) {
+			links.push(_t.buildResourceLink(req, 'Next', 'next', buildUrl(queryResult.page + 1)));
+		}
+		links.push(_t.buildResourceLink(req, 'Last', 'last', buildUrl(queryResult.pageCount)));
+
+		queryResult.links = links;
 
 		queryResult.items = queryResult.items.map(
 			function(item){
