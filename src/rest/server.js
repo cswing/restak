@@ -117,11 +117,11 @@ RestServer.prototype.onUnhandledError = function(err, req, res, next){
  * @protected
  * @param {Request} req - The HTTP request from the expressjs server.
  * @param {Response} res - The HTTP response from the expressjs server.
- * @param {Object} data - The data to return.
+ * @param {Object} payload - The payload to return.
  * @param {restak.rest.messages.Message[]|restak.rest.messages.Message} - The message or messages to return.
  * @returns {restak.rest.RestResponse} - The REST response with data and messages.
  */
-RestServer.prototype.buildRestResponse = function(req, res, data, messages){
+RestServer.prototype.buildRestResponse = function(req, res, payload, messages){
 
 	var msgs = [];
 	if(util.isArray(messages)){
@@ -132,7 +132,7 @@ RestServer.prototype.buildRestResponse = function(req, res, data, messages){
 
 	return {
 		application: 	this.appDescriptor,
-		data: 			data,
+		payload: 		payload,
 		messages: 		msgs
 	};
 };

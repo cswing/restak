@@ -20,7 +20,7 @@
  * @typedef RestResponse
  * @memberof restak.rest
  * @property {restak.rest.ApplicationDescriptor} application - The application descriptor.
- * @property {Object} data - The data to return to the caller; specific to the endpoint.
+ * @property {Object} payload - The payload to return to the caller; specific to the endpoint.
  * @property {restak.rest.messages.Message[]} messages - Any messages to return to the caller; specific to the endpoint.
  */
 
