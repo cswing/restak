@@ -12,8 +12,8 @@ var log4js = require('log4js'),
  * @constructor
  * @extends Endpoint
  * @memberof restak.rest.endpoints
- * @param {Logger} logger - a log4js logger to use when logging.
- * @param {String} path - the path to register the endpoint to.
+ * @param {Logger} logger - A log4js logger to use when logging.
+ * @param {String} path - The path to register the endpoint to.
  * @param {Query} query - The query to use when a request is made to this collection.
  */
 var CollectionEndpoint = function(logger, path, query){
@@ -87,8 +87,29 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 			return;
 		}
 
+		queryResult.items = queryResult.items.map(
+			function(item){
+				return _t.postProcessItem(item, { 
+					req: req
+				});
+			});
+
 		res.send(_t.buildRestResponse(req, res, queryResult));
 	});
+};
+
+/**
+ * Provides an opportunity to modify the items that are returned to the caller.
+ * For example, one might add links to the entity being returned.
+ *
+ * @protected
+ * @param {Object} item - An item returned from the query
+ * @param {Object} context - The context in which the request is executing.
+ * @param {Request} context.req - The HTTP request from the expressjs server.
+ * @returns {Object} the item to return to the caller.
+ */
+CollectionEndpoint.prototype.postProcessItem = function(item, context){
+	return item;
 };
 
 module.exports = CollectionEndpoint;
