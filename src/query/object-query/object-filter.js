@@ -1,8 +1,8 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger_filter = log4js.getLogger('XYZframework.query.object-query.object-filter'),
-	logger_listener = log4js.getLogger('XYZframework.query.object-query.object-query-listener'),
+	logger_filter = log4js.getLogger('restak.query.object-query.object-filter'),
+	logger_listener = log4js.getLogger('restak.query.object-query.object-query-listener'),
 	util = require('util'),
 	QueryParser = require('../antlr').QueryParser,
 	QueryListener = require('../antlr').QueryListener;

@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('XYZframework.query.antlr.query-parser'),
+	logger = log4js.getLogger('restak.query.antlr.query-parser'),
 	antlr4 = require('antlr4'),
 	walker = antlr4.tree.ParseTreeWalker.DEFAULT,
 	QueryLexer = require('./generated/QueryLexer').QueryLexer,

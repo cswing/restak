@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('XYZframework.query.antlr.query-error-listener'),
+	logger = log4js.getLogger('restak.query.antlr.query-error-listener'),
 	util = require('util'),
 	ErrorListener = require('antlr4').error.ErrorListener;
 
