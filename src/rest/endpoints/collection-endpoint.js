@@ -62,6 +62,18 @@ CollectionEndpoint.prototype.buildQueryRequest = function(req){
 };
 
 /**
+ * Provide the capability to provide a fixed filter on the query.  This is useful when a parameter in the route 
+ * needs to be applied to the query.
+ *
+ * @protected
+ * @param {Request} req - The HTTP request from the expressjs server.
+ * @returns {String} the fixed filter
+ */
+CollectionEndpoint.prototype.getFixedFilter = function(req){
+	return null;
+};
+
+/**
  * Handles a HTTP request for a REST collection.
  *
  * @param {Request} req - The HTTP request from the expressjs server.
@@ -72,6 +84,18 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 	var _t = this,
 		query = this.query,
 		queryRequest = this.buildQueryRequest(req);
+
+	var originalFilter = queryRequest.filter,
+		fixedFilter = this.getFixedFilter(req);
+
+	if(fixedFilter) {
+
+		if(originalFilter && originalFilter.trim() != ''){
+			queryRequest.filter = '(' + fixedFilter + ') AND (' + originalFilter + ')';
+		} else {
+			queryRequest.filter = fixedFilter;
+		}
+	}
 
 	query.execute(queryRequest, function(err, queryResult){
 		
@@ -87,6 +111,8 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 			}
 			return result;
 		};
+
+		queryResult.filter = originalFilter;
 
 		var links = [];
 		links.push(_t.buildResourceLink(req, 'First', 'first', buildUrl(1)));
