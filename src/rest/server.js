@@ -98,6 +98,7 @@ var RestServer = function(endpoints, config){
 RestServer.prototype.onUnhandledError = function(err, req, res, next){
 	
 	logger.error('Unhandled Error: ' + err.message);
+	logger.error(err.stack);
 
 	if (res.headersSent) {
 		logger.debug('Headers previously sent.  Deferring error handling.');
