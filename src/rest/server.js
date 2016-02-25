@@ -86,9 +86,6 @@ var RestServer = function(endpoints, config){
 	var _t = this,
 		app = this.app;
 
-	logger.debug('Registering endpoints');
-	(this.endpoints || []).forEach(function(ep){ ep.register(app, _t); });
-
 	logger.debug('Registering middleware');
 	
 	// use morgan to build the log, but log4js to write the data.
@@ -100,7 +97,10 @@ var RestServer = function(endpoints, config){
 		}
 	}));
 
-	// error handling
+	logger.debug('Registering endpoints');
+	(this.endpoints || []).forEach(function(ep){ ep.register(app, _t); });
+	
+	logger.debug('Registering error handling');
 	this.app.use(function (err, req, res, next) { _t.onUnhandledError(err, req, res, next); });
 };
 
