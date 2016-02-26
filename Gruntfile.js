@@ -18,7 +18,7 @@ module.exports = function(grunt) {
     },
     clean: {
       options: { force: true },
-      build: ['build'],
+      build: ['build', 'test-results'],
       release: ['../../release/<%= pkg.name %>-<%= pkg.version %>/']
     },
     copy: {
@@ -43,11 +43,28 @@ module.exports = function(grunt) {
       test: {
         options: {
           reporter: 'spec',
-          captureFile: 'build/test-results.txt', // Optionally capture the reporter output to a file 
-          quiet: false, // Optionally suppress output to standard out (defaults to false) 
-          clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false) 
+          captureFile: 'test-results/test-results.txt', // Optionally capture the reporter output to a file 
         },
         src: ['src/**/tests/**/*.js']
+      }
+    },
+    mocha_istanbul: {
+      coverage: { // no capturing of mocha output with the coverage tool
+          src: ['src/**/tests/**/*.js'],
+          options: {
+              coverageFolder: 'test-results/coverage'
+          }
+      }
+    },
+    istanbul_check_coverage: {
+      default: {
+        options: {
+          coverageFolder: 'coverage*',
+          check: {
+            lines: 80,
+            statements: 80
+          }
+        }
       }
     },
     antlr4: {
@@ -74,7 +91,11 @@ module.exports = function(grunt) {
       }
     }
   });
-
+  
+  grunt.event.on('coverage', function(lcovFileContents, done){
+      done();
+  });
+ 
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -83,11 +104,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-antlr4');
   grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks('grunt-mocha-istanbul');
 
   // Create & configure tasks
-  grunt.registerTask('default', ['mochaTest', 'clean:build', 'uglify', 'replace:build', 'jsdoc']);
+  grunt.registerTask('default', ['coverage', 'clean:build', 'uglify', 'replace:build', 'jsdoc']);
   grunt.registerTask('release-only', ['clean:release', 'copy']);
   grunt.registerTask('release', ['default', 'release-only']);
   grunt.registerTask('tests', ['mochaTest']);
+  grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
 
 };
