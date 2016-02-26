@@ -39,6 +39,12 @@ ResourceEndpoint.prototype.register = function(app, server) {
 ResourceEndpoint.prototype.onRequest = function(req, res){
 	var _t = this;
 	this.getPayload(req, function(err, payload){
+
+		if(!payload) {
+			res.status(404).send();
+			return;
+		}
+
 		res.send(_t.buildRestResponse(req, res, payload));
 	});
 };
