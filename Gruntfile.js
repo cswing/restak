@@ -18,7 +18,8 @@ module.exports = function(grunt) {
     },
     clean: {
       options: { force: true },
-      build: ['build', 'test-results'],
+      build: ['build'],
+      'test-results': ['test-results'],
       release: ['../../release/<%= pkg.name %>-<%= pkg.version %>/']
     },
     copy: {
@@ -107,7 +108,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-istanbul');
 
   // Create & configure tasks
-  grunt.registerTask('default', ['coverage', 'clean:build', 'uglify', 'replace:build', 'jsdoc']);
+  grunt.registerTask('default', ['clean:test-results', 'coverage', 'clean:build', 'uglify', 'replace:build', 'jsdoc']);
   grunt.registerTask('release-only', ['clean:release', 'copy']);
   grunt.registerTask('release', ['default', 'release-only']);
   grunt.registerTask('tests', ['mochaTest']);

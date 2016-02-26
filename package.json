@@ -29,6 +29,7 @@
     "ink-docstrap": "^1.1.1",
     "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
-    "mock-fs": "^3.6.0"
+    "mock-fs": "^3.6.0",
+    "supertest": "^1.2.0"
   }
 }
