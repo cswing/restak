@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.rest.CollectionEndpoint'),
+	logger = log4js.getLogger('restak.rest.ResourceEndpoint'),
 	util = require('util'),
 	Endpoint = require('./endpoint');
 
@@ -10,7 +10,7 @@ var log4js = require('log4js'),
  * Create's an endpoint to handle a REST resource.
  *
  * @constructor
- * @extends Endpoint
+ * @extends restak.rest.Endpoint
  * @memberof restak.rest.endpoints
  * @param {Logger} logger - a log4js logger to use when logging.
  * @param {String} path - the path to register the endpoint to.
@@ -38,12 +38,12 @@ ResourceEndpoint.prototype.register = function(app, server) {
  */
 ResourceEndpoint.prototype.onRequest = function(req, res){
 	var _t = this;
-	this.getData(req, function(err, data){
-		res.send(_t.buildRestResponse(req, res, data));
+	this.getPayload(req, function(err, payload){
+		res.send(_t.buildRestResponse(req, res, payload));
 	});
 };
 
-ResourceEndpoint.prototype.getData = function(req, callback){
+ResourceEndpoint.prototype.getPayload = function(req, callback){
 	callback(null, null);
 };
 
