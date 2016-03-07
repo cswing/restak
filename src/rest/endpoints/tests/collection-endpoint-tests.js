@@ -3,7 +3,17 @@
 var log4js = require('log4js'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
+	urlUtil = require('url'),
+	request = require('supertest'),
+	RestServer = require('../../server'),
 	CollectionEndpoint = require('../collection-endpoint');
+
+var logger = log4js.getLogger('test'),
+	serverConfig = {
+		port: 12000,
+		appName: 'test app',
+		appVersion: '1.0'
+	};
 
 describe('rest > endpoints > collection-endpoint', function() {
 
@@ -48,5 +58,55 @@ describe('rest > endpoints > collection-endpoint', function() {
 
 			done();
 		});
+	});
+
+	describe.only('#onRequest', function(){
+
+		//it('should provide first, next... links')
+
+		var expectLink = function(link, name, rel, path){
+			expect(link).to.not.be.null;
+			expect(link).to.have.deep.property('name', name);
+			expect(link).to.have.deep.property('rel', rel);
+
+			var parsedUrl = urlUtil.parse(link.url);
+			expect(parsedUrl.path).to.equal(path);
+		};
+
+		it('should provide links with the filter in the url', function(done){
+
+			var query = {
+				execute: function(qr, callback) {
+					callback(null, { 
+						filter: qr.filter,
+						pageSize: 1,
+						pageCount: 5,
+						page: 3,
+						totalCount: 5,
+						items: [{ x: 'a' }]
+					});
+				}
+			};
+
+			var server = new RestServer([new CollectionEndpoint(logger, '/testpath', query)], serverConfig);
+
+			request(server.app)
+				.get('/testpath?filter=test~"foo"')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					
+					var payload = res.body.payload;
+
+					expectLink(payload.links[0], 'First', 'first', '/testpath?page=1&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[1], 'Previous', 'prev', '/testpath?page=2&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[2], 'Next', 'next', '/testpath?page=4&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[3], 'Last', 'last', '/testpath?page=5&pageSize=1&filter=test~%22foo%22&');
+					
+					done();
+				});
+		});
+
 	});
 });

@@ -107,7 +107,7 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 		var buildUrl = function(page) {
 			var result = req._parsedUrl.pathname + '?page=' + page + '&pageSize=' + queryResult.pageSize;
 			if(queryResult.filter && queryResult.filter != '') {
-				result = result + '&filter=' + encodeURIComponent(filter) + '&'
+				result = result + '&filter=' + encodeURIComponent(queryResult.filter) + '&'
 			}
 			return result;
 		};
