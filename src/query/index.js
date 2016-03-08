@@ -18,7 +18,7 @@
  * @function
  * @name restak.query.Query#execute
  * @param {restak.query.QueryRequest} request - The query to execute against the set of data.
- * @param {restak.query.Query~QueryCallback} callback - The callback that handles the response.
+ * @param {restak.query.Query~QueryCallback} callback - The callback that handles the result.
  */
 
 /*
