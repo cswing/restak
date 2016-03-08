@@ -6,6 +6,7 @@ var log4js = require('log4js'),
 	util = require('util'),
 	express = require('express'),
 	morgan = require('morgan'),
+	bodyParser = require('body-parser'),
 	messageBuilder = require('./messages').MessageBuilder.DEFAULT;
 	
  /**
@@ -76,6 +77,8 @@ var RestServer = function(endpoints, config){
 			}
 		}
 	}));
+	this.app.use(bodyParser.json()); // for parsing application/json
+	this.app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 	logger.debug('Registering endpoints');
 	(this.endpoints || []).forEach(function(ep){ ep.register(app, _t); });
