@@ -16,8 +16,9 @@ var log4js = require('log4js'),
  * @param {restak.command.Command} command - the command to execute.
  */
 var ResourcePutEndpoint = function(logger, path, command){
-// * @param {Number} successHttpStatusCode - the status code to return on successful execution of the command.
-	CommandEndpoint.apply(this, arguments.concat([201]));
+	var args = Array.prototype.slice.call(arguments);
+	args.push(201);
+	CommandEndpoint.apply(this, args);
 };
 util.inherits(ResourcePutEndpoint, CommandEndpoint);
 

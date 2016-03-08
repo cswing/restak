@@ -1,0 +1,46 @@
+'use strict';
+
+var log4js = require('log4js'),
+	expect = require('chai').expect,
+	assert = require('chai').assert,
+	util = require('util'),
+	urlUtil = require('url'),
+	request = require('supertest'),
+	RestServer = require('../../server'),
+	ResourcePutEndpoint = require('../resource-put-endpoint');
+
+var logger = log4js.getLogger('test'),
+	serverConfig = {
+		port: 12000,
+		appName: 'test app',
+		appVersion: '1.0'
+	};
+
+describe('rest > endpoints > resource-put-endpoint', function() {
+
+	describe('#onRequest', function(){
+
+		it('should execute the command and return 201', function(done){
+
+			var response = { data: { x: 'a' } },
+				command = {
+					execute: function(ci, callback) {
+						callback(null, response);
+					}
+				};
+
+			var server = new RestServer([new ResourcePutEndpoint(logger, '/testpath', command)], serverConfig);
+
+			request(server.app)
+				.put('/testpath')
+				.expect('Content-Type', /json/)
+				.expect(201)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					expect(res.body.payload).to.deep.equal(response);
+					done();
+				});
+		});
+
+	});
+});
