@@ -60,7 +60,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 		});
 	});
 
-	describe.only('#onRequest', function(){
+	describe('#onRequest', function(){
 
 		//it('should provide first, next... links')
 
