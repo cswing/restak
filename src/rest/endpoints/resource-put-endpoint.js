@@ -3,6 +3,7 @@
 var log4js = require('log4js'),
 	logger = log4js.getLogger('restak.rest.ResourcePutEndpoint'),
 	util = require('util'),
+	validate = require('express-validation'),
 	CommandEndpoint = require('./command-endpoint');
 
 /**
@@ -27,7 +28,7 @@ ResourcePutEndpoint.prototype.register = function(app, server) {
 	CommandEndpoint.prototype.register.apply(this, arguments);
 
 	var _t = this;
-	app.put(this.path, function (req, res) { _t.onRequest(req, res); });
+	app.put(this.path, validate({body: this.command.validation }), function (req, res) { _t.onRequest(req, res); });
 	this.logger.debug('Path registered [PUT] ' + this.path);
 };
 

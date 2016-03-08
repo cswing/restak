@@ -4,6 +4,7 @@ var log4js = require('log4js'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
 	util = require('util'),
+	Joi = require('joi'),
 	urlUtil = require('url'),
 	request = require('supertest'),
 	RestServer = require('../../server'),
@@ -42,5 +43,41 @@ describe('rest > endpoints > resource-put-endpoint', function() {
 				});
 		});
 
+		it('should validate if a validation object is provided by the command.', function(done){
+
+			var response = { data: { x: 'a' } },
+				command = {
+					execute: function(ci, callback) {
+						callback(null, response);
+					},
+					validation: {
+						testA: Joi.string().required(),
+						testB: Joi.string().required()
+					}
+				},
+				expectedPayload = { 
+					'validation-errors': [ 
+						{ 
+							field: 'testB', 
+							location: 'body',
+							messages: [ '"testB" is required' ],
+       						types: [ 'any.required' ]
+       					}
+       				] 
+       			};
+
+			var server = new RestServer([new ResourcePutEndpoint(logger, '/testpath', command)], serverConfig);
+
+			request(server.app)
+				.put('/testpath')
+				.send({ testA: 'Here'})
+				.expect('Content-Type', /json/)
+				.expect(400)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					expect(res.body.payload).to.deep.equal(expectedPayload);
+					done();
+				});
+		});
 	});
 });

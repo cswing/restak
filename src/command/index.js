@@ -18,6 +18,13 @@
  */
 
 /**
+ * An object that describes the validation for the {@link restak.command.CommandInstructions#data} for the command.
+ *
+ * @property
+ * @name restak.command.Command#validation
+ */
+
+/**
  * Instructions for executing a command.
  *
  * @typedef CommandInstructions

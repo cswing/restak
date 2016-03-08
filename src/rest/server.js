@@ -7,6 +7,7 @@ var log4js = require('log4js'),
 	express = require('express'),
 	morgan = require('morgan'),
 	bodyParser = require('body-parser'),
+	validation = require('express-validation'),
 	messageBuilder = require('./messages').MessageBuilder.DEFAULT;
 	
  /**
@@ -84,11 +85,11 @@ var RestServer = function(endpoints, config){
 	(this.endpoints || []).forEach(function(ep){ ep.register(app, _t); });
 	
 	logger.debug('Registering error handling');
-	this.app.use(function (err, req, res, next) { _t.onUnhandledError(err, req, res, next); });
+	this.app.use(function (err, req, res, next) { _t.handleError(err, req, res, next); });
 };
 
 /**
- * Error handler to catch all unhandled errors. 
+ * Error handler to catch errors. 
  *
  * http://expressjs.com/en/guide/error-handling.html
  *
@@ -98,15 +99,22 @@ var RestServer = function(endpoints, config){
  * @param {Response} res - The HTTP response from the expressjs server.
  * @param {Function} next - the next function in the chain.
  */
-RestServer.prototype.onUnhandledError = function(err, req, res, next){
+RestServer.prototype.handleError = function(err, req, res, next){
 	
-	logger.error('Unhandled Error: ' + err.message);
-	logger.error(err.stack);
-
 	if (res.headersSent) {
 		logger.debug('Headers previously sent.  Deferring error handling.');
 		return next(err);
 	}
+
+	// validation errors
+	if (err instanceof validation.ValidationError) {
+		var response = this.buildRestResponse(req, res, { 'validation-errors': err.errors });
+		return res.status(err.status).json(response);
+	}
+
+	// unhandled errors
+	logger.error('Unhandled Error: ' + err.message);
+	logger.error(err.stack);
 
 	var errCode = this.config.unhandledErrorCode || 'SYS-0000',
 		errMessage = messageBuilder.buildErrorMessage(errCode, err.message),
