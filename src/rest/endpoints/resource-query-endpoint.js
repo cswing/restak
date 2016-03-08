@@ -40,8 +40,7 @@ ResourceQueryEndpoint.prototype.getFixedFilter = function(req){
  *
  * @protected
  * @param {Object} item - An item returned from the query
- * @param {Object} context - The context in which the request is executing.
- * @param {Request} context.req - The HTTP request from the expressjs server.
+ * @param {restak.rest.endpoints.EndpointContext} context - The context in which the request is executing.
  * @returns {Object} the item to return to the caller.
  */
 ResourceQueryEndpoint.prototype.postProcessItem = function(item, context){
@@ -81,7 +80,7 @@ ResourceQueryEndpoint.prototype.onRequest = function(req, res){
 
 		var item = _t.postProcessItem(queryResult.items[0], {
 			req: req
-		})
+		});
 
 		res.send(_t.buildRestResponse(req, res, item));
 	});

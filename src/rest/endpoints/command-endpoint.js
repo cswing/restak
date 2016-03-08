@@ -39,9 +39,10 @@ CommandEndpoint.prototype.buildData = function(req, callback){
  *
  * @protected
  * @param {restak.command.CommandResult} cmdResult - The result of the command execution.
+ * @param {restak.rest.endpoints.EndpointContext} context - The context in which the request is executing.
  * @returns {Object} the payload to return to the user
  */
-CommandEndpoint.prototype.buildPayload = function(cmdResult){
+CommandEndpoint.prototype.buildPayload = function(cmdResult, context){
 	return cmdResult;
 };
 
@@ -76,8 +77,12 @@ CommandEndpoint.prototype.onRequest = function(req, res){
 				return;
 			}
 
+			var context = {
+				req: req
+			};
+
 			res.status(successHttpStatusCode).send(
-				_t.buildRestResponse(req, res, _t.buildPayload(cmdResult)) );
+				_t.buildRestResponse(req, res, _t.buildPayload(cmdResult, context)) );
 		});
 	});		
 };
