@@ -18,22 +18,22 @@ var comparisonMap = {
 	},
 	'>': function(lhs, rhs) {
 		return function(item){
-			return item[lhs] > rhs;
+			return Number(item[lhs]) > Number(rhs);
 		};
 	},
 	'<': function(lhs, rhs) {
 		return function(item){
-			return item[lhs] < rhs;
+			return Number(item[lhs]) < Number(rhs);
 		};
 	},
 	'>=': function(lhs, rhs) {
 		return function(item){
-			return item[lhs] >= rhs;
+			return Number(item[lhs]) >= Number(rhs);
 		};
 	},
 	'<=': function(lhs, rhs) {
 		return function(item){
-			return item[lhs] <= rhs;
+			return Number(item[lhs]) <= Number(rhs);
 		};
 	},
 	'<>': function(lhs, rhs) {

@@ -23,14 +23,15 @@ identifier
 	;
 
 literal
-	: idLiteral
-	| stringLiteral
+	: stringLiteral
+	| idLiteral
 	| numericLiteral
 //	| '(' literal ')'	
 	;
 
 idLiteral
-	: ID
+	: HEX_ID
+	| ID
 	;
 	
 stringLiteral
@@ -66,6 +67,7 @@ AND:					A N D;
 OR:						O R;
 NOT: 					N O T;
 
+HEX_ID: 				HEX_DIGIT+;
 ID:						[a-zA-Z_#][a-zA-Z_#$@0-9]*;
 DECIMAL:				DECIMAL_DIGIT+;
 FLOAT:					DEC_DOT_DEC;
@@ -74,6 +76,8 @@ MINUS:					'-';
 
 DOT:					'.';
 SPACE:					[ \t\r\n]+	-> skip;
+
+fragment HEX_DIGIT:    [0-9A-Fa-f];
 
 fragment DECIMAL_DIGIT
 	: [0-9]

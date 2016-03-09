@@ -4,7 +4,7 @@ var expect = require('chai').expect,
 	assert = require('chai').assert,
 	ObjectFilter = require('../object-filter').ObjectFilter;
 
-describe('query > object-query > object-filter', function() {
+describe.only('query > object-query > object-filter', function() {
 
 	describe('quey-request edge cases', function(){
 
@@ -91,6 +91,18 @@ describe('query > object-query > object-filter', function() {
 			expect(objFilter.filter({id: 3.4 })).to.equal(false);
 			expect(objFilter.filter({id: '3.4' })).to.equal(false);
 			expect(objFilter.filter({id: 'identifier123' })).to.equal(true);
+
+			done();
+		});
+
+		it('should work with filter: id = 00f7154ba087285d491bf7bb1c13e80e', function(done) {
+
+			var queryRequest = { filter: 'id = 00f7154ba087285d491bf7bb1c13e80e' },
+				objFilter = new ObjectFilter(queryRequest);
+
+			expect(objFilter.filter({id: 3.4 })).to.equal(false);
+			expect(objFilter.filter({id: '3.4' })).to.equal(false);
+			expect(objFilter.filter({id: '00f7154ba087285d491bf7bb1c13e80e' })).to.equal(true);
 
 			done();
 		});
