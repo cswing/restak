@@ -4,7 +4,7 @@ var expect = require('chai').expect,
 	assert = require('chai').assert,
 	ObjectFilter = require('../object-filter').ObjectFilter;
 
-describe.only('query > object-query > object-filter', function() {
+describe('query > object-query > object-filter', function() {
 
 	describe('quey-request edge cases', function(){
 
