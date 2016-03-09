@@ -23,12 +23,16 @@ identifier
 	;
 
 literal
-	: identifier
+	: idLiteral
 	| stringLiteral
 	| numericLiteral
 //	| '(' literal ')'	
 	;
 
+idLiteral
+	: ID
+	;
+	
 stringLiteral
 	: singleQuotedString
 	| doubleQuotedString

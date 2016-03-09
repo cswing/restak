@@ -257,6 +257,11 @@ ObjectQueryListener.prototype.enterNumericLiteral = function(ctx) {
 	this.currentPredicate.rhs = Number(ctx.getText());
 };
 
+/** @inheritdoc */
+ObjectQueryListener.prototype.enterIdLiteral = function(ctx) {
+	this.currentPredicate.rhs = ctx.getText();
+};
+
 
 /**
  * Given a {@link QueryRequest|request}, provide a way to apply the filter to an object.

@@ -82,6 +82,18 @@ describe('query > object-query > object-filter', function() {
 
 			done();
 		});
+
+		it('should work with filter: id = identifier123', function(done) {
+
+			var queryRequest = { filter: 'id = identifier123' },
+				objFilter = new ObjectFilter(queryRequest);
+
+			expect(objFilter.filter({id: 3.4 })).to.equal(false);
+			expect(objFilter.filter({id: '3.4' })).to.equal(false);
+			expect(objFilter.filter({id: 'identifier123' })).to.equal(true);
+
+			done();
+		});
 	});
 
 	describe('less than', function(){
