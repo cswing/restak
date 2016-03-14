@@ -8,7 +8,7 @@ var log4js = require('log4js'),
 	urlUtil = require('url'),
 	request = require('supertest'),
 	RestServer = require('../../server'),
-	ResourcePutEndpoint = require('../resource-put-endpoint');
+	ResourcePostEndpoint = require('../resource-post-endpoint');
 
 var logger = log4js.getLogger('test'),
 	serverConfig = {
@@ -17,7 +17,7 @@ var logger = log4js.getLogger('test'),
 		appVersion: '1.0'
 	};
 
-describe('rest > endpoints > resource-put-endpoint', function() {
+describe('rest > endpoints > resource-post-endpoint', function() {
 
 	describe('#onRequest', function(){
 
@@ -30,12 +30,12 @@ describe('rest > endpoints > resource-put-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new ResourcePutEndpoint(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer([new ResourcePostEndpoint(logger, '/testpath', command)], serverConfig);
 
 			request(server.app)
-				.put('/testpath')
+				.post('/testpath')
 				.expect('Content-Type', /json/)
-				.expect(200)
+				.expect(201)
 				.end(function(err, res){
 					expect(err).to.be.null;
 					expect(res.body.payload).to.deep.equal(response);
@@ -66,10 +66,10 @@ describe('rest > endpoints > resource-put-endpoint', function() {
        				] 
        			};
 
-			var server = new RestServer([new ResourcePutEndpoint(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer([new ResourcePostEndpoint(logger, '/testpath', command)], serverConfig);
 
 			request(server.app)
-				.put('/testpath')
+				.post('/testpath')
 				.send({ testA: 'Here'})
 				.expect('Content-Type', /json/)
 				.expect(400)

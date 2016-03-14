@@ -1,13 +1,13 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.rest.ResourcePutEndpoint'),
+	logger = log4js.getLogger('restak.rest.ResourcePostEndpoint'),
 	util = require('util'),
 	validate = require('express-validation'),
 	CommandEndpoint = require('./command-endpoint');
 
 /**
- * Create's an endpoint to handle an HTTP PUT on a REST resource.
+ * Create's an endpoint to handle an HTTP POST on a REST resource.
  *
  * @constructor
  * @extends restak.rest.endpoints.CommandEndpoint
@@ -16,20 +16,20 @@ var log4js = require('log4js'),
  * @param {String} path - the path to register the endpoint to.
  * @param {restak.command.Command} command - the command to execute.
  */
-var ResourcePutEndpoint = function(logger, path, command){
+var ResourcePostEndpoint = function(logger, path, command){
 	var args = Array.prototype.slice.call(arguments);
-	args.push(200);
+	args.push(201);
 	CommandEndpoint.apply(this, args);
 };
-util.inherits(ResourcePutEndpoint, CommandEndpoint);
+util.inherits(ResourcePostEndpoint, CommandEndpoint);
 
 /** @inheritdoc */
-ResourcePutEndpoint.prototype.register = function(app, server) {
+ResourcePostEndpoint.prototype.register = function(app, server) {
 	CommandEndpoint.prototype.register.apply(this, arguments);
 
 	var _t = this;
-	app.put(this.path, validate({body: this.command.validation }), function (req, res) { _t.onRequest(req, res); });
-	this.logger.debug('Path registered [PUT] ' + this.path);
+	app.post(this.path, validate({body: this.command.validation }), function (req, res) { _t.onRequest(req, res); });
+	this.logger.debug('Path registered [POST] ' + this.path);
 };
 
-module.exports = ResourcePutEndpoint;
+module.exports = ResourcePostEndpoint;
