@@ -34,8 +34,8 @@ var JobDescriptorStatus = {
 	/** A recurring job that is paused and will not execute. */
 	Paused: 'PAUSED',
 
-	/** A one-time job or a recurring job that is currently running. */
-	Running: 'RUNNING',
+	/** A one-time job or a recurring job that is currently executing. */
+	Executing: 'EXECUTING',
 
 	/** A one time job that has completed. */
 	Completed: 'COMPLETED'

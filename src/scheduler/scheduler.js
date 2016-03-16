@@ -38,7 +38,7 @@ Scheduler.prototype.initialize = function(callback){
 		jobFactory = this.jobFactory,
 		jobStore = this.jobStore,
 		qr = {
-			filter: '(status=' + JobDescriptorStatus.Scheduled + ' OR status=' + JobDescriptorStatus.Running + ')',
+			filter: '(status=' + JobDescriptorStatus.Scheduled + ' OR status=' + JobDescriptorStatus.Executing + ')',
 			pageSize: 'ALL'
 		};
 
@@ -62,10 +62,10 @@ Scheduler.prototype.initialize = function(callback){
 				return;
 			}
 
-			// TEMP - this would happen when running and the job crashes
+			// TEMP - this would happen when executing and the job crashes
 			// Need to define recovery behavior
-			if(job.status == JobDescriptorStatus.Running) {
-				logger.error('Job is in the running status. Will not be registered to run again. [' + job.id + ']');
+			if(job.status == JobDescriptorStatus.Executing) {
+				logger.error('Job is in the executing status. Will not be registered to run again. [' + job.id + ']');
 				return;
 			}
 
@@ -115,6 +115,17 @@ Scheduler.prototype.initialize = function(callback){
  * @property {restak.scheduler.Scheduler} scheduler - The scheduler responsible for maintaining schedules.
  * @property {restak.command.Command} command - The command to execute.
  * @see restak.scheduler.Scheduler#invokeJobCommand
+ */
+
+/**
+ * The data expected as part of the {@link restak.command.CommandInstructions} passed to the execute method.
+ *
+ * @typedef JobExecutionData
+ * @memberof restak.scheduler.Scheduler
+ * @type {Object}
+ * @param {restak.scheduler.JobDescriptor} job - The job descriptor.
+ * @param {restak.scheduler.JobInstance} instance - The instance of the job being executed or executed.
+ * @see restak.command.CommandInstructions#data
  */
 
 /**

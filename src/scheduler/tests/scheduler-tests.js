@@ -8,7 +8,7 @@ var util = require('util'),
 	JobInstanceStatus = models.JobInstanceStatus,
 	Scheduler = require('../scheduler');
 
-describe('scheduler > engine', function() {
+describe('scheduler', function() {
 
 	describe('#initialize', function(){
 
