@@ -68,7 +68,7 @@ var comparisonMap = {
  * execute the specified query.
  *
  * @constructor
- * @memberof restak.query.objectQuery
+ * @memberof restak.query.object-query
  * @implements restak.query.antlr.QueryListener
  */
 var ObjectQueryListener = function() {
@@ -267,7 +267,7 @@ ObjectQueryListener.prototype.enterIdLiteral = function(ctx) {
  * Given a {@link QueryRequest|request}, provide a way to apply the filter to an object.
  *
  * @constructor
- * @memberof restak.query.objectQuery
+ * @memberof restak.query.object-query
  * @param {restak.query.QueryRequest} request - The query request.
  */
 var ObjectFilter = function(request){
@@ -278,11 +278,11 @@ var ObjectFilter = function(request){
 
 /**
  * Applies the filter specified in the {@link restak.query.QueryRequest|request} to the item.  If the filter is valid,
- * this function delegates to the {@link restak.query.objectQuery.ObjectQueryListener#filter}.
+ * this function delegates to the {@link restak.query.object-query.ObjectQueryListener#filter}.
  *
  * @param {Object} item - the item to test the filter on.
  * @returns {boolean} true if the parser is valid and all filters are all satisifed, otherwise false.
- * @see restak.query.objectQuery.ObjectQueryListener#filter
+ * @see restak.query.object-query.ObjectQueryListener#filter
  */
 ObjectFilter.prototype.filter = function(item){
 	
