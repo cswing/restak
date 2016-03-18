@@ -78,5 +78,4 @@ var JobInstanceStatus = {
 	Completed: 'COMPLETED',
 };
 
-
 module.exports.JobInstanceStatus = JobInstanceStatus;
