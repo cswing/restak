@@ -73,8 +73,9 @@ Scheduler.prototype.initialize = function(callback){
 
 			var schedule = job.schedule;
 			if(!schedule) {
-				// one time job that never executed.  
+				// one time job that never executed.
 				schedule = new Date();
+				schedule.setSeconds(schedule.getSeconds() + 20); // run this job 20 seconds from now.
 			}
 
 			// get command based on job descriptor
