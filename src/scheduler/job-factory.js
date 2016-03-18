@@ -1,54 +1,42 @@
 'use strict';
 
-var JobFactory = function(){
+/**
+ * @interface JobFactory
+ * @memberof restak.scheduler
+ */
 
+/**
+ * Given a {@link restak.scheduler.JobDescriptor} return the corresponding {@link restak.command.Command}.
+ *
+ * @function
+ * @name restak.scheduler.JobFactory#getCommand
+ * @param {restak.scheduler.JobDescriptor} jobDescriptor - The job to get the command for.
+ * @return {restak.command.Command} - The command.
+ */
+
+/**
+ * Default implementation of {@link restak.scheduler.JobFactory} to provide commands to the {@link restak.scheduler.Scheduler}.
+ *
+ * @constructor
+ * @implements restak.scheduler.JobFactory
+ * @memberof restak.scheduler
+ * @param {object} commandMap - Key value pairs of command keys and the command implementations.
+ */
+var DefaultJobFactory = function(commandMap){
+	this.commandMap = commandMap;
 };
 
-JobFactory.prototype.getCommand = function(jobDescriptor) {
+/** @inheritdoc */
+DefaultJobFactory.prototype.getCommand = function(jobDescriptor) {
+
+	var jd = jobDescriptor || {},
+		cmdKey = jd.command;
+
+	if(cmdKey && this.commandMap[cmdKey]){
+		return this.commandMap[cmdKey];
+	}
 
 	return null;
 };
 
-// Events from job
-// invocation.job.emit('scheduled', invocation.fireDate);
-// job.emit('run');
-// invocation.job.emit('canceled', invocation.fireDate);
-
-/*
-	Job
-	- status:   Scheduled, Cancelled, Completed
-	- is recurring
-	- next schedule
-	- id
-	- created
-
- * @property {string} filter - The filter to apply when querying the data
- * @property {Number} pageSize - The number of items to return
- * @property {Number} page - The page of the filtered dataset to return
-*/
-
-/*
-	Job Instance
-	- job id
-	- execution date
-	- status
-*/
-
-/*
-	create job instance
-	update job status
-	execute command
-	update job instance
-*/
-
-/*
-	schedule job
-	modify schedule
-	cancel job
-	execute now
-	re-run
-*/
-
-// Scheduler#invokeJobCommand
-// it should handle when the command doesn't impl Command
-// it should handle when the command dies (heartbeat)
+module.exports.DefaultJobFactory = DefaultJobFactory;
