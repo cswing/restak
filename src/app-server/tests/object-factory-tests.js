@@ -121,7 +121,7 @@ describe('app-server > object-factory', function() {
 			done();
 		});
 
-		it('should not find the command', function(done) {
+		it('should not find the object', function(done) {
 
 			var obj = {
 					test: 1
@@ -129,7 +129,7 @@ describe('app-server > object-factory', function() {
 				factory = new ObjectFactory({
 					'test': obj
 				}),
-				result = factory.get({ command: 'test1' });
+				result = factory.get('test1');
 
 			expect(result).to.be.null;
 
