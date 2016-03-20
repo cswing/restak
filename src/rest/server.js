@@ -186,10 +186,16 @@ RestServer.prototype.start = function() {
 
 	logger.debug(applicationName + ' starting REST server on port ' + port);
 	
-	app.listen(port, function () {
+	this.httpServer = app.listen(port, function () {
 		logger.debug(applicationName + ' listening on port ' + port);
 		logger.info(applicationName + ' startup complete');
 	});
+};
+
+RestServer.prototype.stop = function() {
+	if(this.httpServer){
+		this.httpServer.close();
+	}
 };
 
 module.exports = RestServer;
