@@ -73,7 +73,7 @@ describe('app-server > application-context', function() {
 			var result = ctx.registerCommand('test', cmd);
 			expect(result).to.be.equal(true);
 			
-			var cmd2 = ctx.objectFactory.get('CMD::test');
+			var cmd2 = ctx.objectFactory.get('restak.command.Command::test');
 			expect(cmd2).to.equal(cmd);
 
 			done();
@@ -142,7 +142,7 @@ describe('app-server > application-context', function() {
 			var result = ctx.registerQuery('test', qry);
 			expect(result).to.be.equal(true);
 			
-			var qry2 = ctx.objectFactory.get('QRY::test');
+			var qry2 = ctx.objectFactory.get('restak.query.Query::test');
 			expect(qry2).to.equal(qry);
 
 			done();
@@ -212,7 +212,7 @@ describe('app-server > application-context', function() {
 			var result = ctx.registerEndpoint('test', ept);
 			expect(result).to.be.equal(true);
 			
-			var ept2 = ctx.objectFactory.get('REST::test');
+			var ept2 = ctx.objectFactory.get('restak.rest.endpoints.Endpoint::test');
 			expect(ept2).to.equal(ept);
 
 			done();
@@ -303,7 +303,7 @@ describe('app-server > application-context', function() {
 			var result = ctx.registerObject('test', obj);
 			expect(result).to.be.equal(true);
 			
-			var obj2 = ctx.objectFactory.get('OBJ::test');
+			var obj2 = ctx.objectFactory.get('test');
 			expect(obj2).to.equal(obj);
 
 			done();

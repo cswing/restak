@@ -4,10 +4,10 @@ var log4js = require('log4js'),
 	logger = log4js.getLogger('restak.app-server.ApplicationContext'),
 	DefaultObjectFactory = require('./object-factory').DefaultObjectFactory;
 
-var cmdPrefix = 'CMD::',
-	qryPrefix = 'QRY::',
-	restPrefix = 'REST::',
-	objPrefix = 'OBJ::';
+var cmdPrefix = 'restak.command.Command::',
+	qryPrefix = 'restak.query.Query::',
+	restPrefix = 'restak.rest.endpoints.Endpoint::',
+	objPrefix = '';
 
 /**  
  * Provide the context for running an application using {@link restak.app-server.ApplicationServer}.  All {@link restak.command.Command|commands}, 
