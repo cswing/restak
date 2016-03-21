@@ -50,6 +50,56 @@
  * @callback Command~CommandCallback
  * @memberof restak.command
  * @param {Object} error - An error if one occurred, otherwise null.
- * @param {restak.command.CommandResult} result - The result of command execution.
+ * @param {Object} data - The result of command.
  * @see restak.command.Command#execute
  */
+
+/**
+ * A factory that contians commands that can be accessed later to use.
+ *
+ * @interface CommandFactory
+ * @memberof restak.command
+ */
+
+/**
+ * Register a command for use later.
+ *
+ * @function
+ * @name restak.command.CommandFactory#registerCommand
+ * @param {string} commandKey - The key that identifies the command.
+ * @param {restak.command.Command} command - The command.
+ * @return {boolean} true if the command was registered, otherwise false.
+ */
+
+/**
+ * Get a command to use.
+ *
+ * @function
+ * @name restak.command.CommandFactory#getCommand
+ * @param {string} commandKey - The key that identifies the command.
+ * @return {restak.command.Command} the command.
+ * @throws {restak.command.CommandNotFoundError}
+ */
+
+ /**
+ * Has a command with the given key been registered.
+ *
+ * @function
+ * @name restak.command.CommandFactory#hasCommand
+ * @param {string} commandKey - The key that identifies the command.
+ * @return {boolean} true if there is a command, otherwise false;
+ */
+
+/**
+ * An error describing the use of a command that has not been registered.
+ *
+ * @constructor
+ * @memberof restak.command
+ */
+ var CommandNotFoundError = function(commandKey){
+ 	this.commandKey = commandKey;
+ 	this.message = 'Unknown command: ' + commandKey;
+ };
+ module.exports.CommandNotFoundError = CommandNotFoundError;
+
+ module.exports.CommandExecutor = require('./command-executor');

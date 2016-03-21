@@ -81,20 +81,30 @@ describe('app-server > application-context', function() {
 
 		it('should return null with a null key', function(done){
 
-			var ctx = new ApplicationContext(),
-				cmd = ctx.getCommand(null);
-			
-			expect(cmd).to.be.null;
+			var ctx = new ApplicationContext();
+
+			try{
+				ctx.getCommand(null);
+				done('Error expected');
+
+			}catch(err){
+				expect(err).to.have.deep.property('message', 'Unknown command: null');
+			}
 
 			done();
 		});
 
 		it('should return null with a undefined key', function(done){
 
-			var ctx = new ApplicationContext(),
-				cmd = ctx.getCommand(undefined);
-			
-			expect(cmd).to.be.null;
+			var ctx = new ApplicationContext();
+
+			try{
+				ctx.getCommand(undefined);
+				done('Error expected');
+
+			}catch(err){
+				expect(err).to.have.deep.property('message', 'Unknown command: undefined');
+			}
 
 			done();
 		});
@@ -104,10 +114,15 @@ describe('app-server > application-context', function() {
 			var ctx = new ApplicationContext(),
 				cmd = new Command();
 
-			var result = ctx.registerCommand('test', cmd),
-				cmd2 = ctx.getCommand('test1');
-			
-			expect(cmd2).to.be.null;
+			ctx.registerCommand('test', cmd);
+
+			try{
+				ctx.getCommand('test1');
+				done('Error expected');
+
+			}catch(err){
+				expect(err).to.have.deep.property('message', 'Unknown command: test1');
+			}
 
 			done();
 		});

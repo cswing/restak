@@ -2,7 +2,10 @@
 
 var log4js = require('log4js'),
 	logger = log4js.getLogger('restak.app-server.ApplicationContext'),
-	DefaultObjectFactory = require('./object-factory').DefaultObjectFactory;
+	DefaultObjectFactory = require('./object-factory').DefaultObjectFactory,
+	command = require('../command'),
+	CommandNotFoundError = command.CommandNotFoundError,
+	CommandExecutor = command.CommandExecutor;
 
 var cmdPrefix = 'restak.command.Command::',
 	qryPrefix = 'restak.query.Query::',
@@ -16,11 +19,20 @@ var cmdPrefix = 'restak.command.Command::',
  *
  * @constructor
  * @memberof restak.app-server
+ * @implements restak.command.CommandFactory
  * @param {config} config - configuration settings, provided by node-config. See https://www.npmjs.com/package/config
  */
 var ApplicationContext = function(config){
+	
+	/** */
 	this.config = config;
+
+	/** */
 	this.objectFactory = new DefaultObjectFactory();
+
+	/** */
+	this.commandExecutor = new CommandExecutor(this);
+	this.registerObject('restak.command.CommandExecutor', this.commandExecutor);
 };
 
 /**
@@ -60,27 +72,25 @@ ApplicationContext.prototype._get = function(prefix, key, obj){
 	return this.objectFactory.get(k);
 };
 
-/**
- * Register a command for use by the application.
- *
- * @param {string} key - The key that identifies the command.
- * @param {restak.command.Command} command - The command.
- * @return {boolean} true if the command was registered, otherwise false.
- * 
- * @see restak.context.ObjectFactory#register
- */
-ApplicationContext.prototype.registerCommand = function(key, command){
-	return this._register(cmdPrefix, key, command);
+/** @inheritdoc */
+ApplicationContext.prototype.registerCommand = function(commandKey, command){
+	return this._register(cmdPrefix, commandKey, command);
 };
 
-/**
- * Get a command to use.
- *
- * @param {string} key - The key that identifies the command.
- * @return {restak.command.Command} the command.
- */
-ApplicationContext.prototype.getCommand = function(key){
-	return this._get(cmdPrefix, key);
+/** @inheritdoc */
+ApplicationContext.prototype.getCommand = function(commandKey){
+	var cmd = this._get(cmdPrefix, commandKey);
+	
+	if(!cmd) {
+		throw new CommandNotFoundError(commandKey);
+	}
+
+	return cmd;
+};
+
+/** @inheritdoc */
+ApplicationContext.prototype.hasCommand = function(commandKey){
+	return this._get(cmdPrefix, commandKey) != null;
 };
 
 /**
