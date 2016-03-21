@@ -71,8 +71,13 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	}
 
 	this.appContext = appContext;
+	appContext.registerObject('restak.app-server.ApplicationServer', this);
 
 	// Setup scheduler
+	this.scheduler = appContext.getObject('restak.scheduler.Scheduler');
+	if(!this.scheduler){
+		logger.warn('No scheduler was found in the app context.');
+	}
 
 	// Setup REST HTTP server
 	var httpPort = appContext.getConfigSetting('http.port'),
@@ -83,11 +88,15 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 		},
 		endpoints = this.appContext.getEndpoints();
 	this.restServer = new RestServer(endpoints, restServerConfig);
-	
+	appContext.registerObject('restak.rest.RestServer', this.restServer);
+
 	if(andStart) this.start(function(){});
 };
 
-/* start and stop still needs to be thought through */
+/* 
+	- start and stop still needs to be thought through 
+	- scheduler does not have a stop
+*/
 
 /**
  * Start the server
@@ -102,11 +111,20 @@ ApplicationServer.prototype.start = function(callback){
 		throw new Error('Cannot start server because it has not been initialized.');
 	}
 
-	this.restServer.start();
+	var _t = this,
+		startRestServer = function(){
+			_t.restServer.start();
+			_t.running = true;
+			if(callback) callback(null, _t.running);
+		};
 
-	this.running = true;
-
-	if(callback) callback(null, this.running);
+	if(this.scheduler){
+		this.scheduler.initialize(function(){
+			startRestServer();
+		});
+	} else {
+		startRestServer();
+	}
 };
 
 /**

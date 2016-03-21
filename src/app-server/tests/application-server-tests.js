@@ -132,6 +132,27 @@ describe('app-server > application-server', function() {
 			done('Error expected');
 		});
 
+		it('should start a scheduler', function(done){
+
+			var appContext = new ApplicationContext(config);
+
+			var schedulerInitialized = false,
+				scheduler = {
+				initialize: function(cb){
+					schedulerInitialized = true;
+					cb();
+				}
+			};
+			appContext.registerObject('restak.scheduler.Scheduler', scheduler);
+
+			appServer = new ApplicationServer(appDescriptor);
+			appServer.initialize(appContext);
+			appServer.start(function(){
+				expect(schedulerInitialized).to.equal(true);
+				done();
+			});
+		});
+
 		it('should start and make an endpoint available', function(done){
 
 			var appContext = new ApplicationContext(config),
@@ -157,9 +178,9 @@ describe('app-server > application-server', function() {
 								appName: 'test app server', 
 								appVersion: '0.1.0-TEST' 
 							},
-  							payload: { test: 'test content' },
-  							messages: [] 
-  						});
+							payload: { test: 'test content' },
+							messages: [] 
+						});
 					done();
 				});
 		});

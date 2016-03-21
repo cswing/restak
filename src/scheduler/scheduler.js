@@ -58,7 +58,7 @@ Scheduler.prototype.initialize = function(callback){
 			logger.debug('Scheduling job ' + job.name + ' [' + job.id + ']');
 
 			if(jobStore[job.id]) {
-				logger.error('Found multiple jobs with the same id; subsequent jobs will be gnored [' + job.id + ']');
+				logger.error('Found multiple jobs with the same id; subsequent jobs will be ignored [' + job.id + ']');
 				return;
 			}
 

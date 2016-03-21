@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('nhl-modeling.structures'),
+	logger = log4js.getLogger('restak.scheduler.fs-data'),
 	FileSystemObjectQuery = require('../../query/object-query/fs-object-query'),
 	MarkJobExecutingCommand = require('../fs-mark-job-executing-command'),
 	MarkJobExecutedCommand = require('../fs-mark-job-executed-command');
@@ -13,16 +13,20 @@ var log4js = require('log4js'),
  * @namespace restak.scheduler.fs-data
  */
 
-module.exports.wire = function(fs, jobsDirectory) {
+/**
+ * Register the necessary objects for the {@link restak.scheduler.fs-data} namespace.  These objects provide a file system data store 
+ * that can be used by the scheduler
+ *
+ * @function register
+ * @memberof restak.scheduler.fs-data
+ * @see restak.app-server.register
+ */
+module.exports.register = function(appContext) {
 
-	logger.debug('wiring up file system backing store for scheduler');
-	logger.debug('jobsDirectory: ' + jobsDirectory);
+	var jobsDirectory = appContext.getConfigSetting('restak.data-dir.jobs'),
+		jobsQuery = new FileSystemObjectQuery(fs, jobsDirectory);
 
-	var result = {};
-
-	result.jobsQuery = new FileSystemObjectQuery(fs, jobsDirectory);
-	result.markJobExecutingCommand = new MarkJobExecutingCommand(fs, jobsDirectory);
-	result.markJobExecutedCommand = new MarkJobExecutedCommand(fs, jobsDirectory);
-
-	return result;
+	appContext.registerQuery('restak.scheduler.JobsQuery', jobsQuery);
+	appContext.registerCommand('restak.scheduler.MarkJobExecutingCommand', new MarkJobExecutingCommand(fs, jobsDirectory));
+	appContext.registerCommand('restak.scheduler.MarkJobExecutedCommand', new MarkJobExecutedCommand(fs, jobsDirectory));
 };
