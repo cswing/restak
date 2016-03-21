@@ -20,12 +20,8 @@ module.exports.fsData = require('./fs-data');
  */
 module.exports.register = function(appContext) {
 
-	var commandMap = {},
-		jobFactory = new JobFactory(commandMap),
-		jobQuery = appContext.getQuery('restak.data-dir.jobs'),
-		markJobExecutingCommand = appContext.getCommand('restak.scheduler.MarkJobExecutingCommand'),
-		markJobExecutedCommand = appContext.getCommand('restak.scheduler.MarkJobExecutedCommand');
+	var jobQuery = appContext.getQuery('restak.data-dir.jobs');
 
-	appContext.registerObject('rest.scheduler.JobFactory', jobFactory);
-	appContext.registerObject('rest.scheduler.Scheduler', new Scheduler(jobQuery, jobFactory, markJobExecutingCommand, markJobExecutedCommand));
+	appContext.registerObject('rest.scheduler.JobQuery', jobQuery);
+	appContext.registerObject('rest.scheduler.Scheduler', new Scheduler(jobQuery, appContext.commandExecutor));
 };

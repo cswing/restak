@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.command.Commandexecutor');
+	logger = log4js.getLogger('restak.command.CommandExecutor');
 
 /** 
  * An executor that will execute commands for the caller.
@@ -38,29 +38,34 @@ var CommandExecutor = function(commandFactory){
  * @param {restak.command.CommandExecutor~Callback} The callback that handles the command result.
  */
 CommandExecutor.prototype.executeCommand = function(commandKey, data, callback){
+	
+	var instr = {
+		data: data
+	};
+
+	this._execute(commandKey, instr, callback);
+};
+
+CommandExecutor.prototype._execute = function(commandKey, commandInstructions, callback){
 
 	var command;
 
 	try{
 		command = this.commandFactory.getCommand(commandKey);	
 	
-	} catch(err) { //CommandNotFoundError
+	} catch(err) { 
 		callback(err, null);
 		return;
 	}
-	
-	var instr = {
-		data: data
-	};
 
-	command.execute(instr, function(err, result){
+	command.execute(commandInstructions, function(err, result){
 
 		var cmdResult = {
 			data: result
 		};	
 
 		callback(err, cmdResult);
-	});
+	});	
 };
 
 module.exports = CommandExecutor;

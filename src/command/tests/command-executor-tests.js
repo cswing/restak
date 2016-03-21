@@ -44,13 +44,13 @@ describe('command > command-executor', function() {
 				},
 				commandExecutor = new CommandExecutor(commandFactory);
 
-				commandExecutor.executeCommand('test', { test: 'XYZ' }, function(err, result){
+			commandExecutor.executeCommand('test', { test: 'XYZ' }, function(err, result){
 
-					expect(err).to.not.be.null;
-					expect(err).to.have.property('message', 'Unknown command: test');
+				expect(err).to.not.be.null;
+				expect(err).to.have.property('message', 'Unknown command: test');
 
-					done();
-				});
+				done();
+			});
 		});
 
 	});

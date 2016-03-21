@@ -14,16 +14,25 @@ var log4js = require('log4js'),
  * @constructor
  * @memberof restak.scheduler
  * @param {restak.query.Query} jobQuery - A query to provide access to {@link restak.scheduler.JobDescriptor}.
- * @param {restak.scheduler.JobFactory} jobFactory - A factory to provide access to {@link restak.command.Command}.
- * @param {restak.command.Command} markJobExecutingCommand - A command that is executed before executing a scheduled command.
- * @param {restak.command.Command} markJobExecutedCommand - A command that is executed after executing a scheduled command.
+ * @param {restak.command.CommandExecutor} commandExecutor - A command executor used to execute commands.
  */
-var Scheduler = function(jobQuery, jobFactory, markJobExecutingCommand, markJobExecutedCommand){
+var Scheduler = function(jobQuery, commandExecutor){
+	
+	/** 
+	 * A map of jobs keyed by their id.
+	 *
+	 * @type object
+	 */
 	this.jobStore = {};
+
+	/** 
+	 * The command executor used to execute jobs.
+	 *
+	 * @type {restak.command.CommandExecutor}
+	 */
+	this.commandExecutor = commandExecutor;
+
 	this.jobQuery = jobQuery;
-	this.jobFactory = jobFactory;
-	this.markJobExecutingCommand = markJobExecutingCommand;
-	this.markJobExecutedCommand = markJobExecutedCommand;
 };
 
 /**
@@ -35,8 +44,8 @@ Scheduler.prototype.initialize = function(callback){
 
 	var _t = this,
 		jobQuery = this.jobQuery,
-		jobFactory = this.jobFactory,
 		jobStore = this.jobStore,
+		commandExecutor = this.commandExecutor,
 		qr = {
 			filter: '(status=' + JobDescriptorStatus.Scheduled + ' OR status=' + JobDescriptorStatus.Executing + ')',
 			pageSize: 'ALL'
@@ -78,18 +87,17 @@ Scheduler.prototype.initialize = function(callback){
 				schedule.setSeconds(schedule.getSeconds() + 20); // run this job 20 seconds from now.
 			}
 
-			// get command based on job descriptor
-			var command = jobFactory.getCommand(job);
+			// see if job command exists
+			var hasCommand = commandExecutor.commandFactory.hasCommand(job.command);
 
-			if(command == null){
+			if(!hasCommand){
 				logger.error('Unable to locate a command for the job [' + job.id + ', '+ job.command + ']');
 				return;
 			}
 			
 			var context = {
 				scheduler: _t,
-				job: job,
-				command: command
+				job: job
 			};
 
 			jobStore[job.id] = nodeSchedule.scheduleJob(job.name, schedule, _t.invokeJobCommand.bind(context));
@@ -139,9 +147,7 @@ Scheduler.prototype.invokeJobCommand = function() {
 
 	var job = this.job,
 		scheduler = this.scheduler,
-		command = this.command,
-		markJobExecutingCommand = scheduler.markJobExecutingCommand,
-		markJobExecutedCommand = scheduler.markJobExecutedCommand;
+		commandExecutor = this.scheduler.commandExecutor;
 
 	var jobInstance = {
 		jobId: job.id,
@@ -155,10 +161,10 @@ Scheduler.prototype.invokeJobCommand = function() {
 		data: job.data
 	};
 
-	markJobExecutingCommand.execute({ data: {
+	commandExecutor.executeCommand('restak.scheduler.MarkJobExecutingCommand', {
 			job: job,
 			instance: jobInstance
-		}}, function(err){
+		}, function(err){
 
 			if(err) {
 				logger.error('An error occurred preparing for job execution: ' + err);
@@ -174,10 +180,10 @@ Scheduler.prototype.invokeJobCommand = function() {
 					jobInstance.result = (result || {}).data || null;
 				}
 
-				markJobExecutedCommand.execute({ data: {
+				commandExecutor.executeCommand('restak.scheduler.MarkJobExecutedCommand', {
 					job: job,
 					instance: jobInstance
-				}}, function(err){
+				}, function(err){
 					if(err) {
 						logger.error('An error occurred updating job status: ' + err);
 					}
@@ -186,7 +192,7 @@ Scheduler.prototype.invokeJobCommand = function() {
 
 			try {
 				
-				command.execute(jobInstance, onCommandExecution);
+				commandExecutor._execute(job.command, jobInstance, onCommandExecution);
 
 			} catch(err){
 				

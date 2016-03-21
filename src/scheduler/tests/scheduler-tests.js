@@ -33,17 +33,15 @@ describe('scheduler', function() {
 					});
 				}
 			},
-			factory = {
-				getCommand: function(jobDesc){
-					return {
-						execute: function(ci, cb) {
-							cb(null, {});
-						}
+			executor = {
+				commandFactory: {
+					hasCommand: function(key) {
+						return true;
 					}
 				}
 			};
 
-			var scheduler = new Scheduler(query, factory);
+			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
 				expect(err).to.not.be.null;
@@ -84,17 +82,15 @@ describe('scheduler', function() {
 					});
 				}
 			},
-			factory = {
-				getCommand: function(jobDesc){
-					return {
-						execute: function(ci, cb) {
-							cb(null, {});
-						}
+			executor = {
+				commandFactory: {
+					hasCommand: function(key) {
+						return true;
 					}
 				}
 			};
 
-			var scheduler = new Scheduler(query, factory);
+			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
 				expect(err).to.not.be.null;
@@ -127,17 +123,15 @@ describe('scheduler', function() {
 					});
 				}
 			},
-			factory = {
-				getCommand: function(jobDesc){
-					return {
-						execute: function(ci, cb) {
-							cb(null, {});
-						}
+			executor = {
+				commandFactory: {
+					hasCommand: function(key) {
+						return true;
 					}
 				}
 			};
 
-			var scheduler = new Scheduler(query, factory);
+			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
 				expect(err).to.not.be.null;
@@ -171,17 +165,15 @@ describe('scheduler', function() {
 					});
 				}
 			},
-			factory = {
-				getCommand: function(jobDesc){
-					return {
-						execute: function(ci, cb) {
-							cb(null, {});
-						}
+			executor = {
+				commandFactory: {
+					hasCommand: function(key) {
+						return true;
 					}
 				}
 			};
 
-			var scheduler = new Scheduler(query, factory);
+			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
 				expect(err).to.not.be.null;
@@ -214,13 +206,15 @@ describe('scheduler', function() {
 					});
 				}
 			},
-			factory = {
-				getCommand: function(jobDesc){
-					return null;
+			executor = {
+				commandFactory: {
+					hasCommand: function(key) {
+						return false;
+					}
 				}
 			};
 
-			var scheduler = new Scheduler(query, factory);
+			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
 				expect(err).to.not.be.null;
@@ -240,42 +234,48 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						cb(null, { data: { test: '2a' } });
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							cb(null, { data: { test: '2a' }});
+							return;
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
-
+			
 			// Before execution
 			expect(jobInstance_pre).to.have.property('jobId', '0123456');
 			expect(jobInstance_pre).to.have.property('name', 'test job');
@@ -304,39 +304,45 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						cb(null, null);
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							cb(null, null);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
 
@@ -368,39 +374,45 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						cb(null, {});
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							cb(null, {});
+							return;
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
 
@@ -432,39 +444,45 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						cb('An error occurred', null);
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							cb('An error occurred', null);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
 
@@ -496,39 +514,44 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						throw 'An error occurred';
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							throw 'An error occurred';
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
 
@@ -560,39 +583,44 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						throw new Error("An error occurred");
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							throw new Error("An error occurred");
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
 
@@ -624,39 +652,44 @@ describe('scheduler', function() {
 			var jobInstance_pre = null,
 				jobInstance_post = null,
 				query = null,
-				factory = null,
-				markJobExecutingCommand = {
-					execute: function(ci, cb) {
-						jobInstance_pre = JSON.parse(JSON.stringify(ci.data.instance));
-						ci.data.instance.instanceId = '0123456-0'
-						cb(null, { data: ci.data });
-					}
-				},
-				markJobExecutedCommand = {
-					execute: function(ci, cb) {
-						jobInstance_post = ci.data.instance;
-						cb(null, { data: ci.data });
-					}
-				},
-				command = {
-					execute: function(ci, cb) {
-						throw null;
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+							data.instance.instanceId = '0123456-0'
+							cb(null, data);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							throw null;
+						}
+
+						throw 'Bad key: ' + key;
 					}
 				};
 
-			var scheduler = new Scheduler(query, factory, markJobExecutingCommand, markJobExecutedCommand);
-
-			var context = {
-				job: {
-					id: '0123456',
-					name: 'test job',
-					data: {
-						test: '1a'
-					}
-				},
-				scheduler: scheduler,
-				command: command
-			}
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job'
+					},
+					scheduler: scheduler
+				};
 
 			scheduler.invokeJobCommand.bind(context)();
 
@@ -683,4 +716,5 @@ describe('scheduler', function() {
 			done();
 		});
 	});
+
 });
