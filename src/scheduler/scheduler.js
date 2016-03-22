@@ -111,24 +111,39 @@ Scheduler.prototype.initialize = function(callback){
 
 			var nextFireMoment = moment(jobStore[job.id].pendingInvocations()[0].fireDate);
 
-			commandExecutor.executeCommand('restak.scheduler.UpdateJobScheduledTimestampCommand', {
-				jobId: job.id,
-				timestamp: nextFireMoment.toISOString()
-			}, function(err, commandResult){
+			jobStore[job.id].on('scheduled', function(nextFireDate){
+				var nextFireMoment = moment(nextFireDate);
+				_t._updateNextExecution(job.id, nextFireMoment.toISOString());
+			});
 
-				if(err){
-					logger.warn('Unable to record next scheduled instance for job: ' + job.id + ' [' + nextFireMoment.toISOString()+ ']; ' + err);
-				}
-				
+			_t._updateNextExecution(job.id, nextFireMoment.toISOString(), function(){
 				logger.debug('Job initialized in the scheduler: ' + job.name + ' [' + job.id + ']');
-
-				cb();	
+				cb();
 			});
 			
 		}, function(err){
 			logger.debug('Scheduler initialized with jobs');
 			callback(err); 
 		});
+	});
+};
+
+Scheduler.prototype._updateNextExecution = function(jobId, timestamp, callback){
+	
+	var commandExecutor = this.commandExecutor;
+
+	commandExecutor.executeCommand('restak.scheduler.UpdateJobScheduledTimestampCommand', {
+		jobId: jobId,
+		timestamp: timestamp
+	}, function(err, commandResult){
+
+		if(err){
+			logger.warn('Unable to record next scheduled instance for job: ' + job.id + ' [' + nextFireMoment.toISOString()+ ']; ' + err);
+		}
+		
+		if(callback){
+			callback(err);
+		}
 	});
 };
 
@@ -190,6 +205,9 @@ Scheduler.prototype.invokeJobCommand = function() {
 			}
 
 			var onCommandExecution = function(err, result) {
+
+				//job.status = JobDescriptorStatus.
+
 				if(err) {
 					jobInstance.status = JobInstanceStatus.Error;
 					jobInstance.result = err;
