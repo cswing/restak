@@ -23,6 +23,7 @@
  * @function register
  * @memberof restak.app-server
  * @param {restak.app-server.ApplicationContext} appContext - The application context.
+ * @param {Object} opts - Options specific to the register function.
  */
 
 module.exports.ApplicationContext = require('./application-context');
