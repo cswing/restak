@@ -46,7 +46,13 @@ InMemoryObjectQuery.prototype.execute = function(req, callback){
 		page = 1;
 	}
 
-	if (pageSize<=0) {
+	if (pageSize === 'ALL') {
+		pageSize = filteredData.length;
+		page = 1;
+		if(pageSize == 0)
+			pageSize = DEFAULT_PAGE_SIZE;
+
+	} else if (pageSize<=0) {
 		logger.debug('Negative page size requested, reverting to default.');
 		pageSize = DEFAULT_PAGE_SIZE;
 	}

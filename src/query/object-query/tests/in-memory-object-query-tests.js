@@ -306,5 +306,28 @@ describe('query > object-query > in-memory-query', function() {
 			});
 		});
 
+		it('should work with a pageSize = \'ALL\'', function(done) {
+			
+			var query = new InMemoryObjectQuery(data),
+				request = {
+					pageSize: 'ALL'
+				};
+
+			query.execute(request, function(err, qResult){
+
+				expect(err).to.be.null;
+				expect(qResult).to.have.property('filter', '');
+				expect(qResult).to.have.property('page', 1);
+				expect(qResult).to.have.property('pageSize', 9);
+				expect(qResult).to.have.property('pageCount', 1);
+				expect(qResult).to.have.property('totalCount', 9);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				expect(qResult.items).to.have.deep.members(data);
+
+				done();	
+			});
+		});
+
 	});
 });
