@@ -18,9 +18,6 @@ module.exports.fsData = require('./fs-data');
  * @see restak.app-server.register
  */
 module.exports.register = function(appContext) {
-
-	var jobQuery = appContext.getQuery('restak.data-dir.jobs');
-
-	appContext.registerObject('rest.scheduler.JobQuery', jobQuery);
-	appContext.registerObject('rest.scheduler.Scheduler', new Scheduler(jobQuery, appContext.commandExecutor));
+	var jobsQuery = appContext.getQuery('restak.scheduler.JobsQuery');
+	appContext.registerObject('restak.scheduler.Scheduler', new Scheduler(jobsQuery, appContext.commandExecutor));
 };

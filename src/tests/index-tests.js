@@ -54,6 +54,8 @@ describe('restak core', function() {
 
 		appServer = new ApplicationServer(appDescriptor, appContext);
 		appServer.start(function(){
+			
+			// test that there is a scheduler object
 			done();
 		});		
 	});

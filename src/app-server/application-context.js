@@ -116,6 +116,11 @@ ApplicationContext.prototype.getQuery = function(key){
 	return this._get(qryPrefix, key);
 };
 
+/** @inheritdoc */
+ApplicationContext.prototype.hasQuery = function(queryKey){
+	return this._get(qryPrefix, queryKey) != null;
+};
+
 /** 
  * Register an object for use by the application.  Commands and Queries should NOT be registered
  * using this function.  Instead use {@link restak.context.ApplicationContext#registerCommand} or
