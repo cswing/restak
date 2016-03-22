@@ -79,7 +79,7 @@ describe('app-server > application-context', function() {
 			done();
 		});
 
-		it('should return null with a null key', function(done){
+		it('should throw CommandNotFoundError for a null key', function(done){
 
 			var ctx = new ApplicationContext();
 
@@ -94,7 +94,7 @@ describe('app-server > application-context', function() {
 			done();
 		});
 
-		it('should return null with a undefined key', function(done){
+		it('should throw CommandNotFoundError for undefined key', function(done){
 
 			var ctx = new ApplicationContext();
 
@@ -109,7 +109,7 @@ describe('app-server > application-context', function() {
 			done();
 		});
 
-		it('should not find the command', function(done) {
+		it('should throw CommandNotFoundError for an unknown command', function(done) {
 
 			var ctx = new ApplicationContext(),
 				cmd = new Command();
@@ -163,35 +163,50 @@ describe('app-server > application-context', function() {
 			done();
 		});
 
-		it('should return null with a null key', function(done){
+		it('should throw QueryNotFoundError for a null key', function(done){
 
-			var ctx = new ApplicationContext(),
-				qry = ctx.getQuery(null);
-			
-			expect(qry).to.be.null;
+			var ctx = new ApplicationContext();
 
-			done();
-		});
+			try{
+				ctx.getQuery(null);
+				done('Error expected');
 
-		it('should return null with a undefined key', function(done){
-
-			var ctx = new ApplicationContext(),
-				qry = ctx.getQuery(undefined);
-			
-			expect(qry).to.be.null;
+			}catch(err){
+				expect(err).to.have.deep.property('message', 'Unknown query: null');
+			}
 
 			done();
 		});
 
-		it('should not find the query', function(done) {
+		it('should throw QueryNotFoundError for a undefined key', function(done){
+
+			var ctx = new ApplicationContext();
+
+			try{
+				ctx.getQuery(undefined);
+				done('Error expected');
+
+			}catch(err){
+				expect(err).to.have.deep.property('message', 'Unknown query: undefined');
+			}
+
+			done();
+		});
+
+		it('should throw QueryNotFoundError for an unknown query', function(done) {
 
 			var ctx = new ApplicationContext(),
 				qry = new Query();
 
-			var result = ctx.registerQuery('test', qry),
-				qry2 = ctx.getQuery('test1');
+			var result = ctx.registerQuery('test', qry);
 			
-			expect(qry2).to.be.null;
+			try{
+				ctx.getQuery('test1');
+				done('Error expected');
+
+			}catch(err){
+				expect(err).to.have.deep.property('message', 'Unknown query: test1');
+			}
 
 			done();
 		});

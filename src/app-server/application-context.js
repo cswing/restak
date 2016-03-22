@@ -5,7 +5,10 @@ var log4js = require('log4js'),
 	DefaultObjectFactory = require('./object-factory').DefaultObjectFactory,
 	command = require('../command'),
 	CommandNotFoundError = command.CommandNotFoundError,
-	CommandExecutor = command.CommandExecutor;
+	CommandExecutor = command.CommandExecutor,
+	query = require('../query'),
+	QueryNotFoundError = query.QueryNotFoundError,
+	QueryExecutor = query.QueryExecutor;
 
 var cmdPrefix = 'restak.command.Command::',
 	qryPrefix = 'restak.query.Query::',
@@ -20,6 +23,7 @@ var cmdPrefix = 'restak.command.Command::',
  * @constructor
  * @memberof restak.app-server
  * @implements restak.command.CommandFactory
+ * @implements restak.query.QueryFactory
  * @param {config} config - configuration settings, provided by node-config. See https://www.npmjs.com/package/config
  */
 var ApplicationContext = function(config){
@@ -30,9 +34,21 @@ var ApplicationContext = function(config){
 	/** */
 	this.objectFactory = new DefaultObjectFactory();
 
-	/** */
+	/**
+	 * A command executor that given a key that identifies a command, will execute the command.
+	 *
+	 * @type restak.comand.CommandExecutor
+	 */
 	this.commandExecutor = new CommandExecutor(this);
 	this.registerObject('restak.command.CommandExecutor', this.commandExecutor);
+
+	/**
+	 * A query executor that given a key that identifies a query, will execute the query.
+	 *
+	 * @type restak.query.QueryExecutor
+	 */
+	this.queryExecutor = new QueryExecutor(this);
+	this.registerObject('restak.command.QueryExecutor', this.queryExecutor);
 };
 
 /**
@@ -93,27 +109,20 @@ ApplicationContext.prototype.hasCommand = function(commandKey){
 	return this._get(cmdPrefix, commandKey) != null;
 };
 
-/**
- * Register a query for use by the application.
- *
- * @param {string} key - The key that identifies the query.
- * @param {restak.query.Query} query - The query.
- * @return {boolean} true if the query was registered, otherwise false.
- * 
- * @see restak.context.ObjectFactory#register
- */
-ApplicationContext.prototype.registerQuery = function(key, query){
-	return this._register(qryPrefix, key, query);
+/** @inheritdoc */
+ApplicationContext.prototype.registerQuery = function(queryKey, query){
+	return this._register(qryPrefix, queryKey, query);
 };
 
-/**
- * Get a query to use.
- *
- * @param {string} key - The key that identifies the query.
- * @return {restak.query.Query} the query.
- */
-ApplicationContext.prototype.getQuery = function(key){
-	return this._get(qryPrefix, key);
+/** @inheritdoc */
+ApplicationContext.prototype.getQuery = function(queryKey){
+	var qry = this._get(qryPrefix, queryKey);
+	
+	if(!qry) {
+		throw new QueryNotFoundError(queryKey);
+	}
+
+	return qry;
 };
 
 /** @inheritdoc */

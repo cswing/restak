@@ -67,5 +67,54 @@
  * @memberof restak.query.antlr
  */
 
- module.exports.antlr = require('./antlr');
- module.exports.objectQuery = require('./object-query');
+/**
+ * A factory that contians queries that can be accessed later to use.
+ *
+ * @interface QueryFactory
+ * @memberof restak.query
+ */
+
+/**
+ * Register a query for use later.
+ *
+ * @function
+ * @name restak.query.QueryFactory#registerQuery
+ * @param {string} queryKey - The key that identifies the query.
+ * @param {restak.query.Query} query - The query.
+ * @return {boolean} true if the query was registered, otherwise false.
+ */
+
+/**
+ * Get a query to use.
+ *
+ * @function
+ * @name restak.query.QueryFactory#getQuery
+ * @param {string} queryKey - The key that identifies the query.
+ * @return {restak.query.Query} the query.
+ * @throws {restak.query.QueryNotFoundError}
+ */
+
+ /**
+ * Has a query with the given key been registered.
+ *
+ * @function
+ * @name restak.query.QueryFactory#hasQuery
+ * @param {string} queryKey - The key that identifies the query.
+ * @return {boolean} true if there is a query, otherwise false;
+ */
+
+/**
+ * An error describing the use of a query that has not been registered.
+ *
+ * @constructor
+ * @memberof restak.query
+ */
+var QueryNotFoundError = function(queryKey){
+	this.queryKey = queryKey;
+	this.message = 'Unknown query: ' + queryKey;
+};
+module.exports.QueryNotFoundError = QueryNotFoundError;
+
+module.exports.QueryExecutor = require('./query-executor');
+module.exports.antlr = require('./antlr');
+module.exports.objectQuery = require('./object-query');
