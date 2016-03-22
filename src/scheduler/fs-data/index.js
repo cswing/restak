@@ -3,8 +3,8 @@
 var log4js = require('log4js'),
 	logger = log4js.getLogger('restak.scheduler.fs-data'),
 	FileSystemObjectQuery = require('../../query/object-query/fs-object-query'),
-	MarkJobExecutingCommand = require('../fs-mark-job-executing-command'),
-	MarkJobExecutedCommand = require('../fs-mark-job-executed-command');
+	MarkJobExecutingCommand = require('./fs-mark-job-executing-command'),
+	MarkJobExecutedCommand = require('./fs-mark-job-executed-command');
 
 /**
  * A simple store implementation for {@link restak.scheduler.Scheduler} using the file system.  This implementation is not ideal for
@@ -21,12 +21,14 @@ var log4js = require('log4js'),
  * @memberof restak.scheduler.fs-data
  * @see restak.app-server.register
  */
-module.exports.register = function(appContext) {
+module.exports.register = function(appContext, opts) {
 
-	var jobsDirectory = appContext.getConfigSetting('restak.data-dir.jobs'),
-		jobsQuery = new FileSystemObjectQuery(fs, jobsDirectory);
+	var opts_ = opts || {},
+		fs_ = opts_.fs || require('fs'),
+		jobsDirectory = appContext.getConfigSetting('restak.data-dir.jobs'),
+		jobsQuery = new FileSystemObjectQuery(fs_, jobsDirectory);
 
 	appContext.registerQuery('restak.scheduler.JobsQuery', jobsQuery);
-	appContext.registerCommand('restak.scheduler.MarkJobExecutingCommand', new MarkJobExecutingCommand(fs, jobsDirectory));
-	appContext.registerCommand('restak.scheduler.MarkJobExecutedCommand', new MarkJobExecutedCommand(fs, jobsDirectory));
+	appContext.registerCommand('restak.scheduler.MarkJobExecutingCommand', new MarkJobExecutingCommand(fs_, jobsDirectory));
+	appContext.registerCommand('restak.scheduler.MarkJobExecutedCommand', new MarkJobExecutedCommand(fs_, jobsDirectory));
 };

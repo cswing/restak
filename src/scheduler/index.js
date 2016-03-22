@@ -2,13 +2,12 @@
 
 var log4js = require('log4js'),
 	logger = log4js.getLogger('restak.scheduler'),
-	Scheduler = require('./scheduler'),
-	JobFactory = require('./job-factory').DefaultJobFactory;
+	Scheduler = require('./scheduler');
 
 /**
  * @namespace restak.scheduler
  */
-
+ 
 module.exports.fsData = require('./fs-data');
 
 /**
