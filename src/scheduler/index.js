@@ -9,6 +9,7 @@ var log4js = require('log4js'),
  */
  
 module.exports.fsData = require('./fs-data');
+module.exports.restEndpoints = require('./rest-endpoints');
 
 /**
  * Register the necessary objects for the {@link restak.scheduler} namespace.  It requires the commands and query to exist in the appContext.
