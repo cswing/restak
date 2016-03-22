@@ -75,8 +75,8 @@ describe('rest > endpoints > collection-endpoint', function() {
 
 		it('should provide links with the filter in the url', function(done){
 
-			var query = {
-				execute: function(qr, callback) {
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
 					callback(null, { 
 						filter: qr.filter,
 						pageSize: 1,
@@ -88,7 +88,10 @@ describe('rest > endpoints > collection-endpoint', function() {
 				}
 			};
 
-			var server = new RestServer([new CollectionEndpoint(logger, '/testpath', query)], serverConfig);
+			var endpoint = new CollectionEndpoint(logger, '/testpath', 'test-query');
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
 
 			request(server.app)
 				.get('/testpath?filter=test~"foo"')

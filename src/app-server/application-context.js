@@ -175,6 +175,15 @@ ApplicationContext.prototype.getObject = function(key){
  * @see restak.context.ObjectFactory#register
  */
 ApplicationContext.prototype.registerEndpoint = function(key, endpoint){
+
+	if(!endpoint.commandExecutor) {
+		endpoint.commandExecutor = this.commandExecutor;
+	}
+
+	if(!endpoint.queryExecutor) {
+		endpoint.queryExecutor = this.queryExecutor;
+	}
+
 	return this._register(restPrefix, key, endpoint);
 };
 

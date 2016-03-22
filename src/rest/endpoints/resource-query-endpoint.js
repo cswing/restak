@@ -14,11 +14,11 @@ var log4js = require('log4js'),
  * @memberof restak.rest.endpoints
  * @param {Logger} logger - a log4js logger to use when logging.
  * @param {String} path - the path to register the endpoint to.
- * @param {Query} query - The query to use when a request is made to this collection.
+ * @param {String} queryKey - The key that identifies the query to use when a request is made to this collection.
  */
-var ResourceQueryEndpoint = function(logger, path, query){
+var ResourceQueryEndpoint = function(logger, path, queryKey){
 	ResourceEndpoint.apply(this, arguments);
-	this.query = query;
+	this.queryKey = queryKey;
 };
 util.inherits(ResourceQueryEndpoint, ResourceEndpoint);
 
@@ -56,13 +56,14 @@ ResourceQueryEndpoint.prototype.postProcessItem = function(item, context){
 ResourceQueryEndpoint.prototype.onRequest = function(req, res){
 	
 	var _t = this,
-		query = this.query;
+		queryExecutor = this.queryExecutor,
+		queryKey = this.queryKey;
 
 	var queryRequest = {
 		filter: this.getFixedFilter(req)
 	};
 
-	query.execute(queryRequest, function(err, queryResult){
+	queryExecutor.executeQuery(queryKey, queryRequest, function(err, queryResult){
 	
 		if(err) {
 			_t.handleError(req, res, err);

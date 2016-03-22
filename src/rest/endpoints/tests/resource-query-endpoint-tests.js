@@ -21,8 +21,8 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 
 		it('should return what the query returns', function(done) {
 
-			var query = {
-				execute: function(qr, callback) {
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
 					callback(null, { 
 						filter: '',
 						pageSize: 10,
@@ -34,7 +34,10 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 				}
 			};
 
-			var server = new RestServer([new ResourceQueryEndpoint(logger, '/testpath', query)], serverConfig);
+			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
 
 			request(server.app)
 				.get('/testpath')
@@ -53,13 +56,16 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 
 		it('should return an error if the query returns an error', function(done) {
 
-			var query = {
-				execute: function(qr, callback) {
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
 					callback('An error occurred in the query');
 				}
 			};
 
-			var server = new RestServer([new ResourceQueryEndpoint(logger, '/testpath', query)], serverConfig);
+			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
 
 			request(server.app)
 				.get('/testpath')
@@ -78,8 +84,8 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 
 		it('should return a 404 if the query returns no items', function(done) {
 
-			var query = {
-				execute: function(qr, callback) {
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
 					callback(null, { 
 						filter: '',
 						pageSize: 10,
@@ -91,7 +97,10 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 				}
 			};
 
-			var server = new RestServer([new ResourceQueryEndpoint(logger, '/testpath', query)], serverConfig);
+			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
 
 			request(server.app)
 				.get('/testpath')
@@ -104,8 +113,8 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 
 		it('should still work if the query returns multiple items', function(done) {
 
-			var query = {
-				execute: function(qr, callback) {
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
 					callback(null, { 
 						filter: '',
 						pageSize: 10,
@@ -117,7 +126,10 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 				}
 			};
 
-			var server = new RestServer([new ResourceQueryEndpoint(logger, '/testpath', query)], serverConfig);
+			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
 
 			request(server.app)
 				.get('/testpath')

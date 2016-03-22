@@ -228,8 +228,31 @@ describe('app-server > application-context', function() {
 			var result = ctx.registerEndpoint('test', ept);
 			expect(result).to.be.equal(true);
 
-			var ept2 = ctx.getEndpoint('test');
-			expect(ept2).to.equal(ept);
+			var ept = ctx.getEndpoint('test');
+			expect(ept).to.equal(ept);
+			expect(ept).to.have.property('queryExecutor', ctx.queryExecutor);
+			expect(ept).to.have.property('commandExecutor', ctx.commandExecutor);
+
+			done();
+		});
+
+		it('should not override the executors if they are already specified.', function(done){
+
+			var ctx = new ApplicationContext(),
+				ept = new Endpoint(),
+				qe = { 'test': 'abc' },
+				ce = { 'test': 'xyz' };
+
+			ept.commandExecutor = ce;
+			ept.queryExecutor = qe;
+
+			var result = ctx.registerEndpoint('test', ept);
+			expect(result).to.be.equal(true);
+
+			var ept = ctx.getEndpoint('test');
+			expect(ept).to.equal(ept);
+			expect(ept).to.have.property('queryExecutor', qe);
+			expect(ept).to.have.property('commandExecutor', ce);
 
 			done();
 		});

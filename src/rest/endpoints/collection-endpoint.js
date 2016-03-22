@@ -14,12 +14,12 @@ var log4js = require('log4js'),
  * @memberof restak.rest.endpoints
  * @param {Logger} logger - A log4js logger to use when logging.
  * @param {String} path - The path to register the endpoint to.
- * @param {Query} query - The query to use when a request is made to this collection.
+ * @param {String} queryKey - The key that identifies the query to use when a request is made to this collection.
  */
-var CollectionEndpoint = function(logger, path, query){
+var CollectionEndpoint = function(logger, path, queryKey){
 	Endpoint.apply(this, arguments);
 	this.path = path;
-	this.query = query;
+	this.queryKey = queryKey;
 };
 util.inherits(CollectionEndpoint, Endpoint);
 
@@ -82,7 +82,8 @@ CollectionEndpoint.prototype.getFixedFilter = function(req){
 CollectionEndpoint.prototype.onRequest = function(req, res){
 
 	var _t = this,
-		query = this.query,
+		queryExecutor = this.queryExecutor,
+		queryKey = this.queryKey,
 		queryRequest = this.buildQueryRequest(req);
 
 	var originalFilter = queryRequest.filter,
@@ -97,7 +98,7 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 		}
 	}
 
-	query.execute(queryRequest, function(err, queryResult){
+	queryExecutor.executeQuery(queryKey, queryRequest, function(err, queryResult){
 		
 		if(err) {
 			_t.handleError(req, res, err);

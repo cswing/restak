@@ -27,6 +27,20 @@ var Endpoint = function(logger){
 	 * @protected
 	 */
 	this.messageBuilder = MessageBuilder.DEFAULT;
+
+	/** 
+	 * The query executor to use to execute queries.
+	 *
+	 * @type restak.query.QueryExecutor
+	 */
+	this.queryExecutor = null;
+
+	/** 
+	 * The command executor to use to execute commands.
+	 *
+	 * @type restak.command.CommandExecutor
+	 */
+	this.queryExecutor = null;
 };
 
 /**
