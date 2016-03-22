@@ -2,7 +2,9 @@
 
 var log4js = require('log4js'),
 	logger = log4js.getLogger('restak.scheduler.Scheduler'),
+	async = require('async'),
 	nodeSchedule = require('node-schedule'),
+	moment = require('moment'),
 	models = require('./models'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus;
@@ -60,22 +62,22 @@ Scheduler.prototype.initialize = function(callback){
 			return callback(err);
 		}
 
-		logger.debug('Query returned ' + result.totalCount + ' jobs to load into scheduler')
+		logger.debug('Query returned ' + result.totalCount + ' jobs to load into scheduler');
 
-		result.items.forEach(function(job){
-
+		async.eachSeries(result.items, function(job, cb) {
+			
 			logger.debug('Scheduling job ' + job.name + ' [' + job.id + ']');
 
 			if(jobStore[job.id]) {
 				logger.error('Found multiple jobs with the same id; subsequent jobs will be ignored [' + job.id + ']');
-				return;
+				return callback(null); // do not return the error
 			}
 
 			// TEMP - this would happen when executing and the job crashes
 			// Need to define recovery behavior
 			if(job.status == JobDescriptorStatus.Executing) {
 				logger.error('Job is in the executing status. Will not be registered to run again. [' + job.id + ']');
-				return;
+				return callback(); // do not return the error
 			}
 
 			jobStore[job.id] = null;
@@ -92,7 +94,7 @@ Scheduler.prototype.initialize = function(callback){
 
 			if(!hasCommand){
 				logger.error('Unable to locate a command for the job [' + job.id + ', '+ job.command + ']');
-				return;
+				return callback(null); // do not return the error
 			}
 			
 			var context = {
@@ -104,13 +106,29 @@ Scheduler.prototype.initialize = function(callback){
 
 			if(!jobStore[job.id]) {
 				logger.error('Invalid schedule for [' + job.id + ', '+ (job.schedule || '').toString() + ']');
-				return;
+				return callback(null); // do not return the error
 			}
 
-			logger.debug('Job initialized in the scheduler: ' + job.name + ' [' + job.id + ']');
-		});
+			var nextFireMoment = moment(jobStore[job.id].pendingInvocations()[0].fireDate);
 
-		callback();
+			commandExecutor.executeCommand('restak.scheduler.UpdateJobScheduledTimestampCommand', {
+				jobId: job.id,
+				timestamp: nextFireMoment.toISOString()
+			}, function(err, commandResult){
+
+				if(err){
+					logger.warn('Unable to record next scheduled instance for job: ' + job.id + ' [' + nextFireMoment.toISOString()+ ']; ' + err);
+				}
+				
+				logger.debug('Job initialized in the scheduler: ' + job.name + ' [' + job.id + ']');
+
+				cb();	
+			});
+			
+		}, function(err){
+			logger.debug('Scheduler initialized with jobs');
+			callback(err); 
+		});
 	});
 };
 

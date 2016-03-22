@@ -38,13 +38,17 @@ describe('scheduler', function() {
 					hasCommand: function(key) {
 						return true;
 					}
+				},
+				executeCommand: function(cmdKey, data, cb){
+					cb(null, {});
 				}
 			};
 
 			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
-				expect(err).to.not.be.null;
+
+				expect(err).to.be.null;
 
 				var jobRegistration = scheduler.jobStore['132132'];
 				expect(jobRegistration).to.not.be.null;
@@ -87,13 +91,19 @@ describe('scheduler', function() {
 					hasCommand: function(key) {
 						return true;
 					}
+				},
+				executeCommand: function(cmdKey, data, cb){
+					cb(null, {});
 				}
 			};
 
 			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
-				expect(err).to.not.be.null;
+
+				console.dir('test');
+
+				expect(err).to.be.null;
 
 				var jobRegistration = scheduler.jobStore['132132'];
 				expect(jobRegistration).to.not.be.null;
@@ -128,13 +138,16 @@ describe('scheduler', function() {
 					hasCommand: function(key) {
 						return true;
 					}
+				},
+				executeCommand: function(cmdKey, data, cb){
+					cb(null, {});
 				}
 			};
 
 			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
-				expect(err).to.not.be.null;
+				expect(err).to.be.null;
 
 				var jobRegistration = scheduler.jobStore['132132'];
 				expect(jobRegistration).to.not.be.null;
@@ -170,13 +183,16 @@ describe('scheduler', function() {
 					hasCommand: function(key) {
 						return true;
 					}
+				},
+				executeCommand: function(cmdKey, data, cb){
+					cb(null, {});
 				}
 			};
 
 			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
-				expect(err).to.not.be.null;
+				expect(err).to.be.null;
 
 				var jobRegistration = scheduler.jobStore['132132'];
 				expect(jobRegistration).to.be.null;
@@ -211,13 +227,16 @@ describe('scheduler', function() {
 					hasCommand: function(key) {
 						return false;
 					}
+				},
+				executeCommand: function(cmdKey, data, cb){
+					cb(null, {});
 				}
 			};
 
 			var scheduler = new Scheduler(query, executor);
 
 			scheduler.initialize(function(err){
-				expect(err).to.not.be.null;
+				expect(err).to.be.null;
 
 				var jobRegistration = scheduler.jobStore['132132'];
 				expect(jobRegistration).to.be.null;

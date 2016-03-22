@@ -11,12 +11,25 @@
  * @property {string} description - A description of what this job does.
  * @property {restak.scheduler.JobDescriptorStatus} status - The status of this job.
  * @property {object|string} schedule - For recurring jobs, this provides the schedule.  For one-time jobs, null.
+ * @property {string} nextExecution - An ISO timestamp of when this job will execute.
  * @property {string} command - An identifier to locate the command to execute.
  * @property {object} data - Data to pass to the command.
  * @see restak.scheduler.Scheduler
  * @see restak.command.Command
  * @see restak.scheduler.JobFactory
  */
+ var JobDescriptor = {
+ 	id: 			null,
+ 	name: 			null,
+ 	description: 	null,
+ 	status: 		null,
+ 	schedule: 		null,
+ 	command: 		null,
+ 	nextExecution:  null,
+ 	data: 			null
+ };
+
+module.exports.JobDescriptor = JobDescriptor;
 
 /**
  * The different statuses for job descriptors.
