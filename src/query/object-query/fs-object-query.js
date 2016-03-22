@@ -15,10 +15,12 @@ var log4js = require('log4js'),
  * @memberof restak.query.object-query
  * @param {Fs} fs - the file system to use to access files
  * @param {string} directoryPath - the directory path to access files
+ * @param {restak.util.ObjectTransform} - optional, a way to transform the object from what exists on the file system to what should be returned
  */
-var FileSystemObjectQuery = function(fs, directoryPath){
+var FileSystemObjectQuery = function(fs, directoryPath, objectTransform){
 	this.fs = fs;
 	this.directoryPath = directoryPath;
+	this.objectTransform = objectTransform;
 };
 
 /**
@@ -59,14 +61,19 @@ FileSystemObjectQuery.prototype.execute = function(request, callback){
 
 	var _t = this,
 		fs = this.fs,
-		directoryPath = this.directoryPath;
+		directoryPath = this.directoryPath,
+		objectTransform = this.objectTransform;
 
 	var items = [];
 
 	this.load(
 		callback, 
 		function(itm){
-			items.push(itm);
+			var ti = itm;
+			if(objectTransform){
+				ti = objectTransform.transform(itm);
+			}
+			items.push(ti);
 		},
 		function(){
 			var query = new InMemoryObjectQuery(items);

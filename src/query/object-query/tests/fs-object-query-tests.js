@@ -43,5 +43,45 @@ describe('query > object-query > file-system-query', function() {
 			});
 		});
 
+		it('should use the object transform', function(done){
+
+			var fs = mock.fs({
+					'c:/items/': {
+						'itemA': JSON.stringify(itemA),
+						'itemB': JSON.stringify(itemB),
+						'itemC': JSON.stringify(itemC)
+					}
+				}),
+				objectTransform = {
+					transform: function(itm){
+						return {
+							"id": itm.id, 
+							"name": itm.name + " - transformed"
+						};
+					}
+				},
+				query = new FileSystemObjectQuery(fs, 'c:/items/', objectTransform),
+				request = {
+					filter: 'name~\'ITEMA\''
+				};
+			
+			query.execute(request, function(err, result){
+
+				expect(err).to.be.null;
+				expect(result).to.deep.equal({ filter: 'name~\'ITEMA\'',
+					pageSize: 25,
+					page: 1,
+					pageCount: 1,
+					totalCount: 1,
+					items: [ {
+						id: "itemA",
+						name: "ITEMA, 123 - transformed"
+					} ] 
+				});
+
+				done();
+			});
+		});
+
 	});
 });
