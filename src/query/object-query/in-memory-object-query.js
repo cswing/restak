@@ -6,8 +6,6 @@ var log4js = require('log4js'),
 	ObjectFilter = require('./object-filter').ObjectFilter,
 	queryUtil = require('../query-util');
 
-var DEFAULT_PAGE_SIZE = 25;
-
 /**
  * An implementation of {@link restak.query.Query|Query} that uses and array of javascript objects for it's backing store.
  *
