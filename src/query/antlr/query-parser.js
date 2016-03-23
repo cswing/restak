@@ -38,8 +38,8 @@ var QueryParser = function(listener, request){
 		parser.removeErrorListeners();
 		parser.addErrorListener(this.errorListener);
 		
-		var tree = parser.parse();
-		walker.walk(this.listener, tree);
+		this.tree = parser.parse();
+		walker.walk(this.listener, this.tree);
 	}
 };
 

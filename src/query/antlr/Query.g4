@@ -30,13 +30,13 @@ literal
 	;
 
 idLiteral
-	: HEX_ID
+	: HEX_ID 
 	| ID
 	;
 	
 stringLiteral
-	: singleQuotedString
-	| doubleQuotedString
+	: SINGLE_QUOTED_STRING
+	| DOUBLE_QUOTED_STRING
 	;
  	
 numericLiteral
@@ -52,14 +52,6 @@ comparison_operator
 	: '=' | '>' | '<' | '<=' | '>=' | '<>' | '!=' | '~'
 	;
 
-doubleQuotedString
-	: '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"'
-	;
-
-singleQuotedString
-	: '\'' ( '\\\'' | ~('\r' | '\n') )*? '\''
-	;
-
 //Lexer
 
 // Keywords
@@ -67,25 +59,23 @@ AND:					A N D;
 OR:						O R;
 NOT: 					N O T;
 
+SPACE:					[ \t\r\n]+	-> skip;
+
+DECIMAL:				DEC_DIGIT+;
 HEX_ID: 				HEX_DIGIT+;
 ID:						[a-zA-Z_#][a-zA-Z_#$@0-9]*;
-DECIMAL:				DECIMAL_DIGIT+;
+SINGLE_QUOTED_STRING:  	'\'' ( '\\\'' | ~('\r' | '\n') )*? '\''; 
+DOUBLE_QUOTED_STRING: 	 '"' (~('"' | '\\' | '\r' | '\n') | '\\' ('"' | '\\'))* '"';
 FLOAT:					DEC_DOT_DEC;
+
+DOT:					'.';
 PLUS:					'+';
 MINUS:					'-';
 
-DOT:					'.';
-SPACE:					[ \t\r\n]+	-> skip;
-
+fragment LETTER:       [a-zA-Z_];
+fragment DEC_DOT_DEC:  (DEC_DIGIT+ '.' DEC_DIGIT+ |  DEC_DIGIT+ '.' | '.' DEC_DIGIT+);
 fragment HEX_DIGIT:    [0-9A-Fa-f];
-
-fragment DECIMAL_DIGIT
-	: [0-9]
-	;
-
-fragment DEC_DOT_DEC
-	: (DECIMAL_DIGIT+ '.' DECIMAL_DIGIT+ |  DECIMAL_DIGIT+ '.' | '.' DECIMAL_DIGIT+)
-	;
+fragment DEC_DIGIT:    [0-9];
 
 fragment A: [aA];
 fragment B: [bB];
