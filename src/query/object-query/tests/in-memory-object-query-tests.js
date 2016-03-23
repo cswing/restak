@@ -72,7 +72,7 @@ describe('query > object-query > in-memory-query', function() {
 			});
 		});
 
-		it('should work with a custom page size that evenly divides into total size', function(done) {
+		it('should work with a custom page size', function(done) {
 			
 			var query = new InMemoryObjectQuery(data),
 				request = {
@@ -90,98 +90,6 @@ describe('query > object-query > in-memory-query', function() {
 				expect(qResult).to.have.property('items');
 				expect(qResult).to.have.deep.property('items.length', 3);
 				expect(qResult.items).to.have.deep.members([data[0], data[1], data[2]]);
-
-				done();	
-			});
-		});
-
-		it('should work with a custom page size that does not evenly divides into total size', function(done) {
-			
-			var query = new InMemoryObjectQuery(data),
-				request = {
-					pageSize: 4
-				};
-
-			query.execute(request, function(err, qResult){
-
-				expect(err).to.be.null;
-				expect(qResult).to.have.property('filter', '');
-				expect(qResult).to.have.property('page', 1);
-				expect(qResult).to.have.property('pageSize', 4);
-				expect(qResult).to.have.property('pageCount', 3);
-				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('items');
-				expect(qResult).to.have.deep.property('items.length', 4);
-				expect(qResult.items).to.have.deep.members([data[0], data[1], data[2], data[3]]);
-
-				done();	
-			});
-		});
-
-		it('should work with a negative custom page size', function(done) {
-			
-			var query = new InMemoryObjectQuery(data),
-				request = {
-					pageSize: -3
-				};
-
-			query.execute(request, function(err, qResult){
-
-				expect(err).to.be.null;
-				expect(qResult).to.have.property('filter', '');
-				expect(qResult).to.have.property('page', 1);
-				expect(qResult).to.have.property('pageSize', 25);
-				expect(qResult).to.have.property('pageCount', 1);
-				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('items');
-				expect(qResult).to.have.deep.property('items.length', 9);
-				expect(qResult.items).to.have.deep.members(data);
-
-				done();	
-			});
-		});
-
-		it('should work with a negative custom page', function(done) {
-			
-			var query = new InMemoryObjectQuery(data),
-				request = {
-					page: -3
-				};
-
-			query.execute(request, function(err, qResult){
-
-				expect(err).to.be.null;
-				expect(qResult).to.have.property('filter', '');
-				expect(qResult).to.have.property('page', 1);
-				expect(qResult).to.have.property('pageSize', 25);
-				expect(qResult).to.have.property('pageCount', 1);
-				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('items');
-				expect(qResult).to.have.deep.property('items.length', 9);
-				expect(qResult.items).to.have.deep.members(data);
-
-				done();	
-			});
-		});
-
-		it('should work with a custom page greater than total pages', function(done) {
-			
-			var query = new InMemoryObjectQuery(data),
-				request = {
-					page: 10
-				};
-
-			query.execute(request, function(err, qResult){
-
-				expect(err).to.be.null;
-				expect(qResult).to.have.property('filter', '');
-				expect(qResult).to.have.property('page', 1);
-				expect(qResult).to.have.property('pageSize', 25);
-				expect(qResult).to.have.property('pageCount', 1);
-				expect(qResult).to.have.property('totalCount', 9);
-				expect(qResult).to.have.property('items');
-				expect(qResult).to.have.deep.property('items.length', 9);
-				expect(qResult.items).to.have.deep.members(data);
 
 				done();	
 			});
