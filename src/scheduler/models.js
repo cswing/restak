@@ -18,18 +18,6 @@
  * @see restak.command.Command
  * @see restak.scheduler.JobFactory
  */
- var JobDescriptor = {
- 	id: 			null,
- 	name: 			null,
- 	description: 	null,
- 	status: 		null,
- 	schedule: 		null,
- 	command: 		null,
- 	nextExecution:  null,
- 	data: 			null
- };
-
-module.exports.JobDescriptor = JobDescriptor;
 
 /**
  * The different statuses for job descriptors.
