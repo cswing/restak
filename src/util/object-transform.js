@@ -33,10 +33,15 @@ DefaultObjectTransform.prototype.transform = function(item){
 
 	Object.keys(propertiesObject).forEach(function(key){
 		
-		var fn = propertiesObject[key];
-		
-		if(fn) {
+		var propValue = propertiesObject[key];
+
+		if (typeof(propValue) == 'function') {
+			var fn = propValue;
 			transformedItem[key] = fn(item);
+		
+		} else if(propValue != null) {
+			transformedItem[key] = item[propValue];
+
 		} else {
 			transformedItem[key] = item[key];
 		}
