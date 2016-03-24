@@ -5,20 +5,21 @@ var util = require('util'),
 	assert = require('chai').assert,
 	mock = require('mock-fs'),
 	moment = require('moment'),
+	transforms = require('../transforms'),
 	Datastore = require('nedb'),
 	UpdateJobScheduledTimestampCommand = require('../update-job-scheduled-timestamp-command');
 
-describe.only('scheduler > nedb > update-job-scheduled-timestamp', function() {
+describe('scheduler > nedb > update-job-scheduled-timestamp', function() {
 
 	describe('#execute', function(){
 
 		it('should update the job', function(done) {
 
 			var jobStore = new Datastore(),
-				command = new UpdateJobScheduledTimestampCommand(jobStore);
+				command = new UpdateJobScheduledTimestampCommand(jobStore, transforms.jobTransform);
 
 			jobStore.insert([{
-					"id": "12345",
+					"_id": "12345",
 					"name": "Test Job"
 				}], function (err, newDocs) {
 					
@@ -35,7 +36,7 @@ describe.only('scheduler > nedb > update-job-scheduled-timestamp', function() {
 						
 						expect(result).to.have.deep.property('nextExecution', timestamp);
 						
-						jobStore.find({id: "12345"}, function(err, jobs){
+						jobStore.find({_id: "12345"}, function(err, jobs){
 							expect(err).to.be.null;
 						
 							expect(jobs[0]).to.have.deep.property('nextExecution', timestamp);
@@ -48,7 +49,7 @@ describe.only('scheduler > nedb > update-job-scheduled-timestamp', function() {
 		it('should handle error if the file does not exist', function(done) {
 
 			var jobStore = new Datastore(),
-				command = new UpdateJobScheduledTimestampCommand(jobStore);
+				command = new UpdateJobScheduledTimestampCommand(jobStore, transforms.jobTransform);
 
 			var timestamp = moment().toISOString(),
 				instr = {

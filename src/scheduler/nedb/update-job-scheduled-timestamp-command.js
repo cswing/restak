@@ -10,8 +10,9 @@ var log4js = require('log4js'),
  * @implements restak.commands.Command
  * @memberof restak.scheduler.nedb
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
+ * @param {restak.util.ObjectTransform} jobTransform - optional, a way to transform the job from what exists in the store to what should be returned.
  */
-var UpdateJobScheduledTimestampCommand = function(jobStore){
+var UpdateJobScheduledTimestampCommand = function(jobStore, jobTransform){
 	
 	/**
 	 * The datastore that contains jobs.
@@ -20,6 +21,14 @@ var UpdateJobScheduledTimestampCommand = function(jobStore){
 	 * @type nedb.Datastore
 	 */
 	this.jobStore = jobStore;
+
+	/**
+	 * A transform that will modify what is returned from the datastore before beeing returned to the caller.
+	 *
+	 * @protected
+	 * @type restak.util.ObjectTransform
+	 */
+	this.jobTransform = jobTransform;
 };
 
 /** @inheritdoc */
@@ -28,9 +37,11 @@ UpdateJobScheduledTimestampCommand.prototype.execute = function(cmdInstr, callba
 	var jobStore = this.jobStore,
 		data = cmdInstr.data,
 		jobId = data.jobId,
-		timestamp = data.timestamp;
+		timestamp = data.timestamp,
+		jobTransform = this.jobTransform,
+		query = { _id: jobId };
 
-	jobStore.update({ id: jobId }, { $set: { nextExecution: timestamp } }, function (err, numReplaced) {
+	jobStore.update(query, { $set: { nextExecution: timestamp } }, function (err, numReplaced) {
 		if(err) {
 			return callback(err, null);
 		}
@@ -41,8 +52,15 @@ UpdateJobScheduledTimestampCommand.prototype.execute = function(cmdInstr, callba
 
 		logger.debug('Job [' + jobId + '] updated for next timestamp [' + timestamp + ']');
 
-		jobStore.find({ id: jobId }, function(err, docs){
-			callback(null, docs[0]);
+		jobStore.find(query, function(err, docs){
+
+			var job = docs[0];
+
+			if(jobTransform) {
+				job = jobTransform.transform(job);
+			}
+
+			callback(null, job);
 		});
 	});
 };
