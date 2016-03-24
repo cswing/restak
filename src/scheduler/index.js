@@ -8,7 +8,6 @@ var log4js = require('log4js'),
  * @namespace restak.scheduler
  */
  
-module.exports.fsData = require('./fs-data');
 module.exports.restEndpoints = require('./rest-endpoints');
 
 /**

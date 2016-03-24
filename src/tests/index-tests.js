@@ -35,7 +35,7 @@ describe('restak core', function() {
 		}
 	});
 
-	it('should not error when configuring with fs as backing store', function(done) {
+	it('should not error when configuring with nedb as backing store', function(done) {
 
 		var restak = require('../index'),
 			ApplicationContext = restak.appServer.ApplicationContext,
@@ -49,8 +49,8 @@ describe('restak core', function() {
 			appContext = new ApplicationContext(config);
 
 		// Registration
-		restak.scheduler.fsData.register(appContext, { fs: fs });
-		restak.scheduler.register(appContext);
+		//restak.scheduler.nedb.register(appContext); // TMP until nedb scheduler is implemented
+		//restak.scheduler.register(appContext);
 
 		appServer = new ApplicationServer(appDescriptor, appContext);
 		appServer.start(function(){
