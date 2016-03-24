@@ -222,7 +222,7 @@ var setValue = function(literalCtx, val){
 		predicate = predicateCtx.__currentPredicate,
 		setter = predicate.__setter;
 
-	setter(val);
+	if(setter) setter(val);  // setter can be null with invalid queries
 };
 
 /** @inheritdoc */

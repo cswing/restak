@@ -5,7 +5,59 @@ var expect = require('chai').expect,
 	NeDBQueryListener = require('../nedb-query-listener'),
 	QueryParser = require('../../antlr/query-parser');
 
-describe('query = nedb = query-listener', function() {
+describe('query > nedb > query-listener', function() {
+
+	describe('query-request edge cases', function(){
+
+		it('should be valid with a null request', function(done) {
+			
+			var request = null,
+				listener = new NeDBQueryListener(),
+				parser = new QueryParser(listener, request);
+
+			expect(parser.isValid()).to.equal(true);
+			
+			done();
+		});
+
+		it('should be valid with minimal request parameters', function(done) {
+
+			var request = {},
+				listener = new NeDBQueryListener(),
+				parser = new QueryParser(listener, request);
+
+			expect(parser.isValid()).to.equal(true);
+			
+			done();
+		});
+
+		it('should be valid with whitespace for a filter', function(done) {
+
+			var request = {
+					filter: '   '
+				},
+				listener = new NeDBQueryListener(),
+				parser = new QueryParser(listener, request);
+
+			expect(parser.isValid()).to.equal(true);
+			
+			done();
+		});
+
+		it('should be in valid when the filter is invalid', function(done) {
+
+			var request = {
+					filter: 'INVALID QUERY'
+				},
+				listener = new NeDBQueryListener(),
+				parser = new QueryParser(listener, request);
+
+			expect(parser.isValid()).to.equal(false);
+			
+			done();
+		});
+		
+	});
 
 	describe('equals', function(){
 
