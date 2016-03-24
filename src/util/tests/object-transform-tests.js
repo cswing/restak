@@ -10,6 +10,26 @@ describe('util > object-transform', function() {
 
 	describe('#transform', function(){
 
+		it('should return null if the object passed in is null', function(done) {
+
+			var objTrans = new DefaultObjectTransform({ x: null }),
+				transObj = objTrans.transform(null);
+
+			expect(transObj).to.be.null;
+
+			done();
+		});
+
+		it('should return null if the object passed in is undefined', function(done) {
+
+			var objTrans = new DefaultObjectTransform({ x: null }),
+				transObj = objTrans.transform(undefined);
+
+			expect(transObj).to.be.null;
+
+			done();
+		});
+
 		it('should returned a transformed object with the x property', function(done) {
 
 			var objTrans = new DefaultObjectTransform({ x: null }),

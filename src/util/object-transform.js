@@ -28,6 +28,9 @@ var DefaultObjectTransform = function(propertiesObject){
 /** @inheritdoc */
 DefaultObjectTransform.prototype.transform = function(item){
 	
+	if(item == undefined || item == null)
+		return null;
+
 	var propertiesObject = this.propertiesObject,
 		transformedItem = {};
 
