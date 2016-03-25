@@ -4,16 +4,16 @@ var util = require('util'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
 	log4js = require('log4js'),
-	config = require('config'),
 	request = require('supertest'),
 	ResourceEndpoint = require('../../rest/endpoints/resource-endpoint'),
 	ApplicationContext = require('../application-context'),
-	ApplicationServer = require('../application-server');
+	ApplicationServer = require('../application-server'),
+	DefaultConfig = require('../config');
 
-// setup a config setting
-config.http = {
-	port: 21314
-};
+var config = new DefaultConfig({
+	'http.port': 21314
+});
+
 
 var appDescriptor = {
 	name: 'test app server',

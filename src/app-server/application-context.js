@@ -24,11 +24,15 @@ var cmdPrefix = 'restak.command.Command::',
  * @memberof restak.app-server
  * @implements restak.command.CommandFactory
  * @implements restak.query.QueryFactory
- * @param {config} config - configuration settings, provided by node-config. See https://www.npmjs.com/package/config
+ * @param {restak.app-server.Config} config - configuration settings
  */
 var ApplicationContext = function(config){
 	
-	/** */
+	/** 
+	 * The configuration settings.
+	 *
+	 * @type restak.app-server.Config
+	 */
 	this.config = config;
 
 	/** */

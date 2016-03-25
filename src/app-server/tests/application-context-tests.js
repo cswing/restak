@@ -3,11 +3,13 @@
 var util = require('util'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
-	config = require('config'),
-	ApplicationContext = require('../application-context');
+	ApplicationContext = require('../application-context'),
+	DefaultConfig = require('../config');
 
 // setup a config setting
-config['restak-test'] = 'restak application framework';
+var config = new DefaultConfig({
+	'restak-test': 'restak application framework'
+});
 
 describe('app-server > application-context', function() {
 

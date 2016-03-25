@@ -4,18 +4,19 @@ var util = require('util'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
 	mock = require('mock-fs'),
-	config = require('config');
+	DefaultConfig = require('../app-server/config');
 
-// setup a config setting
-config.http = {
-	port: 21314
-};
+var config = new DefaultConfig({
+	'http.port': 21314
+});
 
+/*
 config.restak = {
 	'data-dir': {
 		jobs: 'c:/jobs/'
 	}
 };
+*/
 
 var fs = mock.fs({
 	'c:/jobs/': {}
