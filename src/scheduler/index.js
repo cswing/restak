@@ -7,7 +7,8 @@ var log4js = require('log4js'),
 /**
  * @namespace restak.scheduler
  */
- 
+
+module.exports.nedb = require('./nedb'); 
 module.exports.restEndpoints = require('./rest-endpoints');
 
 /**

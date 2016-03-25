@@ -3,23 +3,10 @@
 var util = require('util'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
-	mock = require('mock-fs'),
 	DefaultConfig = require('../app-server/config');
 
 var config = new DefaultConfig({
 	'http.port': 21314
-});
-
-/*
-config.restak = {
-	'data-dir': {
-		jobs: 'c:/jobs/'
-	}
-};
-*/
-
-var fs = mock.fs({
-	'c:/jobs/': {}
 });
 
 var appServer;
@@ -50,13 +37,14 @@ describe('restak core', function() {
 			appContext = new ApplicationContext(config);
 
 		// Registration
-		//restak.scheduler.nedb.register(appContext); // TMP until nedb scheduler is implemented
-		//restak.scheduler.register(appContext);
+		restak.scheduler.nedb.register(appContext);
+		restak.scheduler.register(appContext);
 
 		appServer = new ApplicationServer(appDescriptor, appContext);
 		appServer.start(function(){
 			
-			// test that there is a scheduler object
+			expect(appContext.getObject('restak.scheduler.Scheduler')).to.not.be.null;
+			
 			done();
 		});		
 	});
