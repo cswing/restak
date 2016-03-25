@@ -77,7 +77,9 @@ MarkJobExecutingCommand.prototype.execute = function(cmdInstr, callback){
 		}
 
 		if(numReplaced == 0) {
-			return callback('A job with the id does not exist: ' + job.id, null);
+			var msg = 'Job [' + job.id + '] does not exist';
+			logger.warn(msg);
+			return callback(msg, null);
 		}
 
 		jobInstance.status = JobInstanceStatus.Executing;

@@ -60,7 +60,7 @@ describe('scheduler > nedb > update-job-scheduled-timestamp', function() {
 				};
 
 			command.execute(instr, function(err, result){
-				expect(err).to.equal('A job with the id does not exist: 12345');
+				expect(err).to.equal('Job [12345] does not exist');
 				expect(result).to.be.null;
 				done();
 			});

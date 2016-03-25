@@ -47,7 +47,9 @@ UpdateJobScheduledTimestampCommand.prototype.execute = function(cmdInstr, callba
 		}
 
 		if(numReplaced == 0) {
-			return callback('A job with the id does not exist: ' + jobId, null);
+			var msg = 'Job [' + jobId + '] does not exist';
+			logger.warn(msg);
+			return callback(msg, null);
 		}
 
 		logger.debug('Job [' + jobId + '] updated for next timestamp [' + timestamp + ']');
