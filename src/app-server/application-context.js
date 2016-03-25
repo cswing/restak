@@ -59,11 +59,13 @@ var ApplicationContext = function(config){
  * Retrieve a configuration setting using node-config.
  * 
  * @param {string} key - the key to use to locate a value for the setting.
+ * @param {boolean} throwIfNotFound - defaults to true.  Throw an error if the setting is not specified; otherwise return null.
  */
-ApplicationContext.prototype.getConfigSetting = function(key){
+ApplicationContext.prototype.getConfigSetting = function(key, throwIfNotFound){
 	
-	if(!this.config)
+	if(throwIfNotFound === false && !this.config.has(key)){
 		return null;
+	}
 
 	return this.config.get(key);
 };

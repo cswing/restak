@@ -35,13 +35,43 @@ describe('app-server > application-context', function() {
 			done();
 		});
 
-		it('should return null because no config was provided', function(done) {
-			
-			var ctx = new ApplicationContext(),
-				val = ctx.getConfigSetting('restak-test');
+		it('should return null for a setting not found', function(done){
+
+			var ctx = new ApplicationContext(config),
+				val = ctx.getConfigSetting('restak-test-not-there', false);
 
 			expect(val).to.be.null;
-			
+
+			done();
+		});
+
+		it('should throw an error - I', function(done){
+
+			var ctx = new ApplicationContext(config);
+
+			try{
+				ctx.getConfigSetting('restak-test-not-there');
+				done('error expected');
+
+			}catch(err){
+				expect(err).to.equal('Undefined setting: restak-test-not-there');
+			}
+
+			done();
+		});
+
+		it('should throw an error - II', function(done){
+
+			var ctx = new ApplicationContext(config);
+
+			try{
+				ctx.getConfigSetting('restak-test-not-there', true);
+				done('error expected');
+
+			}catch(err){
+				expect(err).to.equal('Undefined setting: restak-test-not-there');
+			}
+
 			done();
 		});
 	});
