@@ -18,6 +18,6 @@ module.exports.restEndpoints = require('./rest-endpoints');
  * @see restak.app-server.register
  */
 module.exports.register = function(appContext) {
-	var jobsQuery = appContext.getQuery('restak.scheduler.JobsQuery');
+	var jobsQuery = appContext.getQuery('restak.scheduler.JobQuery');
 	appContext.registerObject('restak.scheduler.Scheduler', new Scheduler(jobsQuery, appContext.commandExecutor));
 };
