@@ -3,7 +3,7 @@
 /**
  * Provides a {@link restak.query.Query} implementation using NeDB as the backing datastore.
  *
- * @namespace restak.query.nedb
+ * @namespace restak.nedb.query
  */
 
 module.exports.NeDBQueryListener = require('./nedb-query-listener.js');

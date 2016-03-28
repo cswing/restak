@@ -118,4 +118,3 @@ module.exports.QueryNotFoundError = QueryNotFoundError;
 module.exports.QueryExecutor = require('./query-executor');
 module.exports.antlr = require('./antlr');
 module.exports.objectQuery = require('./object-query');
-module.exports.nedb = require('./nedb');

@@ -1,16 +1,16 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.query.nedb.NeDBQuery'),
-	QueryParser = require('../antlr/query-parser'),
+	logger = log4js.getLogger('restak.nedb.query.NeDBQuery'),
+	QueryParser = require('../../query/antlr/query-parser'),
 	NeDBQueryListener = require('./nedb-query-listener'),
-	queryUtil = require('../query-util');
+	queryUtil = require('../../query/query-util');
 
 /**
  * A {@link restak.query.Query} implementation that uses NeDB as the underlying data store.
  *
  * @constructor
- * @memberof restak.query.nedb
+ * @memberof restak.nedb.query
  * @implements restak.query.Query
  * @param {nedb.Datastore} store - The NeDB datastore.
  * @param {restak.util.ObjectTransform} objectTransform - optional, a way to transform the object from what exists in the store to what should be returned.
@@ -36,7 +36,7 @@ var NeDBQuery = function(store, objectTransform){
 	 * The parser listener used in the parsing of the filter.
 	 *
 	 * @protected
-	 * @type restak.query.nedb.NeDBQueryListener
+	 * @type restak.nedb.query.NeDBQueryListener
 	 */
 	this.listener = new NeDBQueryListener();
 };

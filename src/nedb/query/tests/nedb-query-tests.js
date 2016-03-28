@@ -5,7 +5,7 @@ var expect = require('chai').expect,
 	Datastore = require('nedb'),
 	NeDBQuery = require('../nedb-query');
 
-describe('query > nedb > query', function() {
+describe('nedb > query > nedb-query', function() {
 
 	var db,
 		docs = [

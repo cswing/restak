@@ -5,7 +5,7 @@ var expect = require('chai').expect,
 	mock = require('mock-fs'),
 	moment = require('moment'),
 	Datastore = require('nedb'),
-	models = require('../../models'),
+	models = require('../../../scheduler/models'),
 	transforms = require('../transforms'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus,
@@ -13,7 +13,7 @@ var expect = require('chai').expect,
 
 var testJob = { "id": "12345", "name": "testJob", "data": {} };
 
-describe('scheduler > nedb > mark-job-executing', function() {
+describe('nedb > scheduler > mark-job-executing', function() {
 
 	describe('#execute', function(){
 

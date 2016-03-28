@@ -6,7 +6,7 @@ var util = require('util'),
 	QueryExecutor = require('../query-executor'),
 	QueryNotFoundError = require('../index').QueryNotFoundError;
 
-describe.only('query > query-executor', function() {
+describe('query > query-executor', function() {
 
 	describe('#execute', function(){
 

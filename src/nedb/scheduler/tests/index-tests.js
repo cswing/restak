@@ -9,17 +9,17 @@ var util = require('util'),
 	DefaultConfig =  require('../../../app-server/config'),
 	register = require('../index').register;
 
-describe('scheduler > nedb', function() {
+describe('nedb > scheduler', function() {
 
 	describe('#register', function(){
 
 		var expectObjects = function(appContext) {
-			expect(appContext.getObject('restak.scheduler.nedb.JobsDb')).to.not.be.null;
-			expect(appContext.getObject('restak.scheduler.nedb.JobTransform')).to.not.be.null;
+			expect(appContext.getObject('restak.nedb.scheduler.JobsDb')).to.not.be.null;
+			expect(appContext.getObject('restak.nedb.scheduler.JobTransform')).to.not.be.null;
 			expect(appContext.hasQuery('restak.scheduler.JobsQuery')).to.equal(true);
 
-			expect(appContext.getObject('restak.scheduler.nedb.JobInstancesDb')).to.not.be.null;
-			expect(appContext.getObject('restak.scheduler.nedb.JobInstanceTransform')).to.not.be.null;
+			expect(appContext.getObject('restak.nedb.scheduler.JobInstancesDb')).to.not.be.null;
+			expect(appContext.getObject('restak.nedb.scheduler.JobInstanceTransform')).to.not.be.null;
 			expect(appContext.hasQuery('restak.scheduler.JobInstancessQuery')).to.equal(true);
 
 			expect(appContext.hasCommand('restak.scheduler.UpdateJobScheduledTimestampCommand')).to.equal(true);
@@ -70,7 +70,7 @@ describe('scheduler > nedb', function() {
 			var expectTasks = [];
 
 			expectTasks.push(function(cb){
-				var jobsDb = appContext.getObject('restak.scheduler.nedb.JobsDb');
+				var jobsDb = appContext.getObject('restak.nedb.scheduler.JobsDb');
 				jobsDb.find({}, function(err, docs){
 					
 					// TODO inspect documents
@@ -80,7 +80,7 @@ describe('scheduler > nedb', function() {
 			});
 
 			expectTasks.push(function(cb){
-				var instancesDb = appContext.getObject('restak.scheduler.nedb.JobInstancesDb');
+				var instancesDb = appContext.getObject('restak.nedb.scheduler.JobInstancesDb');
 				instancesDb.find({}, function(err, docs){
 					
 					// TODO inspect documents

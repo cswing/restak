@@ -3,9 +3,9 @@
 var expect = require('chai').expect,
 	assert = require('chai').assert,
 	NeDBQueryListener = require('../nedb-query-listener'),
-	QueryParser = require('../../antlr/query-parser');
+	QueryParser = require('../../../query/antlr/query-parser');
 
-describe('query > nedb > query-listener', function() {
+describe('nedb > query > query-listener', function() {
 
 	describe('query-request edge cases', function(){
 

@@ -37,7 +37,7 @@ describe('restak core', function() {
 			appContext = new ApplicationContext(config);
 
 		// Registration
-		restak.scheduler.nedb.register(appContext);
+		restak.nedb.scheduler.register(appContext);
 		restak.scheduler.register(appContext);
 
 		appServer = new ApplicationServer(appDescriptor, appContext);

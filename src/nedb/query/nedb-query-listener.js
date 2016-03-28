@@ -1,15 +1,15 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.query.nedb.nedb-query-listener'),
+	logger = log4js.getLogger('restak.nedb.nedb.query-query-listener'),
 	util = require('util'),
-	QueryListener = require('../antlr').QueryListener;
+	QueryListener = require('../../query/antlr').QueryListener;
 
 /**
  * Takes the output of filter parsing and creates a set of javascript object for an NeDB find call.
  *
  * @constructor
- * @memberof restak.query.nedb
+ * @memberof restak.nedb.query
  * @implements restak.query.antlr.QueryListener
  */
 var NeDBQueryListener = function(){

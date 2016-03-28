@@ -1,9 +1,9 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.scheduler.nedb.MarkJobExecutingCommand'),
+	logger = log4js.getLogger('restak.nedb.scheduler.MarkJobExecutingCommand'),
 	async = require('async'),
-	models = require('../models'),
+	models = require('../../scheduler/models'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus;
 
@@ -12,7 +12,7 @@ var log4js = require('log4js'),
  *
  * @constructor
  * @implements restak.commands.Command
- * @memberof restak.scheduler.nedb
+ * @memberof restak.nedb.scheduler
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
  * @param {nedb.Datastore} jobInstanceStore - The NeDB datastore for job instances.
  * @param {restak.util.ObjectTransform} jobTransform - optional, a way to transform the job from what exists in the store to what should be returned.
