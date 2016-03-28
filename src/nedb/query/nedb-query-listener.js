@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = require('log4js'),
-	logger = log4js.getLogger('restak.nedb.nedb.query-query-listener'),
+	logger = log4js.getLogger('restak.nedb.query.query-listener'),
 	util = require('util'),
 	QueryListener = require('../../query/antlr').QueryListener;
 
