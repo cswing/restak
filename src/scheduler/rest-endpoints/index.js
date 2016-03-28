@@ -8,6 +8,7 @@ var log4js = global.log4js || require('log4js'),
  * @namespace restak.scheduler.rest-endpoints
  */
  
+module.exports.util = require('./job-util');
 
 /**
  * Register the necessary objects for the {@link restak.scheduler} namespace.  It requires the commands and query to exist in the appContext.

@@ -13,7 +13,8 @@ var	logger = log4js.getLogger('restak.sample-server'),
 	restak = require('../index'),
 	ApplicationContext = restak.appServer.ApplicationContext,
 	ApplicationServer = restak.appServer.ApplicationServer,
-	ResourceEndpoint = restak.rest.endpoints.ResourceEndpoint;
+	ResourceEndpoint = restak.rest.endpoints.ResourceEndpoint,
+	createJobCollectionLink = restak.scheduler.restEndpoints.util.createJobCollectionLink;
 
 var MainEndpoint = function(logger, path){
 	ResourceEndpoint.apply(this, arguments);
@@ -22,7 +23,7 @@ util.inherits(MainEndpoint, ResourceEndpoint);
 
 MainEndpoint.prototype.getPayload = function(req, callback){
 	var payload = {
-		jobs: this.buildResourceLink(req, 'Jobs', 'jobs', '/scheduler/jobs')
+		jobs: createJobCollectionLink(this, {req: req})
 	};
 
 	callback(null, payload);
