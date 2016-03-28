@@ -3,6 +3,7 @@
 var log4js = require('log4js'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
+	util = require('util'),
 	urlUtil = require('url'),
 	request = require('supertest'),
 	RestServer = require('../../server'),
@@ -107,6 +108,149 @@ describe('rest > endpoints > collection-endpoint', function() {
 					expectLink(payload.links[2], 'Next', 'next', '/testpath?page=4&pageSize=1&filter=test~%22foo%22&');
 					expectLink(payload.links[3], 'Last', 'last', '/testpath?page=5&pageSize=1&filter=test~%22foo%22&');
 					
+					done();
+				});
+		});
+
+		var OverridesCollection = function(fixedFilter, processor){
+			CollectionEndpoint.apply(this, [logger, '/testpath', 'test-query']);
+			this.fixedFilter = fixedFilter || null;
+			this.itemPostProcessor = processor || function(itm) {return itm;};
+		};
+		util.inherits(OverridesCollection, CollectionEndpoint);
+
+		OverridesCollection.prototype.getFixedFilter = function(req){
+			return this.fixedFilter;
+		};
+
+		OverridesCollection.prototype.postProcessItem = function(item, context){
+			return this.itemPostProcessor(item, context);
+		};
+
+		it('should apply the fixed filter to a query without a filter', function(done){
+
+			var queryFilter = null;
+
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
+					
+					queryFilter = qr.filter + ''; // create a new string, because the filter property is updated before we test for it.
+
+					callback(null, { 
+						filter: qr.filter,
+						pageSize: 1,
+						pageCount: 5,
+						page: 3,
+						totalCount: 5,
+						items: [{ x: 'a' }]
+					});
+				}
+			};
+
+			var endpoint = new OverridesCollection('fixed=1', null);
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
+
+			request(server.app)
+				.get('/testpath')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res){
+					expect(err).to.be.null;					
+					expect(queryFilter).to.equal('fixed=1');
+
+					var payload = res.body.payload;
+
+					expect(payload.filter).to.equal('');
+
+					done();
+				});
+		});
+
+		it('should apply the fixed filter to a query with a filter', function(done){
+
+			var queryFilter = null;
+
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
+					
+					queryFilter = qr.filter + ''; // create a new string, because the filter property is updated before we test for it.
+
+					callback(null, { 
+						filter: qr.filter,
+						pageSize: 1,
+						pageCount: 5,
+						page: 3,
+						totalCount: 5,
+						items: [{ x: 'a' }]
+					});
+				}
+			};
+
+			var endpoint = new OverridesCollection('fixed=1', null);
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
+
+			request(server.app)
+				.get('/testpath?filter=test~"foo"')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					expect(queryFilter).to.equal('(fixed=1) AND (test~"foo")');
+
+					var payload = res.body.payload;
+
+					expect(payload.filter).to.equal('test~"foo"');
+
+					done();
+				});
+		});
+
+		it('should use the post processor', function(done){
+
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {					
+					callback(null, { 
+						filter: qr.filter,
+						pageSize: 1,
+						pageCount: 5,
+						page: 3,
+						totalCount: 5,
+						items: [{ x: 'a' }]
+					});
+				}
+			};
+
+			var itemProcessor = function(itm, ctx){
+
+				itm.foo = {
+					bar: 'test'
+				};
+
+				return itm;
+			};
+
+			var endpoint = new OverridesCollection(null, itemProcessor);
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer([endpoint], serverConfig);
+
+			request(server.app)
+				.get('/testpath')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					
+					var payload = res.body.payload,
+						item = payload.items[0];
+
+					expect(item).to.not.be.null;
+					expect(item).to.have.deep.property('foo.bar', 'test');
+
 					done();
 				});
 		});
