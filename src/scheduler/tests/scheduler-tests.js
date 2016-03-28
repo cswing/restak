@@ -101,8 +101,6 @@ describe('scheduler', function() {
 
 			scheduler.initialize(function(err){
 
-				console.dir('test');
-
 				expect(err).to.be.null;
 
 				var jobRegistration = scheduler.jobStore['132132'];
@@ -257,12 +255,17 @@ describe('scheduler', function() {
 					executeCommand: function(key, data, cb){
 						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
 							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
-							data.instance.instanceId = '0123456-0'
-							cb(null, data);
+
+							// Simulate reloading the data from the database where the database is responsible for id generation
+							var result = JSON.parse(JSON.stringify(data));
+							result.instance.instanceId = '0123456-0'
+
+							cb(null, result);
 							return;
 						}
 
 						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+
 							jobInstance_post = data.instance;
 							cb(null, data);
 							return;

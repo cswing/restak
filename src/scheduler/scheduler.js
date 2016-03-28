@@ -197,28 +197,30 @@ Scheduler.prototype.invokeJobCommand = function() {
 	commandExecutor.executeCommand('restak.scheduler.MarkJobExecutingCommand', {
 			job: job,
 			instance: jobInstance
-		}, function(err){
+		}, function(err, result){
 
 			if(err) {
 				logger.error('An error occurred preparing for job execution: ' + err);
 				return;
 			}
 
+			// The data may have been reloaded from the data store when executing MarkJobExecutingCommand 
+			job = result.job;
+			var instance = result.instance;
+
 			var onCommandExecution = function(err, result) {
 
-				//job.status = JobDescriptorStatus.
-
 				if(err) {
-					jobInstance.status = JobInstanceStatus.Error;
-					jobInstance.result = err;
+					instance.status = JobInstanceStatus.Error;
+					instance.result = err;
 				} else {
-					jobInstance.status = JobInstanceStatus.Completed;
-					jobInstance.result = (result || {}).data || null;
+					instance.status = JobInstanceStatus.Completed;
+					instance.result = (result || {}).data || null;
 				}
 
 				commandExecutor.executeCommand('restak.scheduler.MarkJobExecutedCommand', {
 					job: job,
-					instance: jobInstance
+					instance: instance
 				}, function(err){
 					if(err) {
 						logger.error('An error occurred updating job status: ' + err);
@@ -228,7 +230,7 @@ Scheduler.prototype.invokeJobCommand = function() {
 
 			try {
 				
-				commandExecutor._execute(job.command, jobInstance, onCommandExecution);
+				commandExecutor._execute(job.command, instance, onCommandExecution);
 
 			} catch(err){
 				
