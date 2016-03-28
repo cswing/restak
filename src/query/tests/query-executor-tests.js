@@ -6,26 +6,26 @@ var util = require('util'),
 	QueryExecutor = require('../query-executor'),
 	QueryNotFoundError = require('../index').QueryNotFoundError;
 
-describe('query > query-executor', function() {
+describe.only('query > query-executor', function() {
 
 	describe('#execute', function(){
 
 		it('should execute the query and return the data in result', function(done){
 
-			var qryResult = { test: 'ABC' },
-				cmd = {
+			var qryResult = { filter: 'foo=1', page: 1, totalCount: 10 },
+				qry = {
 					execute: function(ci, cb){
 						cb(null, qryResult);
 					}
 				},
 				queryFactory = {
 					getQuery: function(key){
-						return cmd;
+						return qry;
 					}
 				},
 				queryExecutor = new QueryExecutor(queryFactory);
 
-				queryExecutor.executeQuery('test', { test: 'XYZ' }, function(err, result){
+				queryExecutor.executeQuery('test', { filter: 'foo=1' }, function(err, result){
 					expect(err).to.be.null;
 					expect(result).to.not.be.null;
 					expect(result).to.deep.equal(qryResult);
@@ -43,10 +43,34 @@ describe('query > query-executor', function() {
 				},
 				queryExecutor = new QueryExecutor(queryFactory);
 
-			queryExecutor.executeQuery('test', { test: 'XYZ' }, function(err, result){
+			queryExecutor.executeQuery('test', { filter: 'foo=1' }, function(err, result){
 
 				expect(err).to.not.be.null;
 				expect(err).to.have.property('message', 'Unknown query: test');
+
+				done();
+			});
+		});
+
+		it('should handle an error returned by the query', function(done){
+
+			var qryResult = { filter: 'foo=1', page: 1, totalCount: 10 },
+				qry = {
+					execute: function(ci, cb){
+						cb('An unexpected error', null);
+					}
+				},
+				queryFactory = {
+					getQuery: function(key){
+						return qry;
+					}
+				},
+				queryExecutor = new QueryExecutor(queryFactory);
+
+			queryExecutor.executeQuery('test', { filter: 'foo=1' }, function(err, result){
+
+				expect(err).to.equal('An unexpected error');
+				expect(result).to.be.null;
 
 				done();
 			});

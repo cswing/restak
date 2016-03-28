@@ -34,12 +34,31 @@ QueryExecutor.prototype.executeQuery = function(queryKey, queryRequest, callback
 	try{
 		query = this.queryFactory.getQuery(queryKey);	
 	
-	} catch(err) { 
+	} catch(err) {
+		logger.error('Asked to execute an unknown query ' + queryKey);
+		logger.error(err);
+
 		callback(err, null);
 		return;
 	}
 
-	query.execute(queryRequest, callback);	
+	if(logger.isDebugEnabled()) {
+		logger.debug('Executing query [' + queryKey + ']: ' + JSON.stringify(queryRequest));
+	}
+	
+	query.execute(queryRequest, function(err, qResult){
+
+		if(err){
+			logger.error('An error occurred executing query [' + queryKey + ']');
+			logger.error(err);
+		} else {
+			if(logger.isDebugEnabled()) {
+				logger.debug('Query [' + queryKey + '] returned ' + qResult.totalCount + ' items for query: ' + JSON.stringify(queryRequest));
+			}
+		}
+
+		callback(err, qResult);
+	});
 };
 
 module.exports = QueryExecutor;
