@@ -1,12 +1,11 @@
 {
 	"appenders": [
 		{ 
-			"type": "console",
-			"level": "DEBUG"
+			"type": "console"
 		}
 	],
 	"replaceConsole": true,
 	"levels": {
-		
+		"[all]": "DEBUG"
 	}
 }

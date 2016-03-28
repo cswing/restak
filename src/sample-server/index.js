@@ -5,39 +5,43 @@
 process.env.NODE_CONFIG_DIR = __dirname +'\\config';
 
 var log4js = require('log4js');
-log4js.configure(process.env.NODE_CONFIG_DIR + '/log4js.json');
+log4js.configure(process.env.NODE_CONFIG_DIR + '\\log4js.json');
 
-var	logger = log4js.getLogger('main'),
+var	logger = log4js.getLogger('restak.sample-server'),
 	config = require('config'),
-	express = require('express');
+	util = require('util'),
+	restak = require('../index'),
+	ApplicationContext = restak.appServer.ApplicationContext,
+	ApplicationServer = restak.appServer.ApplicationServer,
+	ResourceEndpoint = restak.rest.endpoints.ResourceEndpoint;
 
-// Configuration
-var httpPort = config.get('http.port');
+var MainEndpoint = function(logger, path){
+	ResourceEndpoint.apply(this, arguments);
+};
+util.inherits(MainEndpoint, ResourceEndpoint);
 
-/**
- * Main class. Wraps an express application to provide REST services.
- *
- * @constructor
- * @param {Number} port - The port number to listen on
- */
-var Main = function(port){
-	this.port = port;
-	this.app = express();
+MainEndpoint.prototype.getPayload = function(req, callback){
+	var payload = {
+		jobs: this.buildResourceLink(req, 'Jobs', 'jobs', '/scheduler/jobs')
+	};
+
+	callback(null, payload);
 };
 
-Main.prototype.start = function() {
+// Configure application context & server.
+var appDescriptor = {
+		name: 'Restak Sample Server',
+		version: '0.1.0'
+	},
+	appContext = new ApplicationContext(config);
 
-	var app = this.app,
-		port = this.port;
 
-	// 
-	app.get('/', function (req, res) {
-		res.send('Sample REST Server!');
-	});
+// Registration
+restak.nedb.scheduler.register(appContext);
+restak.scheduler.register(appContext);
+restak.scheduler.restEndpoints.register(appContext);
 
-	app.listen(port, function () {
-		logger.info('Sample REST app listening on port ' + port);
-	});
-};
+appContext.registerEndpoint('main', new MainEndpoint(logger, '/'));
 
-new Main(httpPort).start();
+var appServer = new ApplicationServer(appDescriptor, appContext);
+appServer.start();
