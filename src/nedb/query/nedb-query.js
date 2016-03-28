@@ -1,6 +1,6 @@
 'use strict';
 
-var log4js = require('log4js'),
+var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.nedb.query.NeDBQuery'),
 	QueryParser = require('../../query/antlr/query-parser'),
 	NeDBQueryListener = require('./nedb-query-listener'),

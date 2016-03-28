@@ -5,7 +5,7 @@
 	- logging
  */
 
-var log4js = require('log4js');
+var log4js = global.log4js || require('log4js');
 
 before(function() {
 

@@ -4,7 +4,7 @@
 // this supports the development environment
 process.env.NODE_CONFIG_DIR = __dirname +'\\config';
 
-var log4js = require('log4js');
+var log4js = global.log4js = require('log4js');
 log4js.configure(process.env.NODE_CONFIG_DIR + '\\log4js.json');
 
 var	logger = log4js.getLogger('restak.sample-server'),

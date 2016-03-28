@@ -1,6 +1,6 @@
 'use strict';
 
-var log4js = require('log4js'),
+var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.rest.ResourcePutEndpoint'),
 	util = require('util'),
 	validate = require('express-validation'),

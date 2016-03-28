@@ -1,4 +1,4 @@
-var log4js = require('log4js'),
+var log4js = global.log4js || require('log4js'),
 	util = require('util'),
 	BaseCollectionEndpoint = require('../../rest/endpoints/collection-endpoint'),
 	BaseResourceGetEndpoint = require('../../rest/endpoints/resource-query-endpoint'),
