@@ -35,7 +35,7 @@ module.exports.register = function(appContext, opts) {
 	appContext.registerQuery('restak.scheduler.JobQuery', new NeDBQuery(jobDb, jobTransform));
 
 	// Job Instances
-	var instanceDb = appContext.registerNeDb('restak.nedb.scheduler.JobInstanceStore', 'restak.data-dir.job-instances');
+	var instanceDb = appContext.registerNeDb('restak.nedb.scheduler.JobInstanceDb', 'restak.data-dir.job-instances');
 	appContext.registerObject('restak.nedb.scheduler.JobInstanceTransform', jobInstanceTransform);
 	appContext.registerQuery('restak.scheduler.JobInstanceQuery', new NeDBQuery(instanceDb, jobInstanceTransform));
 

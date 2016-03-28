@@ -26,7 +26,7 @@ var processItem = function(item, context){
 var CollectionEndpoint = function(){
 	
 	BaseCollectionEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.CollectionEndpoint'), '/scheduler/jobs', 'restak.scheduler.JobsQuery']);
+		log4js.getLogger('restak.scheduler.jobs.CollectionEndpoint'), '/scheduler/jobs', 'restak.scheduler.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
