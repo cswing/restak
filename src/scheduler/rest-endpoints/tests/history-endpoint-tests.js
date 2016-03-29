@@ -63,7 +63,7 @@ describe('scheduler > rest-endpoints > history > collection', function() {
 					expect(item).to.have.deep.property('links.length', 3);
 					expectLink(item.links[0], 'Test Job', 'job', '/scheduler/jobs/1234');
 					expectLink(item.links[1], 'Test Job History', 'job-history', '/scheduler/jobs/1234/history');
-					expectLink(item.links[2], 'Test Job History', 'job-history', '/scheduler/jobs/1234/history/1234-0');
+					expectLink(item.links[2], 'Test Job History Instance', 'job-history-instance', '/scheduler/jobs/1234/history/1234-0');
 
 					done();
 				});
@@ -111,7 +111,7 @@ describe('scheduler > rest-endpoints > history > resource-get', function() {
 					expect(item).to.have.deep.property('links.length', 3);
 					expectLink(item.links[0], 'Test Job', 'job', '/scheduler/jobs/1234');
 					expectLink(item.links[1], 'Test Job History', 'job-history', '/scheduler/jobs/1234/history');
-					expectLink(item.links[2], 'Test Job History', 'job-history', '/scheduler/jobs/1234/history/1234-0');
+					expectLink(item.links[2], 'Test Job History Instance', 'job-history-instance', '/scheduler/jobs/1234/history/1234-0');
 
 					done();
 				});

@@ -13,5 +13,5 @@ module.exports.createJobHistoryCollectionLink = function(endpoint, job, context)
 };
 
 module.exports.createJobHistoryResourceLink = function(endpoint, instance, context){
-	return endpoint.buildResourceLink(context.req, instance.name + ' History', 'job-history', '/scheduler/jobs/' + instance.jobId + '/history/' + instance.instanceId);
+	return endpoint.buildResourceLink(context.req, instance.name + ' History Instance', 'job-history-instance', '/scheduler/jobs/' + instance.jobId + '/history/' + instance.instanceId);
 };
