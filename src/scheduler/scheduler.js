@@ -7,7 +7,8 @@ var log4js = global.log4js || require('log4js'),
 	moment = require('moment'),
 	models = require('./models'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
-	JobInstanceStatus = models.JobInstanceStatus;
+	JobInstanceStatus = models.JobInstanceStatus,
+	Execution = require('./execution');
 
 /**
  * The core component of the scheduler functionality.  The scheduler will wrap the node-scheduler functionality,
@@ -171,79 +172,10 @@ Scheduler.prototype.invokeJobCommand = function() {
 
 	var job = this.job,
 		scheduler = this.scheduler,
-		commandExecutor = scheduler.commandExecutor;
+		commandExecutor = scheduler.commandExecutor,
+		execution = new Execution(commandExecutor, job);
 
-	var jobInstance = {
-		jobId: job.id,
-		name: job.name,
-		instanceId: null,
-		status: JobInstanceStatus.Executing,
-		startTimestamp: moment().toISOString(),
-		endTimestamp: null,
-		user: {
-			id: 'SYSTEM',
-			name: 'System'
-		},
-		data: job.data
-	};
-
-	commandExecutor.executeCommand('restak.scheduler.MarkJobExecutingCommand', {
-			job: job,
-			instance: jobInstance
-		}, function(err, result){
-
-			if(err) {
-				logger.error('An error occurred preparing for job execution: ' + err);
-				return;
-			}
-
-			// The data may have been reloaded from the data store when executing MarkJobExecutingCommand 
-			var executingJob = result.job,
-				instance = result.instance;
-
-			var onCommandExecution = function(err, result) {
-
-				instance.endTimestamp = moment().toISOString();
-
-				if(executingJob.schedule) {
-					executingJob.status = JobDescriptorStatus.Scheduled;
-				} else {
-					executingJob.status = JobDescriptorStatus.Completed;
-				}
-
-				if(err) {
-					instance.status = JobInstanceStatus.Error;
-					instance.result = err;
-				} else {
-					instance.status = JobInstanceStatus.Completed;
-					instance.result = (result || {}).data || null;
-				}
-
-				commandExecutor.executeCommand('restak.scheduler.MarkJobExecutedCommand', {
-					job: executingJob,
-					instance: instance
-				}, function(err){
-					if(err) {
-						logger.error('An error occurred updating job status: ' + err);
-					}
-				});
-			};
-
-			try {
-				
-				commandExecutor._execute(executingJob.command, instance, onCommandExecution);
-
-			} catch(err){
-				
-				var err = err || 'An error occurred';
-				
-				if(err instanceof Error) {
-					onCommandExecution(err.message, null);
-				} else {
-					onCommandExecution((err || '').toString(), null);
-				}
-			}
-		});
+	execution.invoke();
 };
 
 module.exports = Scheduler;
