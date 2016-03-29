@@ -3,7 +3,7 @@
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.scheduler'),
 	jobEndpoints = require('./job-endpoints'),
-	instanceEndpoints = require('./instance-endpoints');
+	historyEndpoints = require('./history-endpoints');
 
 /**
  * @namespace restak.scheduler.rest-endpoints
@@ -14,7 +14,7 @@ var log4js = global.log4js || require('log4js'),
  */
 
 /**
- * @namespace restak.scheduler.rest-endpoints.instances
+ * @namespace restak.scheduler.rest-endpoints.history
  */
  
 module.exports.util = require('./job-util');
@@ -29,6 +29,6 @@ module.exports.util = require('./job-util');
 module.exports.register = function(appContext, options) {
 	appContext.registerEndpoint('restak.scheduler.rest-endpoints.JobsCollection', new jobEndpoints.CollectionEndpoint());
 	appContext.registerEndpoint('restak.scheduler.rest-endpoints.JobResourceGet', new jobEndpoints.ResourceGetEndpoint());
-	appContext.registerEndpoint('restak.scheduler.rest-endpoints.InstancesCollection', new instanceEndpoints.CollectionEndpoint());
-	appContext.registerEndpoint('restak.scheduler.rest-endpoints.InstanceResourceGet', new instanceEndpoints.ResourceGetEndpoint());
+	appContext.registerEndpoint('restak.scheduler.rest-endpoints.HistoryCollection', new historyEndpoints.CollectionEndpoint());
+	appContext.registerEndpoint('restak.scheduler.rest-endpoints.HistoryResourceGet', new historyEndpoints.ResourceGetEndpoint());
 };
