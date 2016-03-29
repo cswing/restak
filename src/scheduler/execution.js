@@ -67,8 +67,8 @@ Execution.prototype._markExecuting = function(callback){
 			}
 
 			// Update job and instance witht he results of the command
-			_t.job = result.job;
-			_t.jobInstance = result.instance;
+			_t.job = result.data.job;
+			_t.jobInstance = result.data.instance;
 
 			callback(null);
 		});
@@ -107,14 +107,14 @@ Execution.prototype._markExecuted = function(){
 	commandExecutor.executeCommand('restak.scheduler.MarkJobExecutedCommand', {
 		job: job,
 		instance: jobInstance
-	}, function(err, data){
+	}, function(err, result){
 		if(err) {
 			logger.error('An error occurred updating job status: ' + err);
 			return;
 		}
 
-		_t.job = data.job;
-		_t.jobInstance = data.instance;
+		_t.job = result.data.job;
+		_t.jobInstance = result.data.instance;
 	});
 
 };
@@ -127,7 +127,7 @@ Execution.prototype.invoke = function(){
 		if(err) return;
 
 		_t._executeCommand(function(err, result){
-			
+
 			var job = _t.job,
 				jobInstance = _t.jobInstance;
 
@@ -144,7 +144,7 @@ Execution.prototype.invoke = function(){
 				jobInstance.result = err;
 			} else {
 				jobInstance.status = JobInstanceStatus.Completed;
-				jobInstance.result = result || null;
+				jobInstance.result = (result || {}).data || null;
 			}
 
 			_t._markExecuted();

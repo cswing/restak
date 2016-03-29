@@ -22,12 +22,12 @@ CommandExecutorMock.prototype.executeCommand = function(key, data, callback){
 		this.jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
 
 		// Simulate reloading the data from the database where the database is responsible for id generation
-		var result = JSON.parse(JSON.stringify(data));
-		result.job.status = JobDescriptorStatus.Executing;
+		var resultData = JSON.parse(JSON.stringify(data));
+		resultData.job.status = JobDescriptorStatus.Executing;
 
-		result.instance.instanceId = '0123456-0'
+		resultData.instance.instanceId = '0123456-0'
 
-		callback(null, result);
+		callback(null, { data: resultData });
 		return;
 	}
 
@@ -35,7 +35,8 @@ CommandExecutorMock.prototype.executeCommand = function(key, data, callback){
 
 		this.job_post = JSON.parse(JSON.stringify(data.job));
 		this.jobInstance_post = JSON.parse(JSON.stringify(data.instance));
-		callback(null, data);
+
+		callback(null, { data: data });
 		return;
 	}
 
@@ -44,7 +45,9 @@ CommandExecutorMock.prototype.executeCommand = function(key, data, callback){
 
 CommandExecutorMock.prototype._execute = function(key, data, callback){
 	if(key == 'test.job') {
-		this.command(data, callback);
+		this.command(data, function(err, data){
+			callback(err, { data: data });
+		});
 		return;
 	}
 
