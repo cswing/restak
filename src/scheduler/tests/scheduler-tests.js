@@ -110,7 +110,7 @@ describe('scheduler', function() {
 				done();
 			});
 		});
-		
+
 		it('it should handle one-time jobs that do not have a schedule attribute', function(done) {
 
 			var jobs = [{
@@ -246,18 +246,24 @@ describe('scheduler', function() {
 
 	describe('#invokeJobCommand', function(){
 
-		it('it should execute a command', function(done) {
+		it('it should execute a recurring command', function(done) {
 
-			var jobInstance_pre = null,
+			var job_pre = null,
+				jobInstance_pre = null,
+				job_post = null,
 				jobInstance_post = null,
 				query = null,
 				commandExecutor = {
 					executeCommand: function(key, data, cb){
 						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+
+							job_pre = JSON.parse(JSON.stringify(data.job));
 							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
 
 							// Simulate reloading the data from the database where the database is responsible for id generation
 							var result = JSON.parse(JSON.stringify(data));
+							result.job.status = JobDescriptorStatus.Executing;
+
 							result.instance.instanceId = '0123456-0'
 
 							cb(null, result);
@@ -266,6 +272,96 @@ describe('scheduler', function() {
 
 						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
 
+							job_post = data.job;
+							jobInstance_post = data.instance;
+							cb(null, data);
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					},
+					_execute: function(key, ci, cb){
+						if(key == 'test.job') {
+							cb(null, { data: { test: '2a' }});
+							return;
+						}
+
+						throw 'Bad key: ' + key;
+					}
+				};
+
+			var scheduler = new Scheduler(query, commandExecutor),
+				context = {
+					job: {
+						id: '0123456',
+						name: 'test job',
+						data: {
+							test: '1a'
+						},
+						command: 'test.job',
+						schedule: '* * * * *'
+					},
+					scheduler: scheduler
+				};
+
+			scheduler.invokeJobCommand.bind(context)();
+			
+			// Before execution
+			expect(jobInstance_pre).to.have.property('jobId', '0123456');
+			expect(jobInstance_pre).to.have.property('name', 'test job');
+			expect(jobInstance_pre).to.have.property('instanceId');
+			expect(jobInstance_pre.instanceId).to.be.null;
+			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
+			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
+			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
+			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
+
+			// After execution
+			expect(job_post).to.have.property('status', JobDescriptorStatus.Scheduled);
+
+			expect(jobInstance_post).to.have.property('jobId', '0123456');
+			expect(jobInstance_post).to.have.property('name', 'test job');
+			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
+			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Completed);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
+			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
+			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
+			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
+			expect(jobInstance_post).to.have.deep.property('result.test', '2a');
+
+			done();
+		});
+
+		it('it should execute a one time command', function(done) {
+
+			var job_pre = null,
+				jobInstance_pre = null,
+				job_post = null,
+				jobInstance_post = null,
+				query = null,
+				commandExecutor = {
+					executeCommand: function(key, data, cb){
+						if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+
+							job_pre = JSON.parse(JSON.stringify(data.job));
+							jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
+
+							// Simulate reloading the data from the database where the database is responsible for id generation
+							var result = JSON.parse(JSON.stringify(data));
+							result.job.status = JobDescriptorStatus.Executing;
+
+							result.instance.instanceId = '0123456-0'
+
+							cb(null, result);
+							return;
+						}
+
+						if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+
+							job_post = data.job;
 							jobInstance_post = data.instance;
 							cb(null, data);
 							return;
@@ -304,15 +400,21 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
 
 			// After execution
+			expect(job_post).to.have.property('status', JobDescriptorStatus.Completed);
+
 			expect(jobInstance_post).to.have.property('jobId', '0123456');
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Completed);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
@@ -374,6 +476,8 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
@@ -383,6 +487,8 @@ describe('scheduler', function() {
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Completed);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
@@ -444,6 +550,8 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
@@ -453,6 +561,8 @@ describe('scheduler', function() {
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Completed);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
@@ -514,6 +624,8 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
@@ -523,6 +635,8 @@ describe('scheduler', function() {
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Error);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
@@ -583,6 +697,8 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
@@ -592,6 +708,8 @@ describe('scheduler', function() {
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Error);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
@@ -652,6 +770,8 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
@@ -661,6 +781,8 @@ describe('scheduler', function() {
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Error);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');
@@ -721,6 +843,8 @@ describe('scheduler', function() {
 			expect(jobInstance_pre).to.have.property('instanceId');
 			expect(jobInstance_pre.instanceId).to.be.null;
 			expect(jobInstance_pre).to.have.property('status', JobInstanceStatus.Executing);
+			expect(jobInstance_pre.startTimestamp).to.not.be.null;
+			expect(jobInstance_pre.endTimestamp).to.be.null;
 			expect(jobInstance_pre).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_pre).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_pre).to.have.deep.property('data.test', '1a');
@@ -730,6 +854,8 @@ describe('scheduler', function() {
 			expect(jobInstance_post).to.have.property('name', 'test job');
 			expect(jobInstance_post).to.have.property('instanceId', '0123456-0');
 			expect(jobInstance_post).to.have.property('status', JobInstanceStatus.Error);
+			expect(jobInstance_post.startTimestamp).to.not.be.null;
+			expect(jobInstance_post.endTimestamp).to.not.be.null;
 			expect(jobInstance_post).to.have.deep.property('user.id', 'SYSTEM');
 			expect(jobInstance_post).to.have.deep.property('user.name', 'System');
 			expect(jobInstance_post).to.have.deep.property('data.test', '1a');

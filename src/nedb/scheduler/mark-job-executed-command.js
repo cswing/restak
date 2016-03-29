@@ -11,7 +11,7 @@ var log4js = global.log4js || require('log4js'),
  * Mark a job and job instance as executed and persist to the file system.
  *
  * @constructor
- * @implements restak.commands.Command
+ * @implements restak.scheduler.MarkJobExecutedCommand
  * @memberof restak.nedb.scheduler
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
  * @param {nedb.Datastore} jobInstanceStore - The NeDB datastore for job instances.
@@ -73,7 +73,9 @@ MarkJobExecutedCommand.prototype.execute = function(cmdInstr, callback){
 		instanceQuery = { _id: jobInstance.instanceId },
 		instanceUpdate = {
 			$set: {
-				status: jobInstance.status
+				status: jobInstance.status,
+				endTimestamp: jobInstance.endTimestamp,
+				result: jobInstance.result
 			}
 		};
 

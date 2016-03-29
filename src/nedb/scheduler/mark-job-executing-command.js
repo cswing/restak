@@ -8,10 +8,10 @@ var log4js = global.log4js || require('log4js'),
 	JobInstanceStatus = models.JobInstanceStatus;
 
 /**
- * Mark a job and job instance as executing and persist to the file system.
+ * Mark a job and job instance as executing and persist using NeDB.
  *
  * @constructor
- * @implements restak.commands.Command
+ * @implements restak.scheduler.MarkJobExecutingCommand
  * @memberof restak.nedb.scheduler
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
  * @param {nedb.Datastore} jobInstanceStore - The NeDB datastore for job instances.

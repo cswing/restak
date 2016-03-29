@@ -159,16 +159,7 @@ Scheduler.prototype._updateNextExecution = function(jobId, timestamp, callback){
  * @see restak.scheduler.Scheduler#invokeJobCommand
  */
 
-/**
- * The data expected as part of the {@link restak.command.CommandInstructions} passed to the execute method.
- *
- * @typedef JobExecutionData
- * @memberof restak.scheduler.Scheduler
- * @type {Object}
- * @param {restak.scheduler.JobDescriptor} job - The job descriptor.
- * @param {restak.scheduler.JobInstance} instance - The instance of the job being executed or executed.
- * @see restak.command.CommandInstructions#data
- */
+
 
 /**
  * Function responsible for invoking the command related to a job.  The function assumes that
@@ -180,13 +171,15 @@ Scheduler.prototype.invokeJobCommand = function() {
 
 	var job = this.job,
 		scheduler = this.scheduler,
-		commandExecutor = this.scheduler.commandExecutor;
+		commandExecutor = scheduler.commandExecutor;
 
 	var jobInstance = {
 		jobId: job.id,
 		name: job.name,
 		instanceId: null,
 		status: JobInstanceStatus.Executing,
+		startTimestamp: moment().toISOString(),
+		endTimestamp: null,
 		user: {
 			id: 'SYSTEM',
 			name: 'System'
@@ -205,10 +198,18 @@ Scheduler.prototype.invokeJobCommand = function() {
 			}
 
 			// The data may have been reloaded from the data store when executing MarkJobExecutingCommand 
-			job = result.job;
-			var instance = result.instance;
+			var executingJob = result.job,
+				instance = result.instance;
 
 			var onCommandExecution = function(err, result) {
+
+				instance.endTimestamp = moment().toISOString();
+
+				if(executingJob.schedule) {
+					executingJob.status = JobDescriptorStatus.Scheduled;
+				} else {
+					executingJob.status = JobDescriptorStatus.Completed;
+				}
 
 				if(err) {
 					instance.status = JobInstanceStatus.Error;
@@ -219,7 +220,7 @@ Scheduler.prototype.invokeJobCommand = function() {
 				}
 
 				commandExecutor.executeCommand('restak.scheduler.MarkJobExecutedCommand', {
-					job: job,
+					job: executingJob,
 					instance: instance
 				}, function(err){
 					if(err) {
@@ -230,7 +231,7 @@ Scheduler.prototype.invokeJobCommand = function() {
 
 			try {
 				
-				commandExecutor._execute(job.command, instance, onCommandExecution);
+				commandExecutor._execute(executingJob.command, instance, onCommandExecution);
 
 			} catch(err){
 				
