@@ -22,7 +22,9 @@ var instanceDescriptor = {
 	instanceId: '_id',
 	status: null,
 	startTimestamp: null,
-	endTimestamp: null
+	endTimestamp: null,
+	data: null,
+	result: null
 };
 
 module.exports.jobInstanceTransform = new DefaultObjectTransform(instanceDescriptor);
