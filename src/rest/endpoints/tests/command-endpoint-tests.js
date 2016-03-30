@@ -22,10 +22,11 @@ CommandEndpointImpl.prototype.register = function(app, server) {
 	this.logger.debug('Path registered [GET] ' + this.path);
 };
 
-var CommandEndpointOverridesImpl = function(logger, path, command, successHttpStatusCode, data, payload){
+var CommandEndpointOverridesImpl = function(logger, path, command, successHttpStatusCode, data, payload, getSuccessHttpStatusCode){
 	CommandEndpointImpl.apply(this, arguments);
 	this.data = data;
 	this.payload = payload;
+	this._getSuccessHttpStatusCode = getSuccessHttpStatusCode;
 };
 util.inherits(CommandEndpointOverridesImpl, CommandEndpointImpl);
 
@@ -35,6 +36,14 @@ CommandEndpointOverridesImpl.prototype.buildData = function(req, callback){
 
 CommandEndpointOverridesImpl.prototype.buildPayload = function(cmdResult){
 	return this.payload;
+};
+
+CommandEndpointOverridesImpl.prototype.getSuccessHttpStatusCode = function(cmdResult){
+
+	if(this._getSuccessHttpStatusCode)
+		return this._getSuccessHttpStatusCode(cmdResult);
+
+	return CommandEndpointImpl.prototype.getSuccessHttpStatusCode.apply(this, arguments);
 };
 
 var logger = log4js.getLogger('test'),
@@ -88,6 +97,29 @@ describe('rest > endpoints > command-endpoint', function() {
 				.end(function(err, res){
 					expect(err).to.be.null;
 					expect(res.body.payload).to.deep.equal(response);
+					done();
+				});
+		});
+
+		it('should execute the command and return 400', function(done){
+
+			var response = { data: { x: 'a' } },
+				data = { x: 1 },
+				command = {
+					execute: function(ci, callback) {
+						callback(null, response);
+					}
+				};
+
+			var server = new RestServer([new CommandEndpointOverridesImpl(logger, '/testpath', command, 201, data, data, function() { return 400; })], serverConfig);
+
+			request(server.app)
+				.get('/testpath')
+				.expect('Content-Type', /json/)
+				.expect(400)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					expect(res.body.payload).to.not.be.null;
 					done();
 				});
 		});

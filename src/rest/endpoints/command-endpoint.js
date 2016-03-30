@@ -47,6 +47,17 @@ CommandEndpoint.prototype.buildPayload = function(cmdResult, context){
 };
 
 /**
+ * Allow for the http code returned to the caller on success to be dynimcally determined.
+ *
+ * @protected
+ * @param {restak.command.CommandResult} cmdResult - The result of the command execution.
+ * @returns {Number} the http status code
+ */
+CommandEndpoint.prototype.getSuccessHttpStatusCode = function(cmdResult){
+	return this.successHttpStatusCode;
+};
+
+/**
  * Handles a HTTP put request to create a REST resource.
  *
  * @param {Request} req - The HTTP request from the expressjs server.
@@ -81,7 +92,7 @@ CommandEndpoint.prototype.onRequest = function(req, res){
 				req: req
 			};
 
-			res.status(successHttpStatusCode).send(
+			res.status(_t.getSuccessHttpStatusCode(cmdResult)).send(
 				_t.buildRestResponse(req, res, _t.buildPayload(cmdResult, context)) );
 		});
 	});		
