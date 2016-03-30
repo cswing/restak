@@ -26,7 +26,7 @@ var serverConfig = {
 	appVersion: '1.0'
 };
 
-describe.only('security > endpoints > authentication-endpoint', function() {
+describe('security > endpoints > authentication-endpoint', function() {
 
 	describe('#onRequest', function(){
 
