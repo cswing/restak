@@ -30,8 +30,9 @@ var log4js = global.log4js || require('log4js'),
  * @memberof restak.rest
  * @param {restak.rest.endpoints.Endpoint[]} endpoints - The endpoints this server is to support.
  * @param {restak.rest.RestServerConfig} config - Configuration parameters for the server.
+ * @param {restak.rest.middleware.Middleware[]} middleware - The middleware to install on the express server.
  */
-var RestServer = function(endpoints, config){
+var RestServer = function(endpoints, config, middleware){
 
 	/**
 	 * The endpoints this server serves.
@@ -46,6 +47,13 @@ var RestServer = function(endpoints, config){
 	 * @type restak.rest.RestServerConfig
 	 */
 	this.config = config;
+
+	/**
+	 * Configuration parameters for the server.
+	 *
+	 * @type restak.rest.Middleware[]
+	 */
+	this.middleware = middleware;
 
 	/**
 	 * The expressjs application that hosts the endpoint.
@@ -80,6 +88,8 @@ var RestServer = function(endpoints, config){
 	}));
 	this.app.use(bodyParser.json()); // for parsing application/json
 	this.app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+	(this.middleware || []).forEach(function(mw){ mw.install(app); });
 
 	logger.debug('Registering endpoints');
 	(this.endpoints || []).forEach(function(ep){ ep.register(app, _t); });

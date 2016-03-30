@@ -86,8 +86,9 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 			appName: this.appDescriptor.name,
 			appVersion: this.appDescriptor.version
 		},
+		middleware = this.appContext.getAllMiddleware(),
 		endpoints = this.appContext.getEndpoints();
-	this.restServer = new RestServer(endpoints, restServerConfig);
+	this.restServer = new RestServer(endpoints, restServerConfig, middleware);
 	appContext.registerObject('restak.rest.RestServer', this.restServer);
 
 	if(andStart) this.start(function(){});

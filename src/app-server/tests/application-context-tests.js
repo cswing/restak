@@ -363,6 +363,119 @@ describe('app-server > application-context', function() {
 			done();
 		});
 	});
+	
+	describe('#registerMiddleware #getMiddleware #getAllMiddleware', function(){
+
+		var Middleware = function(){};
+		Middleware.prototype.install = function(app){};
+
+		it('should register and return the endpoint', function(done){
+
+			var ctx = new ApplicationContext(),
+				mw = new Middleware();
+
+			var result = ctx.registerMiddleware('test', mw);
+			expect(result).to.be.equal(true);
+
+			var mw = ctx.getMiddleware('test');
+			expect(mw).to.equal(mw);
+
+			done();
+		});
+
+		it('should not override the executors if they are already specified.', function(done){
+
+			var ctx = new ApplicationContext(),
+				mw = new Middleware(),
+				qe = { 'test': 'abc' },
+				ce = { 'test': 'xyz' };
+
+			mw.commandExecutor = ce;
+			mw.queryExecutor = qe;
+
+			var result = ctx.registerMiddleware('test', mw);
+			expect(result).to.be.equal(true);
+
+			var mw = ctx.getMiddleware('test');
+			expect(mw).to.equal(mw);
+			
+			done();
+		});
+
+		it('should register with the underlying object factory using a prefix', function(done){
+
+			var ctx = new ApplicationContext(),
+				mw = new Middleware();
+
+			var result = ctx.registerMiddleware('test', mw);
+			expect(result).to.be.equal(true);
+			
+			var mw2 = ctx.objectFactory.get('restak.rest.middleware.Middleware::test');
+			expect(mw2).to.equal(mw);
+
+			done();
+		});
+
+		it('should return null with a null key', function(done){
+
+			var ctx = new ApplicationContext(),
+				mw = ctx.getMiddleware(null);
+			
+			expect(mw).to.be.null;
+
+			done();
+		});
+
+		it('should return null with a undefined key', function(done){
+
+			var ctx = new ApplicationContext(),
+				mw = ctx.getMiddleware(undefined);
+			
+			expect(mw).to.be.null;
+
+			done();
+		});
+
+		it('should not find the middleware', function(done) {
+
+			var ctx = new ApplicationContext(),
+				mw = new Middleware();
+
+			var result = ctx.registerMiddleware('test', mw),
+				mw2 = ctx.getMiddleware('test1');
+			
+			expect(mw2).to.be.null;
+
+			done();
+		});
+
+		it('should find 2 middleware', function(done){
+
+			var ctx = new ApplicationContext();
+
+			var mw1 = new Middleware();
+			mw1.k = 'test';
+
+			var mw2 = new Middleware();
+			mw2.k = 'test1';
+
+			ctx.registerQuery('test', {});
+			ctx.registerCommand('test', {});
+			ctx.registerMiddleware('test', mw1);
+			ctx.registerObject('test', {});
+
+			ctx.registerQuery('test1', {});
+			ctx.registerCommand('test1', {});
+			ctx.registerMiddleware('test1', mw2);
+			ctx.registerObject('test1', {});
+
+			var mw = ctx.getAllMiddleware();
+
+			expect(mw).to.have.deep.members([mw1, mw2]);
+
+			done();
+		});
+	});
 
 	describe('#registerObject #getObject', function(){
 

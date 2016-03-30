@@ -36,3 +36,4 @@
 
 module.exports.RestServer = require('./server');
 module.exports.endpoints = require('./endpoints');
+module.exports.middleware = require('./middleware');

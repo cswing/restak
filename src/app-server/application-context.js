@@ -13,6 +13,7 @@ var log4js = global.log4js || require('log4js'),
 var cmdPrefix = 'restak.command.Command::',
 	qryPrefix = 'restak.query.Query::',
 	restPrefix = 'restak.rest.endpoints.Endpoint::',
+	restMiddlewarePrefix = 'restak.rest.middleware.Middleware::',
 	objPrefix = '';
 
 /**  
@@ -220,6 +221,48 @@ ApplicationContext.prototype.getEndpoints = function(){
 		});
 
 	return endpoints;
+};
+
+/**
+ * Register middleware for use by the application.
+ *
+ * @param {string} key - The key that identifies the mi.
+ * @param {restak.rest.middleware.Middleware} middleware - The middleware.
+ * @return {boolean} true if the middleware was registered, otherwise false.
+ * 
+ * @see restak.context.ObjectFactory#register
+ */
+ApplicationContext.prototype.registerMiddleware = function(key, middleware){
+	return this._register(restMiddlewarePrefix, key, middleware);
+};
+
+/**
+ * Get middleware to use.
+ *
+ * @param {string} key - The key that identifies the middleware.
+ * @return {restak.rest.middleware.Middleware} the middleware.
+ */
+ApplicationContext.prototype.getMiddleware = function(key){
+	return this._get(restMiddlewarePrefix, key);
+};
+
+/**
+ * Get all middleware that has been registered.
+ *
+ * @return {restak.rest.middleware.Middleware[]} the middleware.
+ */
+ApplicationContext.prototype.getAllMiddleware = function(){
+	
+	var objects = this.objectFactory.objects;
+
+	return Object.keys(objects).filter(
+		function(key){
+			return key.indexOf(restMiddlewarePrefix) == 0;
+		}).map(function(key){
+			return objects[key];
+		});
+
+	return middleware;
 };
 
 module.exports = ApplicationContext;
