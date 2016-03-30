@@ -66,7 +66,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new CommandEndpointImpl(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer(serverConfig, [new CommandEndpointImpl(logger, '/testpath', command)]);
 
 			request(server.app)
 				.get('/testpath')
@@ -88,7 +88,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new CommandEndpointImpl(logger, '/testpath', command, 201)], serverConfig);
+			var server = new RestServer(serverConfig, [new CommandEndpointImpl(logger, '/testpath', command, 201)]);
 
 			request(server.app)
 				.get('/testpath')
@@ -111,7 +111,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new CommandEndpointOverridesImpl(logger, '/testpath', command, 201, data, data, function() { return 400; })], serverConfig);
+			var server = new RestServer(serverConfig, [new CommandEndpointOverridesImpl(logger, '/testpath', command, 201, data, data, function() { return 400; })]);
 
 			request(server.app)
 				.get('/testpath')
@@ -136,7 +136,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new CommandEndpointOverridesImpl(logger, '/testpath', command, 200, data, modified)], serverConfig);
+			var server = new RestServer(serverConfig, [new CommandEndpointOverridesImpl(logger, '/testpath', command, 200, data, modified)]);
 
 			request(server.app)
 				.get('/testpath')

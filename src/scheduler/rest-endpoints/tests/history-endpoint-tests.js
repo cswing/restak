@@ -48,7 +48,7 @@ describe('scheduler > rest-endpoints > history > collection', function() {
 
 			var endpoint = new CollectionEndpoint();
 			endpoint.queryExecutor = queryExecutor;
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/scheduler/jobs/1234/history')
@@ -96,7 +96,7 @@ describe('scheduler > rest-endpoints > history > resource-get', function() {
 
 			var endpoint = new ResourceGetEndpoint();
 			endpoint.queryExecutor = queryExecutor;
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/scheduler/jobs/1234/history/1234-0')

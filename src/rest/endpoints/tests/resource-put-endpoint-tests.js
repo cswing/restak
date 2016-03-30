@@ -30,7 +30,7 @@ describe('rest > endpoints > resource-put-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new ResourcePutEndpoint(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer(serverConfig, [new ResourcePutEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.put('/testpath')
@@ -66,7 +66,7 @@ describe('rest > endpoints > resource-put-endpoint', function() {
        				] 
        			};
 
-			var server = new RestServer([new ResourcePutEndpoint(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer(serverConfig, [new ResourcePutEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.put('/testpath')

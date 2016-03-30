@@ -37,7 +37,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -65,7 +65,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -100,7 +100,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -129,7 +129,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')

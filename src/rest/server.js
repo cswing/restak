@@ -28,11 +28,11 @@ var log4js = global.log4js || require('log4js'),
  * 
  * @constructor
  * @memberof restak.rest
- * @param {restak.rest.endpoints.Endpoint[]} endpoints - The endpoints this server is to support.
  * @param {restak.rest.RestServerConfig} config - Configuration parameters for the server.
+ * @param {restak.rest.endpoints.Endpoint[]} endpoints - The endpoints this server is to support.
  * @param {restak.rest.middleware.Middleware[]} middleware - The middleware to install on the express server.
  */
-var RestServer = function(endpoints, config, middleware){
+var RestServer = function(config, endpoints, middleware){
 
 	/**
 	 * The endpoints this server serves.

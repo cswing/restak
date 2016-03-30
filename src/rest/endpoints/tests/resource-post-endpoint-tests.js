@@ -30,7 +30,7 @@ describe('rest > endpoints > resource-post-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer([new ResourcePostEndpoint(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer(serverConfig, [new ResourcePostEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.post('/testpath')
@@ -66,7 +66,7 @@ describe('rest > endpoints > resource-post-endpoint', function() {
        				] 
        			};
 
-			var server = new RestServer([new ResourcePostEndpoint(logger, '/testpath', command)], serverConfig);
+			var server = new RestServer(serverConfig, [new ResourcePostEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.post('/testpath')

@@ -92,7 +92,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new CollectionEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath?filter=test~"foo"')
@@ -150,7 +150,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new OverridesCollection('fixed=1', null);
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -191,7 +191,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new OverridesCollection('fixed=1', null);
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath?filter=test~"foo"')
@@ -236,7 +236,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new OverridesCollection(null, itemProcessor);
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer([endpoint], serverConfig);
+			var server = new RestServer(serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')

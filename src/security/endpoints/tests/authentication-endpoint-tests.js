@@ -34,7 +34,7 @@ describe('security > endpoints > authentication-endpoint', function() {
 
 			var cmd = new MockCommand(true, '0123456'),
 				endpoint = new AuthenticationEndpoint(cmd),
-				server = new RestServer([endpoint], serverConfig),
+				server = new RestServer(serverConfig, [endpoint]),
 				expectedPayload = {
 					success: true,
 					token: '0123456'
@@ -60,7 +60,7 @@ describe('security > endpoints > authentication-endpoint', function() {
 
 			var cmd = new MockCommand(false, '0123456'),
 				endpoint = new AuthenticationEndpoint(cmd),
-				server = new RestServer([endpoint], serverConfig),
+				server = new RestServer(serverConfig, [endpoint]),
 				expectedPayload = {
 					success: false,
 					token: null
