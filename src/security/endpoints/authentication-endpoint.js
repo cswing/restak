@@ -29,7 +29,7 @@ AuthenticationEndpoint.prototype.buildData = function(req, callback){
 
 /** @inheritdoc */
 AuthenticationEndpoint.prototype.buildPayload = function(cmdResult, ctx){
-	var authenticationResult = cmdResult.data;
+	var authenticationResult = cmdResult;
 
 	var payload = {
 		success: authenticationResult.success,
@@ -45,7 +45,7 @@ AuthenticationEndpoint.prototype.buildPayload = function(cmdResult, ctx){
 
 /** @inheritdoc */
 AuthenticationEndpoint.prototype.getSuccessHttpStatusCode = function(cmdResult){
-	var authenticationResult = cmdResult.data;
+	var authenticationResult = cmdResult;
 
 	if(authenticationResult.success)
 		return 200;

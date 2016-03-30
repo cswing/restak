@@ -14,10 +14,10 @@ var MockCommand = function(success, token){
 };
 
 MockCommand.prototype.execute = function(instr, callback){
-	callback(null, { data: {
+	callback(null, {
 		success: this.success,
 		token: this.token
-	}});
+	});
 };
 
 var serverConfig = {
