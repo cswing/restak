@@ -142,7 +142,7 @@ describe('security > security-middleware', function() {
 			});
 		});
 
-		it('should handle an invalid token', function(done){
+		it('should handle a malformed token', function(done){
 
 			var privateKey = 'TEST123',
 				mw = new SecurityMiddleware(privateKey),
@@ -151,6 +151,32 @@ describe('security > security-middleware', function() {
 					query: {},
 					headers: {
 						'x-auth-token': 'AN INVALID TOKEN'
+					}
+				},
+				res = {};
+
+			mw.onRequest(req, res, function(){
+
+				var security = req.security;
+				expect(security).to.not.be.null;
+				expect(security).to.have.property('isAnonymous', true);
+				expect(security).to.have.property('isAuthenticated', false);
+				expect(security).to.have.property('token', null);
+
+				done();
+			});
+		});
+
+		it('should handle an invalid token', function(done){
+
+			var privateKey = 'TEST123',
+				token = jwt.sign('John.Doe@email.com', 'TEST456'),
+				mw = new SecurityMiddleware(privateKey),
+				req = {
+					body: {},
+					query: {},
+					headers: {
+						'x-auth-token': token
 					}
 				},
 				res = {};
