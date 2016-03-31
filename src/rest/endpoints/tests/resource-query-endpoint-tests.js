@@ -145,6 +145,43 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 					done();
 				});
 		});
+
+		it('should call the middleware', function(done){
+
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
+					callback(null, { 
+						filter: '',
+						pageSize: 10,
+						pageCount: 1,
+						page: 1,
+						totalCount: 1,
+						items: [{ x: 'a' }]
+					});
+				}
+			};
+
+			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query'),
+				middlewareCalled = false;
+			endpoint.registerMiddleware(function(req, res, next){
+				middlewareCalled = true;
+				next();
+			});
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer(serverConfig, [endpoint]);
+
+			request(server.app)
+				.get('/testpath')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					expect(middlewareCalled).to.equal(true);
+					done();
+				});
+
+		});
 	});
 
 });

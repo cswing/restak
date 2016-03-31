@@ -28,7 +28,7 @@ CollectionEndpoint.prototype.register = function(app, server) {
 	Endpoint.prototype.register.apply(this, arguments);
 
 	var _t = this;
-	app.get(this.path, function (req, res) { _t.onRequest(req, res); });
+	app.get(this.path, this.middleware, function (req, res) { _t.onRequest(req, res); });
 	this.logger.debug('Path registered [GET] ' + this.path);
 };
 

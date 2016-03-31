@@ -41,6 +41,13 @@ var Endpoint = function(logger){
 	 * @type restak.command.CommandExecutor
 	 */
 	this.queryExecutor = null;
+
+	/**
+	 * An array of functions to register as specific middleware for the endpoint.
+	 *
+	 * @type function[]
+	 */
+	this.middleware = [];
 };
 
 /**
@@ -127,6 +134,15 @@ Endpoint.prototype.buildRestResponse = function(req, res, data, messages){
  */
 Endpoint.prototype.buildResourceLink = function(req, name, rel, url) {
 	return this.server.buildResourceLink(req, name, rel, url);
+};
+
+/**
+ * Register a middleware function for the endpoint.
+ *
+ * @param {Function} fn - the middleware function to register.
+ */
+Endpoint.prototype.registerMiddleware = function(fn){
+	this.middleware.push(fn);
 };
 
 module.exports = Endpoint;
