@@ -12,7 +12,10 @@ var BaseMiddleware = function(){};
 
 /** @inheritdoc **/
 BaseMiddleware.prototype.install = function(app) {
-	app.use(BaseMiddleware.prototype.onRequest.bind(this));
+	var _t = this;
+	app.use(function(req, res, next){
+		_t.onRequest(req, res, next);
+	});
 };
 
 /**
