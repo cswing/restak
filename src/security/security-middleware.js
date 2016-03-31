@@ -69,4 +69,18 @@ SecurityMiddleware.prototype.populateSecurityDetail = function(req, security, ca
 	callback();
 };
 
+SecurityMiddleware.validateAuthenticatedRequest = function(req, res, next){
+
+	var isAuthenticated = req && req.security && req.security.isAuthenticated;
+
+	if(!isAuthenticated) {
+		res.status(401)
+			.header('WWW-Authenticate', 'None')
+			.send();
+		return;
+	}
+
+	next();
+};
+
 module.exports = SecurityMiddleware;

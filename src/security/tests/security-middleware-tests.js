@@ -4,6 +4,7 @@ var util = require('util'),
 	expect = require('chai').expect,
 	assert = require('chai').assert,
 	jwt = require('jsonwebtoken'),
+	ResponseMock = require('../../tests/response-mock'),
 	SecurityMiddleware = require('../security-middleware');
 
 describe('security > security-middleware', function() {
@@ -192,6 +193,94 @@ describe('security > security-middleware', function() {
 				done();
 			});
 		});
+	});
 
+	describe('#validateAuthenticatedRequest', function(){
+
+		it('should handle a null request', function(done){
+
+			var req = null,
+				res = new ResponseMock(),
+				nextCalled = false,
+				next = function(){
+					nextCalled = true;
+				};
+
+			SecurityMiddleware.validateAuthenticatedRequest(req, res, next);
+
+			expect(nextCalled).to.equal(false);
+			expect(res).to.have.property('_status', 401);
+			expect(res).to.have.property('_sentCalls', 1);
+			expect(res._headers).to.deep.equal({ 'WWW-Authenticate': 'None' });
+
+			done();
+		});
+
+		it('should handle a request without a security object', function(done){
+
+			var req = {},
+				res = new ResponseMock(),
+				nextCalled = false,
+				next = function(){
+					nextCalled = true;
+				};
+
+			SecurityMiddleware.validateAuthenticatedRequest(req, res, next);
+
+			expect(nextCalled).to.equal(false);
+			expect(res).to.have.property('_status', 401);
+			expect(res).to.have.property('_sentCalls', 1);
+			expect(res._headers).to.deep.equal({ 'WWW-Authenticate': 'None' });
+
+			done();
+		});
+
+		it('should handle a request with an authenticated user', function(done){
+
+			var req = {
+					security: {
+						isAnonymous: false,
+						isAuthenticated: true,
+						token: 'John.Doe@email.com'
+					}
+				},
+				res = new ResponseMock(),
+				nextCalled = false,
+				next = function(){
+					nextCalled = true;
+				};
+
+			SecurityMiddleware.validateAuthenticatedRequest(req, res, next);
+
+			expect(nextCalled).to.equal(true);
+			expect(res).to.have.property('_sentCalls', 0);
+
+			done();
+		});
+
+		it('should handle a request with an anonymous user', function(done){
+
+			var req = {
+					security: {
+						isAnonymous: true,
+						isAuthenticated: false,
+						token: null
+					}
+				},
+				res = new ResponseMock(),
+				nextCalled = false,
+				next = function(){
+					nextCalled = true;
+				};
+
+			SecurityMiddleware.validateAuthenticatedRequest(req, res, next);
+
+			expect(nextCalled).to.equal(false);
+			expect(res).to.have.property('_status', 401);
+			expect(res).to.have.property('_sentCalls', 1);
+			expect(res._headers).to.deep.equal({ 'WWW-Authenticate': 'None' });
+
+			done();
+		});
 	});
 });
