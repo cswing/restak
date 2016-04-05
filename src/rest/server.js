@@ -180,32 +180,4 @@ RestServer.prototype.buildResourceLink = function(req, name, rel, url) {
 	};
 };
 
-/**
- * Start the expressjs server and handle requests to the REST services.
- */
-RestServer.prototype.start = function() {
-
-	var applicationName = this.appDescriptor.appName;
-	if(this.appDescriptor.appVersion) {
-		applicationName = applicationName + ' [' + this.config.appVersion + ']';
-	}
-
-	var _t = this,
-		port = this.config.port || 3000,
-		app = this.app;
-
-	logger.debug(applicationName + ' starting REST server on port ' + port);
-	
-	this.httpServer = app.listen(port, function () {
-		logger.debug(applicationName + ' listening on port ' + port);
-		logger.info(applicationName + ' startup complete');
-	});
-};
-
-RestServer.prototype.stop = function() {
-	if(this.httpServer){
-		this.httpServer.close();
-	}
-};
-
 module.exports = RestServer;

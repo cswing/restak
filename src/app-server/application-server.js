@@ -2,6 +2,7 @@
 
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.app-server.ApplicationServer'),
+	express = require('express'),
 	RestServer = require('../rest').RestServer;
 
 /**
@@ -79,6 +80,8 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 		logger.warn('No scheduler was found in the app context.');
 	}
 
+	this.app = express();
+
 	// Setup REST HTTP server
 	var httpPort = appContext.getConfigSetting('http.port'),
 		restServerConfig = {
@@ -90,6 +93,8 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 		endpoints = this.appContext.getEndpoints();
 	this.restServer = new RestServer(restServerConfig, endpoints, middleware);
 	appContext.registerObject('restak.rest.RestServer', this.restServer);
+
+	this.app.use('/api', this.restServer.app);
 
 	if(andStart) this.start(function(){});
 };
@@ -113,10 +118,25 @@ ApplicationServer.prototype.start = function(callback){
 	}
 
 	var _t = this,
+		appDescriptor = this.appDescriptor,
+		httpPort = this.appContext.getConfigSetting('http.port', false) || 3000,
+		app = this.app,
 		startRestServer = function(){
-			_t.restServer.start();
-			_t.running = true;
-			if(callback) callback(null, _t.running);
+
+			var applicationName = appDescriptor.name;
+			if(appDescriptor.version) {
+				applicationName = applicationName + ' [' + appDescriptor.version + ']';
+			}
+
+			logger.debug(applicationName + ' starting http server on port ' + httpPort);
+			
+			_t.httpServer = app.listen(httpPort, function () {
+				logger.debug(applicationName + ' listening on port ' + httpPort);
+				logger.info(applicationName + ' startup complete');
+
+				_t.running = true;
+				if(callback) callback(null, _t.running);
+			});
 		};
 
 	if(this.scheduler){
@@ -132,8 +152,8 @@ ApplicationServer.prototype.start = function(callback){
  * Stop the server
  */
 ApplicationServer.prototype.stop = function(callback){
-	if(this.restServer) {
-		this.restServer.stop();
+	if(this.httpServer){
+		this.httpServer.close();
 	}
 
 	this.running = false;

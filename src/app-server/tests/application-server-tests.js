@@ -164,25 +164,28 @@ describe('app-server > application-server', function() {
 
 			appServer.initialize(appContext, true);
 
-			expect(appServer).to.have.property('running', true);
+			setTimeout(function(){ // need to wait to test.  There is no callback 
 
-			request(appServer.restServer.app)
-				.get('/')
-				.expect('Content-Type', /json/)
-				.expect(200)
-				.end(function(err, res){
-					expect(err).to.be.null;
-					expect(res.body).to.deep.equal(
-						{ 
-							application: { 
-								appName: 'test app server', 
-								appVersion: '0.1.0-TEST' 
-							},
-							payload: { test: 'test content' },
-							messages: [] 
-						});
-					done();
-				});
+				expect(appServer).to.have.property('running', true);
+
+				request(appServer.restServer.app)
+					.get('/')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function(err, res){
+						expect(err).to.be.null;
+						expect(res.body).to.deep.equal(
+							{ 
+								application: { 
+									appName: 'test app server', 
+									appVersion: '0.1.0-TEST' 
+								},
+								payload: { test: 'test content' },
+								messages: [] 
+							});
+						done();
+					});
+			}, 10);
 		});
 
 	});
