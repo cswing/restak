@@ -43,6 +43,7 @@ describe('security > authentication-command', function() {
 
 				expect(result.success).to.equal(true);
 				expect(result.token).to.not.be.null;
+				expect(result.username).to.equal('john.doe');
 
 				jwt.verify(result.token, privateKey, function(err, decoded) {
 
@@ -76,6 +77,7 @@ describe('security > authentication-command', function() {
 
 				expect(result.success).to.equal(false);
 				expect(result.token).to.be.null;
+				expect(result.username).to.be.null;
 
 				done();
 			});

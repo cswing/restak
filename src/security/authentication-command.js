@@ -27,11 +27,11 @@ AuthenticationCommand.prototype.execute = function(ci, callback) {
 	this.authenticate(username, password, function(err, isValidCredentials){
 
 		if(!isValidCredentials) {
-			return callback(null, { success: false, token: null });
+			return callback(null, { success: false, token: null, username: null });
 		}
 
 		var token = jwt.sign(username, _t.privateKey, {
-			expiresInMinutes: _t.minutesValid
+			expiresIn: _t.expiresIn
 		});
 		
 		_t.persistToken(username, token, function(err){
@@ -39,7 +39,7 @@ AuthenticationCommand.prototype.execute = function(ci, callback) {
 				logger.error(err);
 			}
 
-			callback(null, { success: true, token: token });
+			callback(null, { success: true, token: token, username: username });
 		});
 	});
 };

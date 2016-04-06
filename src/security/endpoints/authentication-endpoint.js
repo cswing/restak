@@ -33,11 +33,13 @@ AuthenticationEndpoint.prototype.buildPayload = function(cmdResult, ctx){
 
 	var payload = {
 		success: authenticationResult.success,
-		token: null
+		token: null,
+		username: null
 	};
 
 	if(payload.success) {
 		payload.token = authenticationResult.token;
+		payload.username = authenticationResult.username;
 	}
 
 	return payload;

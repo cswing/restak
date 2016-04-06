@@ -8,16 +8,16 @@ var log4js = global.log4js || require('log4js'),
 	RestServer = require('../../../rest/server'),
 	AuthenticationEndpoint = require('../authentication-endpoint');
 
-var MockCommand = function(success, token){
-	this.success = success;
-	this.token = token;
+var MockCommand = function(success, token, username){
+	this.dataResult = {
+		success: success,
+		token: token,
+		username: username
+	};
 };
 
 MockCommand.prototype.execute = function(instr, callback){
-	callback(null, {
-		success: this.success,
-		token: this.token
-	});
+	callback(null, this.dataResult);
 };
 
 var serverConfig = {
@@ -32,12 +32,13 @@ describe('security > endpoints > authentication-endpoint', function() {
 
 		it('should execute the command and return 200', function(done){
 
-			var cmd = new MockCommand(true, '0123456'),
+			var cmd = new MockCommand(true, '0123456', 'user'),
 				endpoint = new AuthenticationEndpoint(cmd),
 				server = new RestServer(serverConfig, [endpoint]),
 				expectedPayload = {
 					success: true,
-					token: '0123456'
+					token: '0123456',
+					username: 'user'
 				};
 
 			request(server.app)
@@ -58,12 +59,13 @@ describe('security > endpoints > authentication-endpoint', function() {
 
 		it('should execute the command and return 400', function(done){
 
-			var cmd = new MockCommand(false, '0123456'),
+			var cmd = new MockCommand(false, '0123456', 'user'),
 				endpoint = new AuthenticationEndpoint(cmd),
 				server = new RestServer(serverConfig, [endpoint]),
 				expectedPayload = {
 					success: false,
-					token: null
+					token: null,
+					username: null
 				};
 
 			request(server.app)
