@@ -28,3 +28,4 @@
 
 module.exports.ApplicationContext = require('./application-context');
 module.exports.ApplicationServer = require('./application-server');
+module.exports.DefaultConfig = require('./config');
