@@ -81,3 +81,37 @@ describe('rest > endpoints > resource-post-endpoint', function() {
 		});
 	});
 });
+
+describe('rest > endpoints > resource-post-endpoint > impl', function() {
+
+	var ResourcePostEndpointImpl = function(command) {
+		ResourcePostEndpoint.apply(this, [logger, '/testpath', command]);
+	};
+	util.inherits(ResourcePostEndpointImpl, ResourcePostEndpoint);
+	
+	describe('#onRequest', function(){
+
+		it('should execute the command and return 201', function(done){
+
+			var response = { data: { x: 'a' } },
+				command = {
+					execute: function(ci, callback) {
+						callback(null, response);
+					}
+				};
+
+			var server = new RestServer(serverConfig, [new ResourcePostEndpointImpl(command)]);
+
+			request(server.app)
+				.post('/testpath')
+				.expect('Content-Type', /json/)
+				.expect(201)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					expect(res.body.payload).to.deep.equal(response);
+					done();
+				});
+		});
+
+	});
+});

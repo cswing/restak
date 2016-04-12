@@ -21,9 +21,20 @@ var ResourcePostEndpoint = function(logger, path, command){
 	args.push(201);
 	CommandEndpoint.apply(this, args);
 
-	this.registerMiddleware(validate({body: this.command.validation }));
+	this.registerMiddleware(validate(this.getValidationDefinition()));
 };
 util.inherits(ResourcePostEndpoint, CommandEndpoint);
+
+/**
+ * Provide a validation definition to be used in middleware.  By default, it uses the validation object
+ * from the command and expect all parameters to be in the body.  However, there are times where a required
+ * parameter might be parte of the url.  This method allows the specific endpoint to configure this.
+ *
+ * @returns an object that can be passed into express-validation and used as misddleware.
+ */
+ResourcePostEndpoint.prototype.getValidationDefinition = function(){
+	return { body: this.command.validation };
+};
 
 /** @inheritdoc */
 ResourcePostEndpoint.prototype.register = function(app, server) {
