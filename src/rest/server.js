@@ -8,6 +8,7 @@ var log4js = global.log4js || require('log4js'),
 	morgan = require('morgan'),
 	bodyParser = require('body-parser'),
 	validation = require('express-validation'),
+	CommandValidationError = require('../command/validation-error'),
 	messageBuilder = require('./messages').MessageBuilder.DEFAULT;
 	
  /**
@@ -104,7 +105,7 @@ var RestServer = function(config, endpoints, middleware){
  * http://expressjs.com/en/guide/error-handling.html
  *
  * @protected
- * @param {Error} err - the unhandled error.
+ * @param {Error|String} err - the unhandled error.
  * @param {Request} req - The HTTP request from the expressjs server.
  * @param {Response} res - The HTTP response from the expressjs server.
  * @param {Function} next - the next function in the chain.
@@ -122,7 +123,25 @@ RestServer.prototype.handleError = function(err, req, res, next){
 		return res.status(err.status).json(response);
 	}
 
+	if (err instanceof CommandValidationError) {
+		var error = {
+				field: err.field,
+				messages: [err.message],
+				types: [err.type]
+			},
+			response = this.buildRestResponse(req, res, { 'validation-errors': [error] });
+
+		return res.status(400).json(response);	
+	}
+
 	// unhandled errors
+	if(typeof err === 'string') {
+		err = {
+			message: err,
+			stack: null
+		};
+	}
+
 	logger.error('Unhandled Error: ' + err.message);
 	logger.error(err.stack);
 

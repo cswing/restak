@@ -66,7 +66,7 @@ ResourceQueryEndpoint.prototype.onRequest = function(req, res){
 	queryExecutor.executeQuery(queryKey, queryRequest, function(err, queryResult){
 	
 		if(err) {
-			_t.handleError(req, res, err);
+			_t.handleError(err, req, res);
 			return;
 		}
 

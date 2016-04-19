@@ -85,28 +85,15 @@ Endpoint.prototype.register = function(app, server) {
 };
 
 /**
- * Common method for handling an error.  If an errorCode is not provided, the error will be returned as if it were an unhandled error (status code = 500).
- * 
+ * Common method for handling errors. Delegates to the server for error handling.
+ *
+ * @protected
+ * @param {Error} err - the unhandled error.
  * @param {Request} req - The HTTP request from the expressjs server.
  * @param {Response} res - The HTTP response from the expressjs server.
- * @param {String} errMsg - The error message;
- * @param {String} errCode - The error code.
- * @protected
  */
-Endpoint.prototype.handleError = function(req, res, errMsg, errCode){
-
-	var statusCode = 400,
-		errorCode = errCode;
-
-	if(!errorCode){
-		errorCode = this.config.unhandledErrorCode;
-		statusCode = 500;
-	}
-
-	var msg = this.messageBuilder.buildErrorMessage(errorCode, errMsg || 'An error occurred.'),
-		restResponse = this.buildRestResponse(req, res, null, msg);
-
-	res.status(statusCode).send(restResponse);
+Endpoint.prototype.handleError = function(err, req, res){
+	this.server.handleError(err, req, res, function(){});
 };
 
 /**

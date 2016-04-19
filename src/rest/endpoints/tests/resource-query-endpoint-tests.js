@@ -76,7 +76,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 					expect(res.body).to.deep.equal({ 
 						application: { appName: 'test app', appVersion: '1.0' },
 						payload: null,
-						messages: [ { type: 'error', message: 'An error occurred in the query' } ] 
+						messages: [ { type: 'error', code: 'SYS-0000', message: 'An error occurred in the query' } ] 
   					});
 					done();
 				});

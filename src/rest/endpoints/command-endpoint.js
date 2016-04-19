@@ -73,7 +73,7 @@ CommandEndpoint.prototype.onRequest = function(req, res){
 	this.buildData(req, function(err, data){
 
 		if(err) {
-			_t.handleError(req, res, err);
+			_t.handleError(err, req, res);
 			return;
 		}
 
@@ -84,7 +84,7 @@ CommandEndpoint.prototype.onRequest = function(req, res){
 		command.execute(cmdInstr, function(err, cmdResult){
 
 			if(err){
-				_t.handleError(req, res, err);
+				_t.handleError(err, req, res);
 				return;
 			}
 

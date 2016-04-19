@@ -103,3 +103,4 @@
  module.exports.CommandNotFoundError = CommandNotFoundError;
 
  module.exports.CommandExecutor = require('./command-executor');
+ module.exports.ValidationError = require('./validation-error')
