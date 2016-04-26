@@ -13,7 +13,7 @@ var MockSortListener = function() {
 util.inherits(MockSortListener, SortListener);
 
 
-describe.only('sort > antlr > sort-parser', function() {
+describe('sort > antlr > sort-parser', function() {
 	
 	it('should work with a null request', function(done) {
 
