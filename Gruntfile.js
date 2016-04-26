@@ -69,8 +69,19 @@ module.exports = function(grunt) {
       }
     },
     antlr4: {
-      generate: {
-        grammar: 'src/query/antlr/Filter.g4',
+      filter: {
+        grammar: ['src/query/antlr/Filter.g4'],
+        options: {
+            o: 'src/query/antlr/generated',
+            grammarLevel: {
+                language: 'JavaScript'
+            },
+            flags: [
+            ]
+        },
+      },
+      sort: {
+        grammar: ['src/query/antlr/Sort.g4'],
         options: {
             o: 'src/query/antlr/generated',
             grammarLevel: {
