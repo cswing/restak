@@ -70,7 +70,7 @@ module.exports = function(grunt) {
     },
     antlr4: {
       generate: {
-        grammar: 'src/query/antlr/Query.g4',
+        grammar: 'src/query/antlr/Filter.g4',
         options: {
             o: 'src/query/antlr/generated',
             grammarLevel: {

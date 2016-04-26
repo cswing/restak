@@ -32,6 +32,7 @@
  * @memberof restak.query
  * @type {object}
  * @property {string} filter - The filter to apply when querying the data
+ * @property {string} sort - The sort to apply when querying the data
  * @property {Number} pageSize - The number of items to return
  * @property {Number} page - The page of the filtered dataset to return
  */
@@ -42,6 +43,7 @@
  * @typedef QueryResult
  * @memberof restak.query
  * @property {string} filter - The filter that was applied when querying the data
+ * @property {string} sort - The sort that was applied when querying the data
  * @property {Array} items - The items being returned from the query
  * @property {Number} pageSize - The number of items in the page
  * @property {?Number} pageCount - The number of pages, if available

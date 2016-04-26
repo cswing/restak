@@ -2,18 +2,18 @@
 
 var expect = require('chai').expect,
 	assert = require('chai').assert,
-	NeDBQueryListener = require('../nedb-query-listener'),
-	QueryParser = require('../../../query/antlr/query-parser');
+	NeDBFilterListener = require('../nedb-filter-listener'),
+	FilterParser = require('../../../query/antlr/filter-parser');
 
-describe('nedb > query > query-listener', function() {
+describe('nedb > query > filter-listener', function() {
 
 	describe('query-request edge cases', function(){
 
 		it('should be valid with a null request', function(done) {
 			
 			var request = null,
-				listener = new NeDBQueryListener(),
-				parser = new QueryParser(listener, request);
+				listener = new NeDBFilterListener(),
+				parser = new FilterParser(listener, request);
 
 			expect(parser.isValid()).to.equal(true);
 			
@@ -23,8 +23,8 @@ describe('nedb > query > query-listener', function() {
 		it('should be valid with minimal request parameters', function(done) {
 
 			var request = {},
-				listener = new NeDBQueryListener(),
-				parser = new QueryParser(listener, request);
+				listener = new NeDBFilterListener(),
+				parser = new FilterParser(listener, request);
 
 			expect(parser.isValid()).to.equal(true);
 			
@@ -36,8 +36,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 					filter: '   '
 				},
-				listener = new NeDBQueryListener(),
-				parser = new QueryParser(listener, request);
+				listener = new NeDBFilterListener(),
+				parser = new FilterParser(listener, request);
 
 			expect(parser.isValid()).to.equal(true);
 			
@@ -49,8 +49,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 					filter: 'INVALID QUERY'
 				},
-				listener = new NeDBQueryListener(),
-				parser = new QueryParser(listener, request);
+				listener = new NeDBFilterListener(),
+				parser = new FilterParser(listener, request);
 
 			expect(parser.isValid()).to.equal(false);
 			
@@ -66,8 +66,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -81,8 +81,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -96,8 +96,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -111,8 +111,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -126,8 +126,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -141,8 +141,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo="a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -156,8 +156,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -171,8 +171,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -191,8 +191,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -206,8 +206,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -221,8 +221,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo < 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -236,8 +236,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -251,8 +251,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -266,8 +266,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo < -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -281,8 +281,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -296,8 +296,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<"a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -311,8 +311,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -326,8 +326,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -344,8 +344,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -359,8 +359,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -374,8 +374,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo <= 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -389,8 +389,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -404,8 +404,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -419,8 +419,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo <= -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -434,8 +434,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -449,8 +449,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<="a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -464,8 +464,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -479,8 +479,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<=00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -497,8 +497,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -512,8 +512,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -527,8 +527,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo > 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -542,8 +542,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -557,8 +557,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -572,8 +572,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo > -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -587,8 +587,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -602,8 +602,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>"a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -617,8 +617,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -632,8 +632,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -650,8 +650,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -665,8 +665,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -680,8 +680,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo >= 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -695,8 +695,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -710,8 +710,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -725,8 +725,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo >= -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -740,8 +740,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -755,8 +755,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>="a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -770,8 +770,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -785,8 +785,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo>=00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -803,8 +803,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -818,8 +818,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -833,8 +833,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo <> 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -848,8 +848,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -863,8 +863,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -878,8 +878,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo <> -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -893,8 +893,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -908,8 +908,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>"a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -923,8 +923,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -938,8 +938,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo<>00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -956,8 +956,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -971,8 +971,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -986,8 +986,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo != 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1001,8 +1001,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1016,8 +1016,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1031,8 +1031,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo != -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1046,8 +1046,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1061,8 +1061,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!="a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1076,8 +1076,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1091,8 +1091,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo!=00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1109,8 +1109,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1124,8 +1124,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1139,8 +1139,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo ~ 3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1154,8 +1154,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~-3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1169,8 +1169,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~-3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1184,8 +1184,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo ~ -3.5'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1199,8 +1199,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~\'a\''
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1214,8 +1214,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~"a"'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1229,8 +1229,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~a'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1244,8 +1244,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo~00f7154ba087285d491bf7bb1c13e80e'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1262,8 +1262,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=3 OR bar = 4'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1277,8 +1277,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo = 3 OR bar = 3 OR xyz = 3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1292,8 +1292,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo=3 AND bar = 4'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1307,8 +1307,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo = 3 AND bar = 3 AND xyz = 3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1322,8 +1322,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: '(foo = 3 OR bar = 3) AND xyz = 3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1337,8 +1337,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo = 3 AND (bar = 3 OR xyz = 3)'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1352,8 +1352,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: '(foo = 3 AND bar = 3) OR xyz = 3'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);
@@ -1367,8 +1367,8 @@ describe('nedb > query > query-listener', function() {
 			var request = {
 				filter: 'foo = 3 OR (bar = 3 AND xyz = 3)'
 			},
-			listener = new NeDBQueryListener(),
-			parser = new QueryParser(listener, request),
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
 			filterObject = parser.tree.filterObject;
 
 			expect(parser.isValid()).to.equal(true);

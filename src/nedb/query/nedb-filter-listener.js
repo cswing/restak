@@ -3,23 +3,23 @@
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.nedb.query.query-listener'),
 	util = require('util'),
-	QueryListener = require('../../query/antlr').QueryListener;
+	FilterListener = require('../../query/antlr').FilterListener;
 
 /**
  * Takes the output of filter parsing and creates a set of javascript object for an NeDB find call.
  *
  * @constructor
  * @memberof restak.nedb.query
- * @implements restak.query.antlr.QueryListener
+ * @implements restak.query.antlr.FilterListener
  */
-var NeDBQueryListener = function(){
-	QueryListener.apply(this, arguments);
+var NeDBFilterListener = function(){
+	FilterListener.apply(this, arguments);
 };
-util.inherits(NeDBQueryListener, QueryListener);
+util.inherits(NeDBFilterListener, FilterListener);
 
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterParse = function(ctx) {
+NeDBFilterListener.prototype.enterParse = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('enterParse - ' + ctx.getText());
@@ -29,7 +29,7 @@ NeDBQueryListener.prototype.enterParse = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.exitParse = function(ctx) {
+NeDBFilterListener.prototype.exitParse = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('exitParse - ' + ctx.getText());
@@ -49,7 +49,7 @@ NeDBQueryListener.prototype.exitParse = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterCondition = function(ctx) {
+NeDBFilterListener.prototype.enterCondition = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('enterCondition - ' + ctx.getText());
@@ -59,7 +59,7 @@ NeDBQueryListener.prototype.enterCondition = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.exitCondition = function(ctx) {
+NeDBFilterListener.prototype.exitCondition = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('exitCondition - ' + ctx.getText());
@@ -85,7 +85,7 @@ NeDBQueryListener.prototype.exitCondition = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterCondition_or = function(ctx) {
+NeDBFilterListener.prototype.enterCondition_or = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('enterCondition_or - ' + ctx.getText());
@@ -95,7 +95,7 @@ NeDBQueryListener.prototype.enterCondition_or = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.exitCondition_or = function(ctx) {
+NeDBFilterListener.prototype.exitCondition_or = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('exitCondition_or - ' + ctx.getText());
@@ -116,7 +116,7 @@ NeDBQueryListener.prototype.exitCondition_or = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterPredicate = function(ctx) {
+NeDBFilterListener.prototype.enterPredicate = function(ctx) {
 
 	if(logger.isTraceEnabled) {
 		logger.trace('enterPredicate - ' + ctx.getText());
@@ -126,7 +126,7 @@ NeDBQueryListener.prototype.enterPredicate = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.exitPredicate = function(ctx) {
+NeDBFilterListener.prototype.exitPredicate = function(ctx) {
 	
 	if(logger.isTraceEnabled) {
 		logger.trace('exitPredicate - ' + ctx.getText());
@@ -148,7 +148,7 @@ NeDBQueryListener.prototype.exitPredicate = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterIdentifier = function(ctx) {
+NeDBFilterListener.prototype.enterIdentifier = function(ctx) {
 	var predicateCtx = ctx.parentCtx,
 		property = ctx.getText();
 
@@ -157,7 +157,7 @@ NeDBQueryListener.prototype.enterIdentifier = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterComparison_operator = function(ctx) {
+NeDBFilterListener.prototype.enterComparison_operator = function(ctx) {
 	
 	var predicateCtx = ctx.parentCtx,
 		predicate = predicateCtx.__currentPredicate,
@@ -226,7 +226,7 @@ var setValue = function(literalCtx, val){
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterStringLiteral = function(ctx) {
+NeDBFilterListener.prototype.enterStringLiteral = function(ctx) {
 	
 	// remove single and double quotes that are on the ends of the string	
 	var result = ctx.getText().substring(1);
@@ -236,13 +236,13 @@ NeDBQueryListener.prototype.enterStringLiteral = function(ctx) {
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterNumericLiteral = function(ctx) {
+NeDBFilterListener.prototype.enterNumericLiteral = function(ctx) {
 	setValue(ctx, Number(ctx.getText()));
 };
 
 /** @inheritdoc */
-NeDBQueryListener.prototype.enterIdLiteral = function(ctx) {
+NeDBFilterListener.prototype.enterIdLiteral = function(ctx) {
 	setValue(ctx, ctx.getText());
 };
 
-module.exports = NeDBQueryListener;
+module.exports = NeDBFilterListener;

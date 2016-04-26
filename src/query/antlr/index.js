@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports.QueryErrorListener = require('./query-error-listener');
-module.exports.QueryParser = require('./query-parser');
+module.exports.AntlrErrorListener = require('./antlr-error-listener');
+module.exports.FilterParser = require('./filter-parser');
 
 // Generated javascript files
-module.exports.QueryListener = require('./generated/QueryListener').QueryListener;
-module.exports._QueryLexer = require('./generated/QueryLexer').QueryLexer;
-module.exports._QueryParser = require('./generated/QueryListener').QueryParser;
+module.exports.FilterListener = require('./generated/FilterListener').FilterListener;
+module.exports._FilterLexer = require('./generated/FilterLexer').FilterLexer;
+module.exports._FilterParser = require('./generated/FilterListener').FilterParser;

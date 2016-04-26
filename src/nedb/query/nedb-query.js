@@ -2,8 +2,8 @@
 
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.nedb.query.NeDBQuery'),
-	QueryParser = require('../../query/antlr/query-parser'),
-	NeDBQueryListener = require('./nedb-query-listener'),
+	FilterParser = require('../../query/antlr/filter-parser'),
+	NeDBFilterListener = require('./nedb-filter-listener'),
 	queryUtil = require('../../query/query-util');
 
 /**
@@ -36,9 +36,9 @@ var NeDBQuery = function(store, objectTransform){
 	 * The parser listener used in the parsing of the filter.
 	 *
 	 * @protected
-	 * @type restak.nedb.query.NeDBQueryListener
+	 * @type restak.nedb.query.NeDBFilterListener
 	 */
-	this.listener = new NeDBQueryListener();
+	this.listener = new NeDBFilterListener();
 };
 
 /** @inheritdoc */
@@ -48,7 +48,7 @@ NeDBQuery.prototype.execute = function(req, callback) {
 		listener = this.listener,
 		objectTransform = this.objectTransform;
 
-	var parser = new QueryParser(listener, req);
+	var parser = new FilterParser(listener, req);
 
 	if(!parser.isValid()) {
 		logger.debug('Invalid query request. Cannot execute query.');

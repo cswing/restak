@@ -2,10 +2,10 @@
 
 var log4js = global.log4js || require('log4js'),
 	logger_filter = log4js.getLogger('restak.query.object-query.object-filter'),
-	logger_listener = log4js.getLogger('restak.query.object-query.object-query-listener'),
+	logger_listener = log4js.getLogger('restak.query.object-query.object-filter-listener'),
 	util = require('util'),
-	QueryParser = require('../antlr').QueryParser,
-	QueryListener = require('../antlr').QueryListener;
+	FilterParser = require('../antlr').FilterParser,
+	FilterListener = require('../antlr').FilterListener;
 
 var comparisonMap = {
 	'_FALSE': function(lhs, rhs){
@@ -69,14 +69,14 @@ var comparisonMap = {
  *
  * @constructor
  * @memberof restak.query.object-query
- * @implements restak.query.antlr.QueryListener
+ * @implements restak.query.antlr.FilterListener
  */
-var ObjectQueryListener = function() {
-	QueryListener.apply(this, arguments);
+var ObjectFilterListener = function() {
+	FilterListener.apply(this, arguments);
 
 	this.filters = [];
 };
-util.inherits(ObjectQueryListener, QueryListener);
+util.inherits(ObjectFilterListener, FilterListener);
 
 /**
  * Applies the filters that were created as a result of parsing the query request filter string on the item.
@@ -84,7 +84,7 @@ util.inherits(ObjectQueryListener, QueryListener);
  * @param {Object} item - the item to test the filter on.
  * @returns {boolean} true if the filters are all satisifed, otherwise false.
  */
-ObjectQueryListener.prototype.filter = function(item) {
+ObjectFilterListener.prototype.filter = function(item) {
 	/*
 	return this.filters.every(function(fn){
 		return fn(item);
@@ -93,7 +93,7 @@ ObjectQueryListener.prototype.filter = function(item) {
 	return this._createFilter(this.filters, 'every')(item);
 };
 
-ObjectQueryListener.prototype._createFilter = function(filters, method){
+ObjectFilterListener.prototype._createFilter = function(filters, method){
 
 	// if only one filter function, the array.every or array.some does not need to be called.
 	if(filters.length == 1) { 
@@ -107,12 +107,12 @@ ObjectQueryListener.prototype._createFilter = function(filters, method){
 	};
 };
 
-ObjectQueryListener.prototype._initializeConditionArray = function(){
+ObjectFilterListener.prototype._initializeConditionArray = function(){
 	this.currentConditionArray = [];
 	this.conditionArray.push(this.currentConditionArray);
 };
 
-ObjectQueryListener.prototype._closeConditionArray = function(method){
+ObjectFilterListener.prototype._closeConditionArray = function(method){
 	
 	// take the filters in the last item of the array, create a filter 
 	// and push the filter onto the second to last item.
@@ -131,7 +131,7 @@ ObjectQueryListener.prototype._closeConditionArray = function(method){
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterParse = function(ctx) {
+ObjectFilterListener.prototype.enterParse = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('enterParse - ' + ctx.getText());
@@ -142,7 +142,7 @@ ObjectQueryListener.prototype.enterParse = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.exitParse = function(ctx) {
+ObjectFilterListener.prototype.exitParse = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('exitParse - ' + ctx.getText());
@@ -159,7 +159,7 @@ ObjectQueryListener.prototype.exitParse = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterCondition = function(ctx) {
+ObjectFilterListener.prototype.enterCondition = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('enterCondition - ' + ctx.getText());
@@ -169,7 +169,7 @@ ObjectQueryListener.prototype.enterCondition = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.exitCondition = function(ctx) {
+ObjectFilterListener.prototype.exitCondition = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('exitCondition - ' + ctx.getText());
@@ -179,7 +179,7 @@ ObjectQueryListener.prototype.exitCondition = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterCondition_or = function(ctx) {
+ObjectFilterListener.prototype.enterCondition_or = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('enterCondition_or - ' + ctx.getText());
@@ -189,7 +189,7 @@ ObjectQueryListener.prototype.enterCondition_or = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.exitCondition_or = function(ctx) {
+ObjectFilterListener.prototype.exitCondition_or = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('exitCondition_or - ' + ctx.getText());
@@ -199,7 +199,7 @@ ObjectQueryListener.prototype.exitCondition_or = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterPredicate = function(ctx) {
+ObjectFilterListener.prototype.enterPredicate = function(ctx) {
 
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('enterPredicate - ' + ctx.getText());
@@ -209,7 +209,7 @@ ObjectQueryListener.prototype.enterPredicate = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.exitPredicate = function(ctx) {
+ObjectFilterListener.prototype.exitPredicate = function(ctx) {
 	
 	if(logger_listener.isTraceEnabled) {
 		logger_listener.trace('exitPredicate - ' + ctx.getText());
@@ -233,17 +233,17 @@ ObjectQueryListener.prototype.exitPredicate = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterIdentifier = function(ctx) {
+ObjectFilterListener.prototype.enterIdentifier = function(ctx) {
 	this.currentPredicate.lhs = ctx.getText();
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterComparison_operator = function(ctx) {
+ObjectFilterListener.prototype.enterComparison_operator = function(ctx) {
 	this.currentPredicate.oper = ctx.getText();
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterStringLiteral = function(ctx) {
+ObjectFilterListener.prototype.enterStringLiteral = function(ctx) {
 	
 	// remove single and double quotes that are on the ends of the string	
 	var result = ctx.getText().substring(1);
@@ -253,36 +253,36 @@ ObjectQueryListener.prototype.enterStringLiteral = function(ctx) {
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterNumericLiteral = function(ctx) {
+ObjectFilterListener.prototype.enterNumericLiteral = function(ctx) {
 	this.currentPredicate.rhs = Number(ctx.getText());
 };
 
 /** @inheritdoc */
-ObjectQueryListener.prototype.enterIdLiteral = function(ctx) {
+ObjectFilterListener.prototype.enterIdLiteral = function(ctx) {
 	this.currentPredicate.rhs = ctx.getText();
 };
 
 
 /**
- * Given a {@link QueryRequest|request}, provide a way to apply the filter to an object.
+ * Given a {@link FilterRequest|request}, provide a way to apply the filter to an object.
  *
  * @constructor
  * @memberof restak.query.object-query
- * @param {restak.query.QueryRequest} request - The query request.
+ * @param {restak.query.FilterRequest} request - The query request.
  */
 var ObjectFilter = function(request){
 	this.request = request;
-	this.listener = new ObjectQueryListener();
-	this.parser = new QueryParser(this.listener, this.request);
+	this.listener = new ObjectFilterListener();
+	this.parser = new FilterParser(this.listener, this.request);
 };
 
 /**
- * Applies the filter specified in the {@link restak.query.QueryRequest|request} to the item.  If the filter is valid,
- * this function delegates to the {@link restak.query.object-query.ObjectQueryListener#filter}.
+ * Applies the filter specified in the {@link restak.query.FilterRequest|request} to the item.  If the filter is valid,
+ * this function delegates to the {@link restak.query.object-query.ObjectFilterListener#filter}.
  *
  * @param {Object} item - the item to test the filter on.
  * @returns {boolean} true if the parser is valid and all filters are all satisifed, otherwise false.
- * @see restak.query.object-query.ObjectQueryListener#filter
+ * @see restak.query.object-query.ObjectFilterListener#filter
  */
 ObjectFilter.prototype.filter = function(item){
 	
@@ -294,5 +294,5 @@ ObjectFilter.prototype.filter = function(item){
 	return this.listener.filter(item);
 };
 
-module.exports.ObjectQueryListener = ObjectQueryListener;
+module.exports.ObjectFilterListener = ObjectFilterListener;
 module.exports.ObjectFilter = ObjectFilter;

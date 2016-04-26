@@ -1,4 +1,4 @@
-grammar Query;
+grammar Filter;
 
 parse  
     : condition EOF
