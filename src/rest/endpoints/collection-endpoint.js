@@ -46,8 +46,9 @@ CollectionEndpoint.prototype.buildQueryRequest = function(req){
 
 	var queryRequest = {
 		filter: queryParams.filter || '',
+		sort: queryParams.sort || '',
 		page: Math.floor(Number(queryParams.page)),
-		pageSize: Math.floor(Number(queryParams.pageSize)),
+		pageSize: Math.floor(Number(queryParams.pageSize))
 	};
 
 	if(isNaN(queryRequest.page)) {
@@ -109,6 +110,9 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 			var result = req._parsedUrl.pathname + '?page=' + page + '&pageSize=' + queryResult.pageSize;
 			if(queryResult.filter && queryResult.filter != '') {
 				result = result + '&filter=' + encodeURIComponent(queryResult.filter) + '&'
+			}
+			if(queryResult.sort && queryResult.sort != '') {
+				result = result + '&sort=' + encodeURIComponent(queryResult.sort) + '&'
 			}
 			return result;
 		};

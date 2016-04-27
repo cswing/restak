@@ -25,7 +25,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var ep = new CollectionEndpoint(log4js.getLogger('tests'), '/test', {}),
 				qr = ep.buildQueryRequest(null);
 
-			expect(qr).to.deep.equal({filter: '', page: 1, pageSize: 25 });
+			expect(qr).to.deep.equal({filter: '', sort: '', page: 1, pageSize: 25 });
 
 			done();
 		});
@@ -35,7 +35,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var ep = new CollectionEndpoint(log4js.getLogger('tests'), '/test', {}),
 				qr = ep.buildQueryRequest({ url: '/tests?page=INVALID' });
 
-			expect(qr).to.deep.equal({filter: '', page: 1, pageSize: 25 });
+			expect(qr).to.deep.equal({filter: '', sort: '', page: 1, pageSize: 25 });
 
 			done();
 		});		
@@ -45,7 +45,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var ep = new CollectionEndpoint(log4js.getLogger('tests'), '/test', {}),
 				qr = ep.buildQueryRequest({ url: '/tests?pageSize=INVALID' });
 
-			expect(qr).to.deep.equal({filter: '', page: 1, pageSize: 25 });
+			expect(qr).to.deep.equal({filter: '', sort: '', page: 1, pageSize: 25 });
 
 			done();
 		});
@@ -53,9 +53,9 @@ describe('rest > endpoints > collection-endpoint', function() {
 		it('should apply the correct values', function(done) {
 			
 			var ep = new CollectionEndpoint(log4js.getLogger('tests'), '/test', {}),
-				qr = ep.buildQueryRequest({ url: '/tests?page=2&pageSize=10&filter=foo' });
+				qr = ep.buildQueryRequest({ url: '/tests?page=2&pageSize=10&filter=foo&sort=foo,DESC' });
 
-			expect(qr).to.deep.equal({filter: 'foo', page: 2, pageSize: 10 });
+			expect(qr).to.deep.equal({filter: 'foo', sort: 'foo,DESC', page: 2, pageSize: 10 });
 
 			done();
 		});
@@ -107,6 +107,45 @@ describe('rest > endpoints > collection-endpoint', function() {
 					expectLink(payload.links[1], 'Previous', 'prev', '/testpath?page=2&pageSize=1&filter=test~%22foo%22&');
 					expectLink(payload.links[2], 'Next', 'next', '/testpath?page=4&pageSize=1&filter=test~%22foo%22&');
 					expectLink(payload.links[3], 'Last', 'last', '/testpath?page=5&pageSize=1&filter=test~%22foo%22&');
+					
+					done();
+				});
+		});
+
+		it('should provide links with the sort in the url', function(done){
+
+			var queryExecutor = {
+				executeQuery: function(qKey, qr, callback) {
+					callback(null, { 
+						filter: qr.filter,
+						sort: qr.sort,
+						pageSize: 1,
+						pageCount: 5,
+						page: 3,
+						totalCount: 5,
+						items: [{ x: 'a' }]
+					});
+				}
+			};
+
+			var endpoint = new CollectionEndpoint(logger, '/testpath', 'test-query');
+			endpoint.queryExecutor = queryExecutor;
+
+			var server = new RestServer(serverConfig, [endpoint]);
+
+			request(server.app)
+				.get('/testpath?sort=foo%2CDESC')
+				.expect('Content-Type', /json/)
+				.expect(200)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					
+					var payload = res.body.payload;
+
+					expectLink(payload.links[0], 'First', 'first', '/testpath?page=1&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[1], 'Previous', 'prev', '/testpath?page=2&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[2], 'Next', 'next', '/testpath?page=4&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[3], 'Last', 'last', '/testpath?page=5&pageSize=1&sort=foo%2CDESC&');
 					
 					done();
 				});
