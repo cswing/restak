@@ -267,7 +267,9 @@ describe('nedb > query > nedb-query', function() {
 			query.execute(request, function(err, result){
 
 				expect(err).to.be.null;
-				expect(result).to.deep.equal({ filter: 'foo=1',
+				expect(result).to.deep.equal({ 
+					filter: 'foo=1',
+					sort: '',
 					pageSize: 25,
 					page: 1,
 					pageCount: 1,

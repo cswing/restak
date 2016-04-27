@@ -25,24 +25,6 @@ ObjectSortListener.prototype.enterParse = function(ctx) {
 	ctx.comparators = [];
 };
 
-// Exit a parse tree produced by SortParser#parse.
-/*
-ObjectSortListener.prototype.exitParse = function(ctx) {
-	console.dir('exit parse');
-};
-*/
-/*
-// Enter a parse tree produced by SortParser#condition.
-ObjectSortListener.prototype.enterCondition = function(ctx) {
-	console.dir('enter condition');
-};
-
-// Exit a parse tree produced by SortParser#condition.
-ObjectSortListener.prototype.exitCondition = function(ctx) {
-	console.dir('exit condition');
-};
-*/
-
 // Enter a parse tree produced by SortParser#partial.
 ObjectSortListener.prototype.enterPartial = function(ctx) {
 	//console.dir(ctx);

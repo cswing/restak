@@ -14,6 +14,7 @@ describe('query > query-util', function() {
 			var qResult = queryUtil.buildResult(null, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
@@ -27,6 +28,7 @@ describe('query > query-util', function() {
 			var qResult = queryUtil.buildResult({}, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
@@ -43,6 +45,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 3);
 			expect(qResult).to.have.property('pageCount', 3);
@@ -59,6 +62,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 4);
 			expect(qResult).to.have.property('pageCount', 3);
@@ -75,6 +79,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
@@ -91,6 +96,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
@@ -107,6 +113,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
@@ -124,6 +131,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 2);
 			expect(qResult).to.have.property('pageSize', 3);
 			expect(qResult).to.have.property('pageCount', 3);
@@ -141,6 +149,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 2);
 			expect(qResult).to.have.property('pageSize', 4);
 			expect(qResult).to.have.property('pageCount', 3);
@@ -158,6 +167,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 3);
 			expect(qResult).to.have.property('pageSize', 3);
 			expect(qResult).to.have.property('pageCount', 3);
@@ -175,6 +185,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 3);
 			expect(qResult).to.have.property('pageSize', 4);
 			expect(qResult).to.have.property('pageCount', 3);
@@ -191,6 +202,7 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 1);
 
 			expect(qResult).to.have.property('filter', 'foo > 7');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
@@ -207,8 +219,26 @@ describe('query > query-util', function() {
 				qResult = queryUtil.buildResult(request, 9);
 
 			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', '');
 			expect(qResult).to.have.property('page', 1);
 			expect(qResult).to.have.property('pageSize', 9);
+			expect(qResult).to.have.property('pageCount', 1);
+			expect(qResult).to.have.property('totalCount', 9);
+
+			done();	
+		});
+
+		it('should work with a sort', function(done) {
+			
+			var request = {
+					sort: 'foo,DESC'
+				},
+				qResult = queryUtil.buildResult(request, 9);
+
+			expect(qResult).to.have.property('filter', '');
+			expect(qResult).to.have.property('sort', 'foo,DESC');
+			expect(qResult).to.have.property('page', 1);
+			expect(qResult).to.have.property('pageSize', 25);
 			expect(qResult).to.have.property('pageCount', 1);
 			expect(qResult).to.have.property('totalCount', 9);
 

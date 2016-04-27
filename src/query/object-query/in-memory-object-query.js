@@ -4,7 +4,10 @@ var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.query.object-query.InMemoryObjectQuery'),
 	util = require('util'),
 	ObjectFilter = require('./object-filter').ObjectFilter,
+	ObjectSort = require('./object-sort').ObjectSort,
 	queryUtil = require('../query-util');
+
+var objSort = new ObjectSort();
 
 /**
  * An implementation of {@link restak.query.Query|Query} that uses and array of javascript objects for it's backing store.
@@ -40,7 +43,8 @@ InMemoryObjectQuery.prototype.execute = function(req, callback){
 		begin = (qResult.page - 1) * qResult.pageSize,
 		end = begin + qResult.pageSize;
 
-	qResult.items = JSON.parse(JSON.stringify(filteredData.slice(begin, end)));
+	qResult.items = objSort.sort(req, 
+		JSON.parse(JSON.stringify(filteredData.slice(begin, end))));
 
 	callback(null, qResult);
 };

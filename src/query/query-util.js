@@ -29,6 +29,7 @@ module.exports.buildResult = function(req, totalCount){
 	
 	var qResult = {
 		filter: request.filter || '',
+		sort: request.sort || '',
 		pageSize: pageSize,
 		page: page,
 		pageCount: Math.ceil(totalCount / pageSize),
