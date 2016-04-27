@@ -138,6 +138,20 @@ describe('sort > antlr > sort-parser', function() {
 		done();
 	});
 
+	it('should work with sort: name, asc', function(done) {
+
+		var sortRequest = {
+			sort: 'name, asc'
+		};
+
+		var listener = new MockSortListener(),
+			parser = new SortParser(listener, sortRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
 	it('should work with sort: name,DESC', function(done) {
 
 		var sortRequest = {
@@ -156,6 +170,20 @@ describe('sort > antlr > sort-parser', function() {
 
 		var sortRequest = {
 			sort: 'name, DESC'
+		};
+
+		var listener = new MockSortListener(),
+			parser = new SortParser(listener, sortRequest);
+
+		expect(parser.isValid()).to.equal(true);
+		expect(parser.getErrorMessages()).to.have.deep.members([]);
+		done();
+	});
+
+	it('should work with sort: name, desc', function(done) {
+
+		var sortRequest = {
+			sort: 'name, desc'
 		};
 
 		var listener = new MockSortListener(),
