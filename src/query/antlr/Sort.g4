@@ -9,9 +9,13 @@ condition
 	;
 
 partial 
-	: ID (COMMA direction)?
+	: identifier (COMMA direction)?
 	;
 
+identifier
+	: ID
+	;
+	
 direction
 	: ASC
 	| DESC;
