@@ -4,6 +4,8 @@ var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.nedb.query.NeDBQuery'),
 	FilterParser = require('../../query/antlr/filter-parser'),
 	NeDBFilterListener = require('./nedb-filter-listener'),
+	SortParser = require('../../query/antlr/sort-parser'),
+	NeDBSortListener = require('./nedb-sort-listener'),
 	queryUtil = require('../../query/query-util');
 
 /**
@@ -33,35 +35,57 @@ var NeDBQuery = function(store, objectTransform){
 	this.objectTransform = objectTransform;
 
 	/**
-	 * The parser listener used in the parsing of the filter.
+	 * The listener used in the parsing of the filter expression.
 	 *
 	 * @protected
 	 * @type restak.nedb.query.NeDBFilterListener
 	 */
-	this.listener = new NeDBFilterListener();
+	this.filterListener = new NeDBFilterListener();
+
+	/**
+	 * The listener used in the parsing of the sort expression.
+	 *
+	 * @protected
+	 * @type restak.nedb.query.NeDBSortListener
+	 */
+	this.sortListener = new NeDBSortListener();
 };
 
 /** @inheritdoc */
 NeDBQuery.prototype.execute = function(req, callback) {
 
 	var db = this.store,
-		listener = this.listener,
+		filterListener = this.filterListener,
+		sortListener = this.sortListener,
 		objectTransform = this.objectTransform;
 
-	var parser = new FilterParser(listener, req);
+	// Filter
+	var filterParser = new FilterParser(filterListener, req),
+		filterObject = {};
 
-	if(!parser.isValid()) {
+	if(!filterParser.isValid()) {
 		logger.debug('Invalid query request. Cannot execute query.');
-		callback(parser.getErrorMessages(), null);
+		callback(filterParser.getErrorMessages(), null);
 		return;
 	}
 
-	var filterObject = {},
-		tasks = [];
-
-	if(parser.tree) {
-		filterObject = parser.tree.filterObject;
+	if(filterParser.tree) {
+		filterObject = filterParser.tree.filterObject;
 	}
+
+	// Sort
+	var sortParser = new SortParser(sortListener, req),
+		sortObject = {};
+	
+	if(!sortParser.isValid()) {
+		logger.debug('Invalid query request. Cannot execute query.');
+		callback(sortParser.getErrorMessages(), null);
+		return;
+	}
+
+	if(sortParser.tree) {
+		sortObject = sortParser.tree.sortObject;
+	}	
 
 	db.count(filterObject, function(err, count){
 		
@@ -75,6 +99,7 @@ NeDBQuery.prototype.execute = function(req, callback) {
 			limit = qResult.pageSize;
 
 		db.find(filterObject)
+			.sort(sortObject)
 			.skip(skip).limit(limit)
 			.exec(function(err, docs){
 

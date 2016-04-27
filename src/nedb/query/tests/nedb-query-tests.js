@@ -87,6 +87,20 @@ describe('nedb > query > nedb-query', function() {
 			});
 		});
 
+		it('should return an error with an invalid sort', function(done) {
+			
+			var query = new NeDBQuery(db),
+				request = {
+					sort: 'INVALID,SORT'
+				};
+
+			query.execute(request, function(err, qResult){
+				expect(err).to.not.be.null;
+				expect(qResult).to.be.null;
+				done();	
+			});
+		});
+
 		it('should work with a custom page size', function(done) {
 			
 			var query = new NeDBQuery(db),
@@ -280,6 +294,37 @@ describe('nedb > query > nedb-query', function() {
 				done();
 			});
 		});
-	});
 
+		it('should work with a sort', function(done) {
+			
+			var query = new NeDBQuery(db),
+				request = {
+					sort: 'foo,DESC'
+				};
+
+			query.execute(request, function(err, qResult){
+
+				expect(err).to.be.null;
+				expect(qResult).to.have.property('filter', '');
+				expect(qResult).to.have.property('page', 1);
+				expect(qResult).to.have.property('pageSize', 25);
+				expect(qResult).to.have.property('pageCount', 1);
+				expect(qResult).to.have.property('totalCount', 9);
+				expect(qResult).to.have.property('items');
+				expect(qResult).to.have.deep.property('items.length', 9);
+				
+				expect(qResult.items[0]).to.deep.equal(docs[8]);
+				expect(qResult.items[1]).to.deep.equal(docs[7]);
+				expect(qResult.items[2]).to.deep.equal(docs[6]);
+				expect(qResult.items[3]).to.deep.equal(docs[5]);
+				expect(qResult.items[4]).to.deep.equal(docs[4]);
+				expect(qResult.items[5]).to.deep.equal(docs[3]);
+				expect(qResult.items[6]).to.deep.equal(docs[2]);
+				expect(qResult.items[7]).to.deep.equal(docs[1]);
+				expect(qResult.items[8]).to.deep.equal(docs[0]);
+
+				done();	
+			});
+		});
+	});
 });
