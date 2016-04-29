@@ -202,6 +202,32 @@ describe('query > object-query > object-filter', function() {
 
 			done();
 		});
+
+		it('should return { foo: true }', function(done) {
+			
+			var queryRequest = { filter: 'foo=true' },
+				objFilter = new ObjectFilter(queryRequest);
+
+			expect(objFilter.filter({foo: true })).to.equal(true);
+			expect(objFilter.filter({foo: false })).to.equal(false);
+			expect(objFilter.filter({foo: 'true' })).to.equal(false);
+			expect(objFilter.filter({foo: 'false' })).to.equal(false);
+			
+			done();
+		});
+
+		it('should return { foo: false }', function(done) {
+			
+			var queryRequest = { filter: 'foo=false' },
+				objFilter = new ObjectFilter(queryRequest);
+
+			expect(objFilter.filter({foo: true })).to.equal(false);
+			expect(objFilter.filter({foo: false })).to.equal(true);
+			expect(objFilter.filter({foo: 'true' })).to.equal(false);
+			expect(objFilter.filter({foo: 'false' })).to.equal(false);
+			
+			done();
+		});
 	});
 
 	describe('less than or equal', function(){

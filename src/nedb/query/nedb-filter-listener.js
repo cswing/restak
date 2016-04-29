@@ -242,7 +242,12 @@ NeDBFilterListener.prototype.enterNumericLiteral = function(ctx) {
 
 /** @inheritdoc */
 NeDBFilterListener.prototype.enterIdLiteral = function(ctx) {
-	setValue(ctx, ctx.getText());
+
+	var val = ctx.getText();
+	if(val == 'true') val = true;
+	if(val == 'false') val = false;
+
+	setValue(ctx, val);
 };
 
 module.exports = NeDBFilterListener;

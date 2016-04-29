@@ -259,7 +259,11 @@ ObjectFilterListener.prototype.enterNumericLiteral = function(ctx) {
 
 /** @inheritdoc */
 ObjectFilterListener.prototype.enterIdLiteral = function(ctx) {
-	this.currentPredicate.rhs = ctx.getText();
+	var val = ctx.getText();
+	if(val == 'true') val = true;
+	if(val == 'false') val = false;
+
+	this.currentPredicate.rhs = val;
 };
 
 

@@ -181,7 +181,35 @@ describe('nedb > query > filter-listener', function() {
 			done();
 		});
 
-		
+		it('should return { foo: true }', function(done) {
+			
+			var request = {
+				filter: 'foo=true'
+			},
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
+			filterObject = parser.tree.filterObject;
+
+			expect(parser.isValid()).to.equal(true);
+			expect(filterObject).to.deep.equal({foo: true});
+			
+			done();
+		});
+
+		it('should return { foo: false }', function(done) {
+			
+			var request = {
+				filter: 'foo=false'
+			},
+			listener = new NeDBFilterListener(),
+			parser = new FilterParser(listener, request),
+			filterObject = parser.tree.filterObject;
+
+			expect(parser.isValid()).to.equal(true);
+			expect(filterObject).to.deep.equal({foo: false});
+			
+			done();
+		});
 	});
 	
 	describe('less than', function(){
