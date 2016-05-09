@@ -179,6 +179,13 @@ RestServer.prototype.buildRestResponse = function(req, res, payload, messages){
 	};
 };
 
+RestServer.prototype._getUrlPrefix = function(){
+	if(this.config.has('urlPrefix'))
+		return this.config.get('urlPrefix');
+
+	return '/api';
+};
+
 /**
  * Utility method to build a {restak.rest.ResourceLink}.
  * 
@@ -196,7 +203,7 @@ RestServer.prototype.buildResourceLink = function(req, name, rel, url) {
 	return {
 		name: name,
 		rel: rel,
-		url: req.protocol + '://' + req.headers.host + url
+		url: req.protocol + '://' + req.headers.host + this._getUrlPrefix() + url
 	};
 };
 
@@ -207,13 +214,7 @@ RestServer.prototype.buildResourceLink = function(req, name, rel, url) {
  * @param {express} parentApp - the parent app to register the REST app with.
  */
 RestServer.prototype.registerApp = function(parentApp) {
-
-	var urlPrefix = '/api';
-
-	if(this.config.has('urlPrefix'))
-		urlPrefix = this.config.get('urlPrefix');
-
-	parentApp.use(urlPrefix, this.app);
+	parentApp.use(this._getUrlPrefix(), this.app);
 };
 
 module.exports = RestServer;

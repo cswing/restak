@@ -151,4 +151,49 @@ describe('restak > rest > server', function() {
 		});
 
 	});
+
+	describe('#buildResourceLink', function(){
+
+		it('should return a link with the default /api', function(done){
+
+			var server = new RestServer(config, [], []),
+				req = {
+					protocol: 'https',
+					headers: {
+						host: 'www.test.com'
+					}
+				},
+				link = server.buildResourceLink(req, 'Link name', 'Link rel', '/testpath');
+
+			expect(link).to.not.be.null;
+			expect(link).to.have.property('name', 'Link name');
+			expect(link).to.have.property('rel', 'Link rel');
+			expect(link).to.have.property('url', 'https://www.test.com/api/testpath');
+
+			done();
+		});
+
+		it('should return a link with the custom /custom-api', function(done){
+
+			var cfg = new DefaultConfig({
+					'urlPrefix': '/custom-api'
+				}),
+				server = new RestServer(cfg, [], []),
+				req = {
+					protocol: 'https',
+					headers: {
+						host: 'www.test.com'
+					}
+				},
+				link = server.buildResourceLink(req, 'Link name', 'Link rel', '/testpath');
+
+			expect(link).to.not.be.null;
+			expect(link).to.have.property('name', 'Link name');
+			expect(link).to.have.property('rel', 'Link rel');
+			expect(link).to.have.property('url', 'https://www.test.com/custom-api/testpath');
+
+			done();
+		});
+
+	});
 });

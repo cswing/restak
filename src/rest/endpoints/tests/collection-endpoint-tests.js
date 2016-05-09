@@ -6,15 +6,16 @@ var log4js = global.log4js || require('log4js'),
 	util = require('util'),
 	urlUtil = require('url'),
 	request = require('supertest'),
+	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../server'),
 	CollectionEndpoint = require('../collection-endpoint');
 
 var logger = log4js.getLogger('test'),
-	serverConfig = {
+	serverConfig = new DefaultConfig({
 		port: 12000,
 		appName: 'test app',
 		appVersion: '1.0'
-	};
+	});
 
 describe('rest > endpoints > collection-endpoint', function() {
 
@@ -103,10 +104,10 @@ describe('rest > endpoints > collection-endpoint', function() {
 					
 					var payload = res.body.payload;
 
-					expectLink(payload.links[0], 'First', 'first', '/testpath?page=1&pageSize=1&filter=test~%22foo%22&');
-					expectLink(payload.links[1], 'Previous', 'prev', '/testpath?page=2&pageSize=1&filter=test~%22foo%22&');
-					expectLink(payload.links[2], 'Next', 'next', '/testpath?page=4&pageSize=1&filter=test~%22foo%22&');
-					expectLink(payload.links[3], 'Last', 'last', '/testpath?page=5&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[0], 'First', 'first', '/api/testpath?page=1&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[1], 'Previous', 'prev', '/api/testpath?page=2&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[2], 'Next', 'next', '/api/testpath?page=4&pageSize=1&filter=test~%22foo%22&');
+					expectLink(payload.links[3], 'Last', 'last', '/api/testpath?page=5&pageSize=1&filter=test~%22foo%22&');
 					
 					done();
 				});
@@ -142,10 +143,10 @@ describe('rest > endpoints > collection-endpoint', function() {
 					
 					var payload = res.body.payload;
 
-					expectLink(payload.links[0], 'First', 'first', '/testpath?page=1&pageSize=1&sort=foo%2CDESC&');
-					expectLink(payload.links[1], 'Previous', 'prev', '/testpath?page=2&pageSize=1&sort=foo%2CDESC&');
-					expectLink(payload.links[2], 'Next', 'next', '/testpath?page=4&pageSize=1&sort=foo%2CDESC&');
-					expectLink(payload.links[3], 'Last', 'last', '/testpath?page=5&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[0], 'First', 'first', '/api/testpath?page=1&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[1], 'Previous', 'prev', '/api/testpath?page=2&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[2], 'Next', 'next', '/api/testpath?page=4&pageSize=1&sort=foo%2CDESC&');
+					expectLink(payload.links[3], 'Last', 'last', '/api/testpath?page=5&pageSize=1&sort=foo%2CDESC&');
 					
 					done();
 				});
