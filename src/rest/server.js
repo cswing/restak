@@ -19,6 +19,7 @@ var log4js = global.log4js || require('log4js'),
   * @property {Number} port - The port the server should listen on.
   * @property {String} appName - The name of the application.
   * @property {String} appVersion - The version of the application.
+  * @property {String} urlPrefix - A url prefix to register this application to. Optional, defaults to '/api'
   * @property {String} unhandledErrorCode - The error code on error messages for unhandled errors.  Defaults to 'SYS-0000'. This is *not* the HTTP status code.
   * @see restak.rest.RestServer
   * @see restak.messages.Message
@@ -197,6 +198,22 @@ RestServer.prototype.buildResourceLink = function(req, name, rel, url) {
 		rel: rel,
 		url: req.protocol + '://' + req.headers.host + url
 	};
+};
+
+/**
+ * Registers the REST express app witht he parent app provided.  The REST app will be registered using the 
+ * urlPrefix provided in the configuration.
+ *
+ * @param {express} parentApp - the parent app to register the REST app with.
+ */
+RestServer.prototype.registerApp = function(parentApp) {
+
+	var urlPrefix = '/api';
+
+	if(this.config.has('urlPrefix'))
+		urlPrefix = this.config.get('urlPrefix');
+
+	parentApp.use(urlPrefix, this.app);
 };
 
 module.exports = RestServer;
