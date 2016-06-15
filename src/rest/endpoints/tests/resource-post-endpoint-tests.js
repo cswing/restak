@@ -7,15 +7,18 @@ var log4js = global.log4js || require('log4js'),
 	Joi = require('joi'),
 	urlUtil = require('url'),
 	request = require('supertest'),
+	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../server'),
 	ResourcePostEndpoint = require('../resource-post-endpoint');
 
 var logger = log4js.getLogger('test'),
-	serverConfig = {
-		port: 12000,
-		appName: 'test app',
-		appVersion: '1.0'
-	};
+	appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
+	serverConfig = new DefaultConfig({
+		port: 12000
+	});
 
 describe('rest > endpoints > resource-post-endpoint', function() {
 
@@ -30,7 +33,7 @@ describe('rest > endpoints > resource-post-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new ResourcePostEndpoint(logger, '/testpath', command)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new ResourcePostEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.post('/testpath')
@@ -66,7 +69,7 @@ describe('rest > endpoints > resource-post-endpoint', function() {
        				] 
        			};
 
-			var server = new RestServer(serverConfig, [new ResourcePostEndpoint(logger, '/testpath', command)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new ResourcePostEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.post('/testpath')
@@ -100,7 +103,7 @@ describe('rest > endpoints > resource-post-endpoint > impl', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new ResourcePostEndpointImpl(command)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new ResourcePostEndpointImpl(command)]);
 
 			request(server.app)
 				.post('/testpath')

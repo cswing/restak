@@ -12,10 +12,12 @@ var log4js = require('log4js'),
 	ResourceGetEndpoint = historyEndpoints.ResourceGetEndpoint;
 
 var logger = log4js.getLogger('test'),
+	appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
 	serverConfig = new DefaultConfig({
-		port: 12000,
-		appName: 'test app',
-		appVersion: '1.0'
+		port: 12000
 	});
 
 var instance = {
@@ -49,7 +51,7 @@ describe('scheduler > rest-endpoints > history > collection', function() {
 
 			var endpoint = new CollectionEndpoint();
 			endpoint.queryExecutor = queryExecutor;
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/scheduler/jobs/1234/history')
@@ -97,7 +99,7 @@ describe('scheduler > rest-endpoints > history > resource-get', function() {
 
 			var endpoint = new ResourceGetEndpoint();
 			endpoint.queryExecutor = queryExecutor;
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/scheduler/jobs/1234/history/1234-0')

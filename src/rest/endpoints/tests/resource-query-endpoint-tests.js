@@ -5,15 +5,18 @@ var log4js = global.log4js || require('log4js'),
 	assert = require('chai').assert,
 	util = require('util'),
 	request = require('supertest'),
+	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../server'),
 	ResourceQueryEndpoint = require('../resource-query-endpoint');
 
 var logger = log4js.getLogger('test'),
-	serverConfig = {
-		port: 12000,
-		appName: 'test app',
-		appVersion: '1.0'
-	};
+	appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
+	serverConfig = new DefaultConfig({
+		port: 12000
+	});
 
 describe('rest > endpoints > resource-query-endpoint', function() {
 
@@ -37,7 +40,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -46,7 +49,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 				.end(function(err, res){
 					expect(err).to.be.null;
 					expect(res.body).to.deep.equal({
-						application: { appName: 'test app', appVersion: '1.0' },
+						application: { name: 'test app', version: '1.0' },
 						payload: { x: 'a' },
 						messages: []
 					});
@@ -65,7 +68,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -74,7 +77,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 				.end(function(err, res){
 					expect(err).to.be.null;
 					expect(res.body).to.deep.equal({ 
-						application: { appName: 'test app', appVersion: '1.0' },
+						application: { name: 'test app', version: '1.0' },
 						payload: null,
 						messages: [ { type: 'error', code: 'SYS-0000', message: 'An error occurred in the query' } ] 
   					});
@@ -100,7 +103,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -129,7 +132,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			var endpoint = new ResourceQueryEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -138,7 +141,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 				.end(function(err, res){
 					expect(err).to.be.null;
 					expect(res.body).to.deep.equal({
-						application: { appName: 'test app', appVersion: '1.0' },
+						application: { name: 'test app', version: '1.0' },
 						payload: { x: 'a' },
 						messages: []
 					});
@@ -169,7 +172,7 @@ describe('rest > endpoints > resource-query-endpoint', function() {
 			});
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')

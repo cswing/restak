@@ -30,11 +30,12 @@ var log4js = global.log4js || require('log4js'),
  * 
  * @constructor
  * @memberof restak.rest
+ * @param {restak.app-server.ApplicationDescriptor} - The application descriptor.
  * @param {restak.rest.RestServerConfig} config - Configuration parameters for the server.
  * @param {restak.rest.endpoints.Endpoint[]} endpoints - The endpoints this server is to support.
  * @param {restak.rest.middleware.Middleware[]} middleware - The middleware to install on the express server.
  */
-var RestServer = function(config, endpoints, middleware){
+var RestServer = function(appDescriptor, config, endpoints, middleware){
 
 	/**
 	 * The endpoints this server serves.
@@ -69,10 +70,7 @@ var RestServer = function(config, endpoints, middleware){
 	 *
 	 * @type restak.rest.ApplicationDescriptor
 	 */
-	this.appDescriptor = {
-		appName: this.config.appName || 'REST server',
-		appVersion: this.config.appVersion
-	};
+	this.appDescriptor = appDescriptor;
 
 	// Configure expressjs app
 	var _t = this,

@@ -5,6 +5,7 @@ var log4js = global.log4js || require('log4js'),
 	assert = require('chai').assert,
 	urlUtil = require('url'),
 	request = require('supertest'),
+	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../../rest/server'),
 	AuthenticationEndpoint = require('../authentication-endpoint');
 
@@ -20,11 +21,13 @@ MockCommand.prototype.execute = function(instr, callback){
 	callback(null, this.dataResult);
 };
 
-var serverConfig = {
-	port: 12000,
-	appName: 'test app',
-	appVersion: '1.0'
-};
+var appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
+	serverConfig = new DefaultConfig({
+		port: 12000
+	});
 
 describe('security > endpoints > authentication-endpoint', function() {
 
@@ -34,7 +37,7 @@ describe('security > endpoints > authentication-endpoint', function() {
 
 			var cmd = new MockCommand(true, '0123456', 'user'),
 				endpoint = new AuthenticationEndpoint(cmd),
-				server = new RestServer(serverConfig, [endpoint]),
+				server = new RestServer(appDescriptor, serverConfig, [endpoint]),
 				expectedPayload = {
 					success: true,
 					token: '0123456',
@@ -61,7 +64,7 @@ describe('security > endpoints > authentication-endpoint', function() {
 
 			var cmd = new MockCommand(false, '0123456', 'user'),
 				endpoint = new AuthenticationEndpoint(cmd),
-				server = new RestServer(serverConfig, [endpoint]),
+				server = new RestServer(appDescriptor, serverConfig, [endpoint]),
 				expectedPayload = {
 					success: false,
 					token: null,

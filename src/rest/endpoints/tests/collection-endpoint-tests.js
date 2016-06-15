@@ -11,10 +11,12 @@ var log4js = global.log4js || require('log4js'),
 	CollectionEndpoint = require('../collection-endpoint');
 
 var logger = log4js.getLogger('test'),
+	appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
 	serverConfig = new DefaultConfig({
-		port: 12000,
-		appName: 'test app',
-		appVersion: '1.0'
+		port: 12000
 	});
 
 describe('rest > endpoints > collection-endpoint', function() {
@@ -93,7 +95,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new CollectionEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath?filter=test~"foo"')
@@ -132,7 +134,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new CollectionEndpoint(logger, '/testpath', 'test-query');
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath?sort=foo%2CDESC')
@@ -190,7 +192,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new OverridesCollection('fixed=1', null);
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -231,7 +233,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new OverridesCollection('fixed=1', null);
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath?filter=test~"foo"')
@@ -276,7 +278,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			var endpoint = new OverridesCollection(null, itemProcessor);
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')
@@ -319,7 +321,7 @@ describe('rest > endpoints > collection-endpoint', function() {
 			});
 			endpoint.queryExecutor = queryExecutor;
 
-			var server = new RestServer(serverConfig, [endpoint]);
+			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
 				.get('/testpath')

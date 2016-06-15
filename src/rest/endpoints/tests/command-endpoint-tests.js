@@ -6,6 +6,7 @@ var log4js = global.log4js || require('log4js'),
 	util = require('util'),
 	urlUtil = require('url'),
 	request = require('supertest'),
+	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../server'),
 	CommandEndpoint = require('../command-endpoint');
 
@@ -47,10 +48,12 @@ CommandEndpointOverridesImpl.prototype.getSuccessHttpStatusCode = function(cmdRe
 };
 
 var logger = log4js.getLogger('test'),
+	appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
 	serverConfig = {
-		port: 12000,
-		appName: 'test app',
-		appVersion: '1.0'
+		port: 12000
 	};
 
 describe('rest > endpoints > command-endpoint', function() {
@@ -66,7 +69,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new CommandEndpointImpl(logger, '/testpath', command)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new CommandEndpointImpl(logger, '/testpath', command)]);
 
 			request(server.app)
 				.get('/testpath')
@@ -88,7 +91,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new CommandEndpointImpl(logger, '/testpath', command, 201)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new CommandEndpointImpl(logger, '/testpath', command, 201)]);
 
 			request(server.app)
 				.get('/testpath')
@@ -111,7 +114,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new CommandEndpointOverridesImpl(logger, '/testpath', command, 201, data, data, function() { return 400; })]);
+			var server = new RestServer(appDescriptor, serverConfig, [new CommandEndpointOverridesImpl(logger, '/testpath', command, 201, data, data, function() { return 400; })]);
 
 			request(server.app)
 				.get('/testpath')
@@ -136,7 +139,7 @@ describe('rest > endpoints > command-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new CommandEndpointOverridesImpl(logger, '/testpath', command, 200, data, modified)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new CommandEndpointOverridesImpl(logger, '/testpath', command, 200, data, modified)]);
 
 			request(server.app)
 				.get('/testpath')

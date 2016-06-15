@@ -11,14 +11,11 @@ var util = require('util'),
 	DefaultConfig = require('../config');
 
 var config = new DefaultConfig({
-	'http.port': 21314
-});
-
-
-var appDescriptor = {
-	name: 'test app server',
-	version: '0.1.0-TEST'
-};
+		'http.port': 21314,
+		'appName': 'test app server',
+		'appVersion': '0.1.0-TEST'
+	}),
+	appContext = new ApplicationContext(config);
 
 var TestEndpoint = function(){
 	ResourceEndpoint.apply(this, [log4js.getLogger('restak.test.TestEndpoint'),	'/']);
@@ -47,9 +44,12 @@ describe('app-server > application-server', function() {
 
 		it('should not be initialized', function(done) {
 
-			appServer = new ApplicationServer(appDescriptor);
+			appServer = new ApplicationServer();
 
-			expect(appServer.appDescriptor).to.deep.equal(appDescriptor);
+			expect(appServer.appDescriptor).to.deep.equal({
+				name: 'REST Server',
+				version: null
+			});
 			expect(appServer).to.have.property('initialized', false);
 
 			done();
@@ -57,10 +57,12 @@ describe('app-server > application-server', function() {
 
 		it('should initialize', function(done){
 
-			var appContext = new ApplicationContext(config);
-			appServer = new ApplicationServer(appDescriptor, appContext);
+			appServer = new ApplicationServer(appContext);
 
-			expect(appServer.appDescriptor).to.deep.equal(appDescriptor);
+			expect(appServer.appDescriptor).to.deep.equal({
+				name: 'test app server',
+				version: '0.1.0-TEST'
+			});
 			expect(appServer).to.have.property('initialized', true);
 			expect(appServer).to.have.property('running', false);
 
@@ -72,12 +74,13 @@ describe('app-server > application-server', function() {
 
 		it('should initialize', function(done){
 
-			var appContext = new ApplicationContext(config);
-			appServer = new ApplicationServer(appDescriptor);
-
+			appServer = new ApplicationServer();
 			appServer.initialize(appContext, false);
 
-			expect(appServer.appDescriptor).to.deep.equal(appDescriptor);
+			expect(appServer.appDescriptor).to.deep.equal({
+				name: 'test app server',
+				version: '0.1.0-TEST'
+			});
 			expect(appServer).to.have.property('initialized', true);
 			expect(appServer).to.have.property('running', false);
 
@@ -86,7 +89,7 @@ describe('app-server > application-server', function() {
 
 		it('should not initialize a null context', function(done){
 
-			appServer = new ApplicationServer(appDescriptor);
+			appServer = new ApplicationServer();
 
 			try{
 				appServer.initialize(null);
@@ -101,7 +104,7 @@ describe('app-server > application-server', function() {
 
 		it('should not initialize an undefined context', function(done){
 
-			appServer = new ApplicationServer(appDescriptor);
+			appServer = new ApplicationServer();
 
 			try{
 				appServer.initialize(undefined);
@@ -116,8 +119,7 @@ describe('app-server > application-server', function() {
 
 		it('should not initialize a 2nd time', function(done){
 
-			var appContext = new ApplicationContext(config);
-			appServer = new ApplicationServer(appDescriptor);
+			appServer = new ApplicationServer();
 
 			appServer.initialize(appContext);
 
@@ -145,7 +147,7 @@ describe('app-server > application-server', function() {
 			};
 			appContext.registerObject('restak.scheduler.Scheduler', scheduler);
 
-			appServer = new ApplicationServer(appDescriptor);
+			appServer = new ApplicationServer();
 			appServer.initialize(appContext);
 			appServer.start(function(){
 				expect(schedulerInitialized).to.equal(true);
@@ -160,7 +162,7 @@ describe('app-server > application-server', function() {
 
 			appContext.registerEndpoint('test', endpoint);
 
-			appServer = new ApplicationServer(appDescriptor);
+			appServer = new ApplicationServer();
 
 			appServer.initialize(appContext, true);
 
@@ -168,24 +170,27 @@ describe('app-server > application-server', function() {
 
 				expect(appServer).to.have.property('running', true);
 
-				request(appServer.restServer.app)
-					.get('/')
+				request(appServer.app)
+					.get('/api/')
 					.expect('Content-Type', /json/)
 					.expect(200)
 					.end(function(err, res){
+
+						console.dir(res.statusCode);
+
 						expect(err).to.be.null;
 						expect(res.body).to.deep.equal(
 							{ 
 								application: { 
-									appName: 'test app server', 
-									appVersion: '0.1.0-TEST' 
+									name: 'test app server', 
+									version: '0.1.0-TEST' 
 								},
 								payload: { test: 'test content' },
 								messages: [] 
 							});
 						done();
 					});
-			}, 10);
+			}, 50);
 		});
 
 	});

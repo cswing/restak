@@ -7,15 +7,18 @@ var log4js = global.log4js || require('log4js'),
 	Joi = require('joi'),
 	urlUtil = require('url'),
 	request = require('supertest'),
+	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../server'),
 	ResourcePutEndpoint = require('../resource-put-endpoint');
 
 var logger = log4js.getLogger('test'),
-	serverConfig = {
-		port: 12000,
-		appName: 'test app',
-		appVersion: '1.0'
-	};
+	appDescriptor = {
+		name: 'test app',
+		version: '1.0'
+	},
+	serverConfig = new DefaultConfig({
+		port: 12000
+	});
 
 describe('rest > endpoints > resource-put-endpoint', function() {
 
@@ -30,7 +33,7 @@ describe('rest > endpoints > resource-put-endpoint', function() {
 					}
 				};
 
-			var server = new RestServer(serverConfig, [new ResourcePutEndpoint(logger, '/testpath', command)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new ResourcePutEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.put('/testpath')
@@ -66,7 +69,7 @@ describe('rest > endpoints > resource-put-endpoint', function() {
        				] 
        			};
 
-			var server = new RestServer(serverConfig, [new ResourcePutEndpoint(logger, '/testpath', command)]);
+			var server = new RestServer(appDescriptor, serverConfig, [new ResourcePutEndpoint(logger, '/testpath', command)]);
 
 			request(server.app)
 				.put('/testpath')

@@ -12,9 +12,13 @@ var log4js = global.log4js || require('log4js'),
 	RestServer = require('../server'),
 	ResourceEndpoint = require('../endpoints/resource-endpoint');
 
-var config = new DefaultConfig({
-	'http.port': 21314
-});
+var appDescriptor = {
+		name: 'Test server',
+		version: '0.1.0-TEST'
+	},
+	config = new DefaultConfig({
+		'http.port': 21314
+	});
 
 describe('restak > rest > server', function() {
 
@@ -22,7 +26,7 @@ describe('restak > rest > server', function() {
 
 		it('should handle a express-validation error', function(done) {
 
-			var server = new RestServer(config, [], []),
+			var server = new RestServer(appDescriptor, config, [], []),
 				error = new validation.ValidationError([{
 					field: 'field',
 					location: 'body',
@@ -67,7 +71,7 @@ describe('restak > rest > server', function() {
 
 		it('should handle a CommandValidationError', function(done) {
 
-			var server = new RestServer(config, [], []),
+			var server = new RestServer(appDescriptor, config, [], []),
 				error = new CommandValidationError('any.error', 'An error message', 'field'),
 				req = null,
 				res = {},
@@ -117,7 +121,7 @@ describe('restak > rest > server', function() {
 
 		it('should register the server at the default /api', function(done) {
 
-			var server = new RestServer(config, [new TestEndpoint()], []);
+			var server = new RestServer(appDescriptor, config, [new TestEndpoint()], []);
 
 			var rootApp = express();
 			server.registerApp(rootApp);
@@ -137,7 +141,7 @@ describe('restak > rest > server', function() {
 				'urlPrefix': '/custom-api'
 			});
 
-			var server = new RestServer(cfg, [new TestEndpoint()], []);
+			var server = new RestServer(appDescriptor, cfg, [new TestEndpoint()], []);
 
 			var rootApp = express();
 			server.registerApp(rootApp);
@@ -156,7 +160,7 @@ describe('restak > rest > server', function() {
 
 		it('should return a link with the default /api', function(done){
 
-			var server = new RestServer(config, [], []),
+			var server = new RestServer(appDescriptor, config, [], []),
 				req = {
 					protocol: 'https',
 					headers: {
@@ -178,7 +182,7 @@ describe('restak > rest > server', function() {
 			var cfg = new DefaultConfig({
 					'urlPrefix': '/custom-api'
 				}),
-				server = new RestServer(cfg, [], []),
+				server = new RestServer(appDescriptor, cfg, [], []),
 				req = {
 					protocol: 'https',
 					headers: {

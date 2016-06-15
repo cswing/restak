@@ -3,6 +3,7 @@
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.app-server.ApplicationServer'),
 	express = require('express'),
+	DefaultConfig = require('./config'),
 	RestServer = require('../rest').RestServer;
 
 /**
@@ -10,24 +11,26 @@ var log4js = global.log4js || require('log4js'),
  *
  * @constructor
  * @memberof restak.app-server
- * @param {restak.app-server.ApplicationDescriptor} appDescriptor - A description of the application.
  * @param {restak.app-server.ApplicationContext} appContext - Optional, the context of the application.  If provided, the server will initialize itself.  Otherwise initialize must be called manually.
  */
-var ApplicationServer = function(appDescriptor, appContext){
+var ApplicationServer = function(appContext){
 	
-	/** 
-	 * Basic information about the application.
-	 *
-	 * @type restak.app-server.ApplicationDescriptor
-	 */
-	this.appDescriptor = appDescriptor;
-
 	/**
 	 * The application context that drives the behavior of the server.
 	 *
 	 * @type restak.app-server.ApplicationContext
 	 */
 	this.appContext = null;
+
+	/** 
+	 * Basic information about the application.
+	 *
+	 * @type restak.app-server.ApplicationDescriptor
+	 */
+	this.appDescriptor = {
+		name: 'REST Server',
+		version: null
+	};
 
 	/** 
 	 * Whether or not the application server is currently running.
@@ -72,6 +75,9 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	}
 
 	this.appContext = appContext;
+	this.appDescriptor.name = this.appContext.getConfigSetting('appName', false) || 'REST Server';
+	this.appDescriptor.version = this.appContext.getConfigSetting('appVersion', false);
+
 	appContext.registerObject('restak.app-server.ApplicationServer', this);
 
 	// Setup scheduler
@@ -83,15 +89,9 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	this.app = express();
 
 	// Setup REST HTTP server
-	var httpPort = appContext.getConfigSetting('http.port'),
-		restServerConfig = {
-			port: httpPort,
-			appName: this.appDescriptor.name,
-			appVersion: this.appDescriptor.version
-		},
-		middleware = this.appContext.getAllMiddleware(),
+	var middleware = this.appContext.getAllMiddleware(),
 		endpoints = this.appContext.getEndpoints();
-	this.restServer = new RestServer(restServerConfig, endpoints, middleware);
+	this.restServer = new RestServer(this.appDescriptor, this.appContext.config, endpoints, middleware);
 	appContext.registerObject('restak.rest.RestServer', this.restServer);
 
 	this.app.use('/api', this.restServer.app);
