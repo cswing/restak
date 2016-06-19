@@ -21,6 +21,32 @@ describe('app-server > application-context', function() {
 			done();
 		});
 
+		it('should create the default app descriptor', function(done) {
+			var ctx = new ApplicationContext(config);
+			expect(ctx.appDescriptor).to.deep.equal({
+				name: 'Restak Application Server',
+				version: null
+			});
+			done();
+		});
+
+		it('should create the app descriptor from config settings', function(done) {
+
+			var config = new DefaultConfig({
+				'appName': 'Custom app name',
+				'appVersion': '0.1.0-TEST'
+			});
+
+			var ctx = new ApplicationContext(config);
+
+			expect(ctx.appDescriptor).to.deep.equal({
+				name: 'Custom app name',
+				version: '0.1.0-TEST'
+			});
+
+			done();	
+		});		
+
 	});
 
 	describe('#getConfigSetting', function(){

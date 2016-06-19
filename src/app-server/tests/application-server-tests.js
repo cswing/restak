@@ -46,10 +46,6 @@ describe('app-server > application-server', function() {
 
 			appServer = new ApplicationServer();
 
-			expect(appServer.appDescriptor).to.deep.equal({
-				name: 'REST Server',
-				version: null
-			});
 			expect(appServer).to.have.property('initialized', false);
 
 			done();
@@ -59,10 +55,6 @@ describe('app-server > application-server', function() {
 
 			appServer = new ApplicationServer(appContext);
 
-			expect(appServer.appDescriptor).to.deep.equal({
-				name: 'test app server',
-				version: '0.1.0-TEST'
-			});
 			expect(appServer).to.have.property('initialized', true);
 			expect(appServer).to.have.property('running', false);
 
@@ -77,10 +69,6 @@ describe('app-server > application-server', function() {
 			appServer = new ApplicationServer();
 			appServer.initialize(appContext, false);
 
-			expect(appServer.appDescriptor).to.deep.equal({
-				name: 'test app server',
-				version: '0.1.0-TEST'
-			});
 			expect(appServer).to.have.property('initialized', true);
 			expect(appServer).to.have.property('running', false);
 

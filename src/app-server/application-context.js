@@ -3,6 +3,7 @@
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.app-server.ApplicationContext'),
 	DefaultObjectFactory = require('./object-factory').DefaultObjectFactory,
+	DefaultConfig = require('./config'),
 	command = require('../command'),
 	CommandNotFoundError = command.CommandNotFoundError,
 	CommandExecutor = command.CommandExecutor,
@@ -34,10 +35,21 @@ var ApplicationContext = function(config){
 	 *
 	 * @type restak.app-server.Config
 	 */
-	this.config = config;
+	this.config = config || new DefaultConfig({});
 
 	/** */
 	this.objectFactory = new DefaultObjectFactory();
+
+	/** 
+	 * Basic information about the application.
+	 *
+	 * @type restak.app-server.ApplicationDescriptor
+	 */
+	this.appDescriptor = {
+		name: this.getConfigSetting('appName', false) || 'Restak Application Server',
+		version: this.getConfigSetting('appVersion', false)
+	};
+	this.registerObject('restak.app-server.ApplicationDescriptor', this.appDescriptor);
 
 	/**
 	 * A command executor that given a key that identifies a command, will execute the command.

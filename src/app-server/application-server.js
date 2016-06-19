@@ -26,11 +26,11 @@ var ApplicationServer = function(appContext){
 	 * Basic information about the application.
 	 *
 	 * @type restak.app-server.ApplicationDescriptor
-	 */
+	 *//*
 	this.appDescriptor = {
 		name: 'REST Server',
 		version: null
-	};
+	};*/
 
 	/** 
 	 * Whether or not the application server is currently running.
@@ -75,9 +75,7 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	}
 
 	this.appContext = appContext;
-	this.appDescriptor.name = this.appContext.getConfigSetting('appName', false) || 'REST Server';
-	this.appDescriptor.version = this.appContext.getConfigSetting('appVersion', false);
-
+	
 	appContext.registerObject('restak.app-server.ApplicationServer', this);
 
 	// Setup scheduler
@@ -91,7 +89,7 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	// Setup REST HTTP server
 	var middleware = this.appContext.getAllMiddleware(),
 		endpoints = this.appContext.getEndpoints();
-	this.restServer = new RestServer(this.appDescriptor, this.appContext.config, endpoints, middleware);
+	this.restServer = new RestServer(this.appContext.appDescriptor, this.appContext.config, endpoints, middleware);
 	appContext.registerObject('restak.rest.RestServer', this.restServer);
 
 	this.app.use('/api', this.restServer.app);
@@ -118,7 +116,7 @@ ApplicationServer.prototype.start = function(callback){
 	}
 
 	var _t = this,
-		appDescriptor = this.appDescriptor,
+		appDescriptor = this.appContext.appDescriptor,
 		httpPort = this.appContext.getConfigSetting('http.port', false) || 3000,
 		app = this.app,
 		startRestServer = function(){

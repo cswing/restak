@@ -33,7 +33,7 @@
  * @type {object}
  * @property {string} filter - The filter to apply when querying the data
  * @property {string} sort - The sort to apply when querying the data
- * @property {Number} pageSize - The number of items to return
+ * @property {Number} pageSize - The number of items to return OR 'ALL' to return all items
  * @property {Number} page - The page of the filtered dataset to return
  */
 
