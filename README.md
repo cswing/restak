@@ -1,4 +1,8 @@
-# Restak REST Framework
+# Restak Framework
 
-A REST Framework that provides a common framework for providing consistent REST endpoint implementation.
+A node.js framework for providing common building blocks for applications.
 
+- REST API Endpoints
+- Commands
+- Queries
+- Background Scheduler
