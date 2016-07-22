@@ -59,15 +59,16 @@ MongoDBQuery.prototype.execute = function(req, callback) {
 	this.executeCursor(req, function(err, result){
 		if(err) return callback(err, null);
 
-		var cursor = result.items;
+		var cursor = result.cursor;
 
-		// cursor.map did not work
-		result.items = [];
-		cursor.forEach(function(doc){
-			result.items.push(_t.processDocument(doc));
-		});
-		
-		callback(null, result);
+		var items = [];
+		cursor.forEach(
+			function(doc){
+				items.push(_t.processDocument(doc));
+			}, function(err){
+				result.items = items;
+				callback(null, result);
+			});
 	});
 };
 
@@ -130,7 +131,7 @@ MongoDBQuery.prototype.executeCursor = function(req, callback) {
 		if(skip > 0)
 			cursor = cursor.skip(skip);
 
-		qResult.items = cursor;
+		qResult.cursor = cursor;
 
 		callback(null, qResult);
 	});
