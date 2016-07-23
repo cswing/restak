@@ -99,13 +99,21 @@ CollectionEndpoint.prototype.onRequest = function(req, res){
 		}
 	}
 
-	queryExecutor.executeQuery(queryKey, queryRequest, function(err, queryResult){
+	queryExecutor.executeQuery(queryKey, queryRequest, function(err, qr){
 		
 		if(err) {
 			_t.handleError(err, req, res);
 			return;
 		}
 
+		// We should only serialize the properties in the API for queryResult
+		// Implementations may add other properties to this object that are 
+		// not guaranteed to serialize to JSON.
+		var queryResult = {};
+		['filter', 'sort', 'items', 'pageSize', 'pageCount', 'totalCount', 'page'].forEach(function(key){
+			queryResult[key] = qr[key];
+		});
+		
 		var buildUrl = function(page) {
 			var result = req._parsedUrl.pathname + '?page=' + page + '&pageSize=' + queryResult.pageSize;
 			if(queryResult.filter && queryResult.filter != '') {
