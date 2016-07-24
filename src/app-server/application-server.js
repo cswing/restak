@@ -2,6 +2,7 @@
 
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.app-server.ApplicationServer'),
+	async = require('async'),
 	express = require('express'),
 	DefaultConfig = require('./config'),
 	RestServer = require('../rest').RestServer;
@@ -116,34 +117,73 @@ ApplicationServer.prototype.start = function(callback){
 	}
 
 	var _t = this,
-		appDescriptor = this.appContext.appDescriptor,
-		httpPort = this.appContext.getConfigSetting('http.port', false) || 3000,
+		appContext = this.appContext,
+		appDescriptor = appContext.appDescriptor,
+		httpPort = appContext.getConfigSetting('http.port', false) || 3000,
 		app = this.app,
-		startRestServer = function(){
+		applicationName = appDescriptor.name;
+		
+	if(appDescriptor.version) {
+		applicationName = applicationName + ' [' + appDescriptor.version + ']';
+	};
 
-			var applicationName = appDescriptor.name;
-			if(appDescriptor.version) {
-				applicationName = applicationName + ' [' + appDescriptor.version + ']';
+	var tasks = this.appContext.deferreds.map(function(descriptor){
+		return function(cb){
+			var commandKey = descriptor.commandKey,
+				description = descriptor.description,
+				cmd = appContext.getCommand(commandKey),
+				instr = {
+					data: descriptor.data
+				};
+
+			if(!cmd){
+				logger.warn('Unable to locate command with key ' + commandKey + ' for ' + description);
+				return cb();
 			}
 
-			logger.debug(applicationName + ' starting http server on port ' + httpPort);
-			
-			_t.httpServer = app.listen(httpPort, function () {
-				logger.debug(applicationName + ' listening on port ' + httpPort);
-				logger.info(applicationName + ' startup complete');
+			logger.debug('Executing deferred command ' + description);
+			cmd.execute(instr, function(err){
+				if(err) {
+					logger.error('An error occurred executing deferred command ' + description + ': ' + err);
+					return cb();
+				}
 
-				_t.running = true;
-				if(callback) callback(null, _t.running);
+				logger.debug('Execution complete for deferred command ' + description);
+				cb();
 			});
 		};
+	});
 
 	if(this.scheduler){
-		this.scheduler.initialize(function(){
-			startRestServer();
+		tasks.splice(0, 0, function(cb){
+			_t.scheduler.initialize(cb);
 		});
 	} else {
-		startRestServer();
+		logger.warn('A job scheduler was not configured');
 	}
+
+	tasks.splice(0, 0, function(cb){
+
+		logger.debug(applicationName + ' starting http server on port ' + httpPort);
+		
+		_t.httpServer = app.listen(httpPort, function () {
+			logger.debug(applicationName + ' listening on port ' + httpPort);
+			cb();
+		});
+	});
+
+	async.series(tasks, function(err){
+		if(err) {
+			logger.error(err);
+			if(callback) return callback(null, _t.running);	
+		}
+
+		logger.info(applicationName + ' startup complete');
+
+		_t.running = true;
+		if(callback) callback(null, _t.running);
+	});
+
 };
 
 /**

@@ -182,4 +182,37 @@ describe('app-server > application-server', function() {
 		});
 
 	});
+
+	describe('#start', function(){
+
+		it('should start and execute deferred command executions', function(done){
+			
+			var appContext = new ApplicationContext(config),
+				executedInstr = null,
+				testCommand = {
+					execute: function(instr, callback) {
+						executedInstr = instr;
+						callback(null);
+					}
+				};
+
+			appContext.registerCommand('test', testCommand);
+			appContext.registerDeferredExecution('test', 'test deferred', {
+				arg1: 'a', arg2: 'b'
+			});
+
+			appServer = new ApplicationServer();
+
+			appServer.initialize(appContext, false);
+			appServer.start(function(){
+				
+				expect(executedInstr).to.deep.equal({
+					data: { arg1: 'a', arg2: 'b' }
+				});
+
+				done();
+			});
+		});
+
+	});
 });

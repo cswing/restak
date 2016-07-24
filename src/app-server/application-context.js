@@ -17,6 +17,19 @@ var cmdPrefix = 'restak.command.Command::',
 	restMiddlewarePrefix = 'restak.rest.middleware.Middleware::',
 	objPrefix = '';
 
+/**
+ * Describes a requested execution of a command.  When creating the application context,
+ * commands can be asked to execute with sopecific instructions, once the creation of the
+ * application context is complete.
+ *
+ * @typedef DeferredExecution
+ * @memberof restak.app-server
+ * @type {object}
+ * @property {string} commandKey - The key that identifies the command.
+ * @property {string} description - A description of the command execution request.
+ * @property {object} data - The data to pass to the command when executing.
+ */
+
 /**  
  * Provide the context for running an application using {@link restak.app-server.ApplicationServer}.  All {@link restak.command.Command|commands}, 
  * {@link restak.query.Query|queries}, and other objects should be registered with an {@link restak.app-server.ApplicationContext} before 
@@ -54,7 +67,7 @@ var ApplicationContext = function(config){
 	/**
 	 * A command executor that given a key that identifies a command, will execute the command.
 	 *
-	 * @type restak.comand.CommandExecutor
+	 * @type restak.command.CommandExecutor
 	 */
 	this.commandExecutor = new CommandExecutor(this);
 	this.registerObject('restak.command.CommandExecutor', this.commandExecutor);
@@ -66,6 +79,13 @@ var ApplicationContext = function(config){
 	 */
 	this.queryExecutor = new QueryExecutor(this);
 	this.registerObject('restak.command.QueryExecutor', this.queryExecutor);
+
+	/**
+	 * Deferred executions.
+	 *
+	 * @type restak.app-server.DeferredExecution[]
+	 */
+	this.deferreds = [];
 };
 
 /**
@@ -275,6 +295,21 @@ ApplicationContext.prototype.getAllMiddleware = function(){
 		});
 
 	return middleware;
+};
+
+/**
+ * Register a command to be eecuted once the application context is fully built.
+ *
+ * @param key {string} - the command key of the command to execute.
+ * @param description {string} - A description of the specific command execution.  Primarily used for logging.
+ * @param data {object} - the data to pass to the command
+ */
+ApplicationContext.prototype.registerDeferredExecution = function(key, description, data) {
+	this.deferreds.push({
+		description: description,
+		commandKey: key,
+		data: data
+	});
 };
 
 module.exports = ApplicationContext;

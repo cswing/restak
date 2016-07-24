@@ -567,4 +567,27 @@ describe('app-server > application-context', function() {
 		});
 
 	});
+
+	describe('#registerDeferredExecution', function(){
+
+		it('should register the deferred', function(done){
+
+			var ctx = new ApplicationContext();
+			ctx.registerDeferredExecution('test-key', 'test-description', { arg1: 'a', arg2: 'b' });
+
+			expect(ctx.deferreds).to.have.deep.members([
+					{
+						commandKey: 'test-key',
+						description: 'test-description',
+						data: {
+							arg1: 'a',
+							arg2: 'b'
+						}
+					}
+				]);
+
+			done();
+
+		});
+	});
 });
