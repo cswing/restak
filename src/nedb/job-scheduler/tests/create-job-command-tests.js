@@ -8,9 +8,9 @@ var expect = require('chai').expect,
 	transforms = require('../transforms'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus,
-	InstallJobCommand = require('../install-job-command');
+	CreateJobCommand = require('../create-job-command');
 
-describe('nedb > scheduler > install-job', function() {
+describe('nedb > scheduler > create-job', function() {
 
 	describe('#execute', function(){
 
@@ -27,9 +27,9 @@ describe('nedb > scheduler > install-job', function() {
 		});
 
 
-		it('should install the job', function(done) {
+		it('should create the job', function(done) {
 
-			var command = new InstallJobCommand(jobsCollection, transforms.jobTransform);
+			var command = new CreateJobCommand(jobsCollection, transforms.jobTransform);
 
 			var instr = {
 				data: {
@@ -60,9 +60,9 @@ describe('nedb > scheduler > install-job', function() {
 			});
 		});
 
-		it('should return an error because a job with the same key has already been installed', function(done) {
+		it('should return an error because a job with the same key has already been createed', function(done) {
 
-			var command = new InstallJobCommand(jobsCollection, transforms.jobTransform),
+			var command = new CreateJobCommand(jobsCollection, transforms.jobTransform),
 				originalJob = {
 					name: 'Test Job',
 					description: 'Test Description',

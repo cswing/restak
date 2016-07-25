@@ -2,14 +2,14 @@
 
 var ValidationError = require('../../command').ValidationError;
 
-var InstallJobCommand = function(jobCollection, jobTransform){
+var CreateJobCommand = function(jobCollection, jobTransform){
 	
 	this.jobCollection = jobCollection;
 
 	this.jobTransform = jobTransform;
 };
 
-InstallJobCommand.prototype.execute = function(cmdInstr, callback){
+CreateJobCommand.prototype.execute = function(cmdInstr, callback){
 
 	var jobTransform = this.jobTransform,
 		data = cmdInstr.data,
@@ -32,4 +32,4 @@ InstallJobCommand.prototype.execute = function(cmdInstr, callback){
 	});
 };
 
-module.exports = InstallJobCommand;
+module.exports = CreateJobCommand;

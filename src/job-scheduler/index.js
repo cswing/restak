@@ -2,7 +2,11 @@
 
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.scheduler'),
-	Scheduler = require('./scheduler');
+	Scheduler = require('./scheduler'),
+	InstallJobCommand = require('./install-job-command');
+
+// Application Context Extensions
+require('./application-context-extensions');
 
 /**
  * @namespace restak.scheduler
@@ -67,6 +71,10 @@ module.exports.restEndpoints = require('./rest-endpoints');
  * @see restak.app-server.register
  */
 module.exports.register = function(appContext) {
-	var jobsQuery = appContext.getQuery('restak.scheduler.JobQuery');
+	
+	var jobsQuery = appContext.getQuery('restak.scheduler.JobQuery'),
+		createJobCommand = appContext.getCommand('restak.scheduler.CreateJobCommand');
+
 	appContext.registerObject('restak.scheduler.Scheduler', new Scheduler(jobsQuery, appContext.commandExecutor));
+	appContext.registerCommand('restak.scheduler.InstallJobCommand', new InstallJobCommand(createJobCommand));
 };
