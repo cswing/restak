@@ -50,7 +50,7 @@ describe('scheduler > rest-endpoints > jobs > collection', function() {
 			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
-				.get('/scheduler/jobs')
+				.get('/jobs')
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res){
@@ -58,8 +58,8 @@ describe('scheduler > rest-endpoints > jobs > collection', function() {
 
 					var item = res.body.payload.items[0];
 					expect(item).to.have.deep.property('links.length', 2);
-					expectLink(item.links[0], 'Test Job', 'job', '/api/scheduler/jobs/1234');
-					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/scheduler/jobs/1234/history');
+					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/1234');
+					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/jobs/1234/history');
 
 					done();
 				});
@@ -95,7 +95,7 @@ describe('scheduler > rest-endpoints > jobs > resource-get', function() {
 			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
-				.get('/scheduler/jobs/1234')
+				.get('/jobs/1234')
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res){
@@ -105,8 +105,8 @@ describe('scheduler > rest-endpoints > jobs > resource-get', function() {
 					
 					var item = res.body.payload;
 					expect(item).to.have.deep.property('links.length', 2);
-					expectLink(item.links[0], 'Test Job', 'job', '/api/scheduler/jobs/1234');
-					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/scheduler/jobs/1234/history');
+					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/1234');
+					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/jobs/1234/history');
 
 					done();
 				});

@@ -28,7 +28,7 @@ var processItem = function(item, context){
 var CollectionEndpoint = function(){
 	
 	BaseCollectionEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.CollectionEndpoint'), '/scheduler/jobs', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('restak.scheduler.jobs.CollectionEndpoint'), '/jobs', 'restak.scheduler.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -50,7 +50,7 @@ module.exports.CollectionEndpoint = CollectionEndpoint;
  */
 var ResourceGetEndpoint = function(){
 	BaseResourceGetEndpoint.apply(this, [
-		log4js.getLogger('nhl-modeling.structures.players.endpoints.ResourceGetEndpoint'), '/scheduler/jobs/:jobId', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('nhl-modeling.structures.players.endpoints.ResourceGetEndpoint'), '/jobs/:jobId', 'restak.scheduler.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
