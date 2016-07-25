@@ -1,13 +1,15 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
+	async = require('async'),
 	Datastore = require('nedb'),
 	NeDBQuery = require('../query/nedb-query'),
 	transforms = require('./transforms'),
 	ObjectTransform = require('../../util/object-transform').DefaultObjectTransform,
 	MarkJobExecutingCommand = require('./mark-job-executing-command'),
 	MarkJobExecutedCommand = require('./mark-job-executed-command'),
-	UpdateJobScheduledTimestampCommand = require('./update-job-scheduled-timestamp-command');
+	UpdateJobScheduledTimestampCommand = require('./update-job-scheduled-timestamp-command'),
+	InstallJobCommand = require('./install-job-command');
 
 /**
  * A simple store implementation for {@link restak.scheduler.Scheduler} using NeDB.
@@ -23,16 +25,16 @@ var log4js = global.log4js || require('log4js'),
  * @memberof restak.nedb.scheduler
  * @see restak.app-server.register
  */
-module.exports.register = function(appContext, opts) {
+module.exports.register = function(appContext, callback) {
 
 	var logger = log4js.getLogger('restak.nedb.scheduler.register'),
 		jobTransform = transforms.jobTransform,
 		jobInstanceTransform = transforms.jobInstanceTransform;
 	
 	// Jobs
-	var jobDb = appContext.registerNeDb('restak.nedb.scheduler.JobDb', 'restak.data-dir.jobs');
+	var jobsCollection = appContext.registerNeDb('restak.nedb.scheduler.JobDb', 'restak.data-dir.jobs');
 	appContext.registerObject('restak.nedb.scheduler.JobTransform', jobTransform);
-	appContext.registerQuery('restak.scheduler.JobQuery', new NeDBQuery(jobDb, jobTransform));
+	appContext.registerQuery('restak.scheduler.JobQuery', new NeDBQuery(jobsCollection, jobTransform));
 
 	// Job Instances
 	var instanceDb = appContext.registerNeDb('restak.nedb.scheduler.JobInstanceDb', 'restak.data-dir.job-instances');
@@ -40,7 +42,19 @@ module.exports.register = function(appContext, opts) {
 	appContext.registerQuery('restak.scheduler.JobInstanceQuery', new NeDBQuery(instanceDb, jobInstanceTransform));
 
 	// Scheduler Commands
-	appContext.registerCommand('restak.scheduler.UpdateJobScheduledTimestampCommand', new UpdateJobScheduledTimestampCommand(jobDb, jobTransform));
-	appContext.registerCommand('restak.scheduler.MarkJobExecutingCommand', new MarkJobExecutingCommand(jobDb, instanceDb, jobTransform, jobInstanceTransform));
-	appContext.registerCommand('restak.scheduler.MarkJobExecutedCommand', new MarkJobExecutedCommand(jobDb, instanceDb, jobTransform, jobInstanceTransform));
+	appContext.registerCommand('restak.scheduler.InstallJobCommand', new InstallJobCommand());
+	appContext.registerCommand('restak.scheduler.UpdateJobScheduledTimestampCommand', new UpdateJobScheduledTimestampCommand(jobsCollection, jobTransform));
+	appContext.registerCommand('restak.scheduler.MarkJobExecutingCommand', new MarkJobExecutingCommand(jobsCollection, instanceDb, jobTransform, jobInstanceTransform));
+	appContext.registerCommand('restak.scheduler.MarkJobExecutedCommand', new MarkJobExecutedCommand(jobsCollection, instanceDb, jobTransform, jobInstanceTransform));
+
+
+	async
+		.series([
+			function(cb){
+				jobsCollection.ensureIndex({
+					fieldName: 'commandKey',
+					unique: 'true'
+				}, cb);
+			}
+		], callback);
 };

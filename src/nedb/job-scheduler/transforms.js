@@ -6,6 +6,9 @@ var jobDescriptor = {
 	id: 			'_id',
 	name: 			null,
 	description: 	null,
+	commandKey: 	null,
+
+	
 	status: 		null,
 	schedule: 		null,
 	command: 		null,

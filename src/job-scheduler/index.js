@@ -11,6 +11,14 @@ var log4js = global.log4js || require('log4js'),
 module.exports.restEndpoints = require('./rest-endpoints');
 
 /**
+ * Used to install a job.
+ *
+ * @interface InstallJobCommand
+ * @memberof restak.scheduler
+ * @extends restak.command.Command
+ */
+
+/**
  * Used by the {@link restak.scheduler.Scheduler} to mark a job as executing.  It is the reponsibility of 
  * this command to: 
  * <ul>

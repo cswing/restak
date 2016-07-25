@@ -23,6 +23,7 @@ describe('nedb > scheduler', function() {
 			expect(appContext.getObject('restak.nedb.scheduler.JobInstanceTransform')).to.not.be.null;
 			expect(appContext.hasQuery('restak.scheduler.JobInstanceQuery')).to.equal(true);
 
+			expect(appContext.hasCommand('restak.scheduler.InstallJobCommand')).to.equal(true);
 			expect(appContext.hasCommand('restak.scheduler.UpdateJobScheduledTimestampCommand')).to.equal(true);
 			expect(appContext.hasCommand('restak.scheduler.MarkJobExecutingCommand')).to.equal(true);
 			expect(appContext.hasCommand('restak.scheduler.MarkJobExecutedCommand')).to.equal(true);
