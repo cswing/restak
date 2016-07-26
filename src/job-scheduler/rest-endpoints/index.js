@@ -27,8 +27,13 @@ module.exports.util = require('./job-util');
  * @see restak.app-server.register
  */
 module.exports.register = function(appContext, options) {
+
+	var queueCommand = appContext.getCommand('restak.scheduler.QueueJobInvocationCommand');
+
 	appContext.registerEndpoint('restak.scheduler.rest-endpoints.JobsCollection', new jobEndpoints.CollectionEndpoint());
 	appContext.registerEndpoint('restak.scheduler.rest-endpoints.JobResourceGet', new jobEndpoints.ResourceGetEndpoint());
+	appContext.registerEndpoint('restak.scheduler.rest-endpoints.JobResourcePost', new jobEndpoints.ResourcePostEndpoint(queueCommand));
+
 	appContext.registerEndpoint('restak.scheduler.rest-endpoints.HistoryCollection', new historyEndpoints.CollectionEndpoint());
 	appContext.registerEndpoint('restak.scheduler.rest-endpoints.HistoryResourceGet', new historyEndpoints.ResourceGetEndpoint());
 };

@@ -5,14 +5,15 @@ var log4js = global.log4js || require('log4js'),
 	BaseResourcePostEndpoint = require('../../rest/endpoints/resource-post-endpoint'),
 	jobUtil = require('./job-util'),
 	createJobResourceLink = jobUtil.createJobResourceLink,
-	createJobHistoryCollectionLink = jobUtil.createJobHistoryCollectionLink;
+	createJobStatusesResourceLink = jobUtil.createJobStatusesResourceLink,
+	createJobStatusResourceLink = jobUtil.createJobStatusResourceLink;;
 
 
 var processItem = function(item, context){
 
 	item.links = [
 		createJobResourceLink(this, item, context),
-		createJobHistoryCollectionLink(this, item, context)
+		createJobStatusesResourceLink(this, item, context)
 	];
 
 	return item;
@@ -79,13 +80,34 @@ var ResourcePostEndpoint = function(command){
 util.inherits(ResourcePostEndpoint, BaseResourcePostEndpoint);
 
 /** @inheritdoc */
+ResourcePostEndpoint.prototype.getValidationDefinition = function(){
+
+	var cmdValidation = this.command.validation || {},
+		obj = { 
+			params: {},
+			body: {}
+		};
+
+	Object.keys(cmdValidation).forEach(function(key){
+		
+		if(key === 'jobId') {
+			obj.params[key] = cmdValidation[key];
+
+		} else {
+			obj.body[key] = cmdValidation[key];
+
+		}
+	});
+
+	return obj;
+};
+
+/** @inheritdoc */
 ResourcePostEndpoint.prototype.buildData = function(req, callback){
 
 	var data = {
-		playerName: req.body.playerName,
-		team: req.body.team, 
-		position: req.body.position, 
-		asOf: req.body.asOf
+		jobId: req.params.jobId,
+		params: req.body.params || null
 	};
 
 	callback(null, data);
@@ -93,7 +115,7 @@ ResourcePostEndpoint.prototype.buildData = function(req, callback){
 
 /** @inheritdoc */
 ResourcePostEndpoint.prototype.buildPayload = function(cmdResult, ctx){
-	return createJobResourceLink(this, cmdResult.data, ctx); // TODO link this to status
+	return createJobStatusResourceLink(this, cmdResult, ctx);
 };
 
 // exports

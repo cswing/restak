@@ -9,7 +9,8 @@ var log4js = require('log4js'),
 	RestServer = require('../../../rest/server'),
 	jobEndpoints = require('../job-endpoints'),
 	CollectionEndpoint = jobEndpoints.CollectionEndpoint,
-	ResourceGetEndpoint = jobEndpoints.ResourceGetEndpoint;
+	ResourceGetEndpoint = jobEndpoints.ResourceGetEndpoint,
+	ResourcePostEndpoint = jobEndpoints.ResourcePostEndpoint;
 
 var logger = log4js.getLogger('test'),
 	appDescriptor = {
@@ -59,7 +60,7 @@ describe('scheduler > rest-endpoints > jobs > collection', function() {
 					var item = res.body.payload.items[0];
 					expect(item).to.have.deep.property('links.length', 2);
 					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/1234');
-					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/jobs/1234/history');
+					expectLink(item.links[1], 'Test Job Status Collection', 'job-statuses', '/api/jobs/status?filter=jobId=%221234%22');
 
 					done();
 				});
@@ -106,7 +107,98 @@ describe('scheduler > rest-endpoints > jobs > resource-get', function() {
 					var item = res.body.payload;
 					expect(item).to.have.deep.property('links.length', 2);
 					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/1234');
-					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/jobs/1234/history');
+					expectLink(item.links[1], 'Test Job Status Collection', 'job-statuses', '/api/jobs/status?filter=jobId=%221234%22');
+					
+					done();
+				});
+		});
+
+	});
+});
+
+describe('scheduler > rest-endpoints > jobs > resource-post', function() {
+
+	describe('#onRequest', function(){
+
+		it('should return a 201 with the correct link', function(done){
+
+			var data = null,
+				command = {
+					validation: {},
+					execute: function(instr, callback){
+						data = instr.data;
+						callback(null, { 
+							id: '1234-1',
+							jobId: '1234',
+							name: 'Test Job'
+						});
+					}
+				};
+
+			var endpoint = new ResourcePostEndpoint(command),
+				server = new RestServer(appDescriptor, serverConfig, [endpoint]);
+
+			request(server.app)
+				.post('/jobs/1234')
+				.expect('Content-Type', /json/)
+				.expect(201)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					
+					expect(data).to.deep.equal({
+						jobId: '1234',
+						params: null
+					});
+					
+					var item = res.body.payload;
+					expectLink(item, 'Test Job Status', 'job-status', '/api/jobs/status?filter=id=%221234-1%22');
+
+					done();
+				});
+		});
+
+		it('should pass the parameters object', function(done){
+
+			var requestData = {
+					params: {
+						arg0: 'a',
+						arg1: 'b'
+					}
+				},
+				data = null,
+				command = {
+					validation: {},
+					execute: function(instr, callback){
+						data = instr.data;
+						callback(null, { 
+							id: '1234-1',
+							jobId: '1234',
+							name: 'Test Job'
+						});
+					}
+				};
+
+			var endpoint = new ResourcePostEndpoint(command),
+				server = new RestServer(appDescriptor, serverConfig, [endpoint]);
+
+			request(server.app)
+				.post('/jobs/1234')
+				.expect('Content-Type', /json/)
+				.expect(201)
+				.send(requestData)
+				.end(function(err, res){
+					expect(err).to.be.null;
+					
+					expect(data).to.deep.equal({
+						jobId: '1234',
+						params: {
+							arg0: 'a',
+							arg1: 'b'
+						}
+					});
+					
+					var item = res.body.payload;
+					expectLink(item, 'Test Job Status', 'job-status', '/api/jobs/status?filter=id=%221234-1%22');
 
 					done();
 				});
