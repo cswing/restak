@@ -22,6 +22,14 @@ module.exports.restEndpoints = require('./rest-endpoints');
  * @extends restak.command.Command
  */
 
+ /**
+ * Used to queue a job for the execution engine to pick up and execute.
+ *
+ * @interface QueueJobInvocationCommand
+ * @memberof restak.scheduler
+ * @extends restak.command.Command
+ */
+
 /**
  * Used by the {@link restak.scheduler.Scheduler} to mark a job as executing.  It is the reponsibility of 
  * this command to: 

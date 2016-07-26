@@ -28,7 +28,7 @@ var processItem = function(item, context){
 var CollectionEndpoint = function(){
 	
 	BaseCollectionEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.CollectionEndpoint'), '/jobs', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('restak.scheduler.jobs.endpoints.CollectionEndpoint'), '/jobs', 'restak.scheduler.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -39,8 +39,6 @@ CollectionEndpoint.prototype.postProcessItem = function(item, context){
 	return this.itemPostProcessor(item, context);
 };
 
-module.exports.CollectionEndpoint = CollectionEndpoint;
-
 /**
  * Resource endpoint to provide access to a job.
  *
@@ -50,7 +48,7 @@ module.exports.CollectionEndpoint = CollectionEndpoint;
  */
 var ResourceGetEndpoint = function(){
 	BaseResourceGetEndpoint.apply(this, [
-		log4js.getLogger('nhl-modeling.structures.players.endpoints.ResourceGetEndpoint'), '/jobs/:jobId', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourceGetEndpoint'), '/jobs/:jobId', 'restak.scheduler.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -66,4 +64,39 @@ ResourceGetEndpoint.prototype.postProcessItem = function(item, context){
 	return this.itemPostProcessor(item, context);
 };
 
+/**
+ * Resource endpoint to invoke a job manually.
+ *
+ * @constructor
+ * @memberof restak.scheduler.rest-endpoints.jobs
+ * @extends restak.rest.endpoints.ResourcePostEndpoint
+ * @param {restak.commands.Command} command - Command to use to invoke a job
+ */
+var ResourcePostEndpoint = function(command){
+	BaseResourcePostEndpoint.apply(this, [
+		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourcePostEndpoint'), '/jobs/:jobId', command]);
+};
+util.inherits(ResourcePostEndpoint, BaseResourcePostEndpoint);
+
+/** @inheritdoc */
+ResourcePostEndpoint.prototype.buildData = function(req, callback){
+
+	var data = {
+		playerName: req.body.playerName,
+		team: req.body.team, 
+		position: req.body.position, 
+		asOf: req.body.asOf
+	};
+
+	callback(null, data);
+};
+
+/** @inheritdoc */
+ResourcePostEndpoint.prototype.buildPayload = function(cmdResult, ctx){
+	return createJobResourceLink(this, cmdResult.data, ctx); // TODO link this to status
+};
+
+// exports
+module.exports.CollectionEndpoint = CollectionEndpoint;
 module.exports.ResourceGetEndpoint = ResourceGetEndpoint;
+module.exports.ResourcePostEndpoint = ResourcePostEndpoint;

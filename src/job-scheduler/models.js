@@ -69,6 +69,9 @@ module.exports.JobDescriptorStatus = JobDescriptorStatus;
  */
 var JobInstanceStatus = {
 	
+	/** The instance is currently queued.*/
+	Queued: 'QUEUED',
+
 	/** The instance is currently executing.*/
 	Executing: 'EXECUTING',
 

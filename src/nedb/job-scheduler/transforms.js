@@ -3,12 +3,12 @@
 var DefaultObjectTransform = require('../../util').DefaultObjectTransform;
 
 var jobDescriptor = {
-	id: 			'_id',
-	name: 			null,
-	description: 	null,
-	commandKey: 	null,
+	id: '_id',
+	name: null,
+	description: null,
+	commandKey: null,
 
-	
+	// legacy
 	status: 		null,
 	schedule: 		null,
 	command: 		null,
@@ -20,14 +20,22 @@ module.exports.jobTransform = new DefaultObjectTransform(jobDescriptor);
 
 
 var instanceDescriptor = {
+	id: '_id',
 	jobId: null,
 	name: null,
-	instanceId: '_id',
+	description: null,
+	commandKey: null,
+	queuedTimestamp: null,
+	queuedUts: null,
+	executionStartTimestamp: null, 
+	executionStartUts: null, 
+	executionEndTimestamp: null, 
+	executionEndUts: null, 	
 	status: null,
-	startTimestamp: null,
-	endTimestamp: null,
-	data: null,
-	result: null
+	params: null,
+
+	//legacy
+	instanceId: '_id'
 };
 
 module.exports.jobInstanceTransform = new DefaultObjectTransform(instanceDescriptor);
