@@ -1,24 +1,24 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.nedb.scheduler.MarkJobExecutedCommand'),
+	logger = log4js.getLogger('restak.nedb.scheduler.MarkJobExecutingCommand'),
 	async = require('async'),
-	models = require('../../job-scheduler/models'),
+	models = require('../../job-engine/models'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus;
 
 /**
- * Mark a job and job instance as executed and persist to the file system.
+ * Mark a job and job instance as executing and persist using NeDB.
  *
  * @constructor
- * @implements restak.scheduler.MarkJobExecutedCommand
+ * @implements restak.scheduler.MarkJobExecutingCommand
  * @memberof restak.nedb.scheduler
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
  * @param {nedb.Datastore} jobInstanceStore - The NeDB datastore for job instances.
  * @param {restak.util.ObjectTransform} jobTransform - optional, a way to transform the job from what exists in the store to what should be returned.
  * @param {restak.util.ObjectTransform} jobInstanceTransform - optional, a way to transform the instance from what exists in the store to what should be returned.
  */
-var MarkJobExecutedCommand = function(jobStore, jobInstanceStore, jobTransform, jobInstanceTransform){
+var MarkJobExecutingCommand = function(jobStore, jobInstanceStore, jobTransform, jobInstanceTransform){
 	
 	/**
 	 * The datastore that contains jobs.
@@ -54,7 +54,7 @@ var MarkJobExecutedCommand = function(jobStore, jobInstanceStore, jobTransform, 
 };
 
 /** @inheritdoc */
-MarkJobExecutedCommand.prototype.execute = function(cmdInstr, callback){
+MarkJobExecutingCommand.prototype.execute = function(cmdInstr, callback){
 
 	var jobStore = this.jobStore,
 		jobInstanceStore = this.jobInstanceStore,
@@ -64,22 +64,14 @@ MarkJobExecutedCommand.prototype.execute = function(cmdInstr, callback){
 		jobTransform = this.jobTransform,
 		jobInstanceTransform = this.jobInstanceTransform;
 
-	var jobQuery = { _id: job.id },
-		jobUpdate = {
+	var query = { _id: job.id },
+		update = {
 			$set: { 
-				status: job.status
-			}
-		},
-		instanceQuery = { _id: jobInstance.instanceId },
-		instanceUpdate = {
-			$set: {
-				status: jobInstance.status,
-				endTimestamp: jobInstance.endTimestamp,
-				result: jobInstance.result
+				status: JobDescriptorStatus.Executing
 			}
 		};
 
-	jobStore.update(jobQuery, jobUpdate, function (err, numReplaced) {
+	jobStore.update(query, update, function (err, numReplaced) {
 		if(err) {
 			return callback(err, null);
 		}
@@ -90,39 +82,35 @@ MarkJobExecutedCommand.prototype.execute = function(cmdInstr, callback){
 			return callback(msg, null);
 		}
 
-		jobInstanceStore.update(instanceQuery, instanceUpdate, function(err, numReplaced){
+		jobInstance.status = JobInstanceStatus.Executing;
+		jobInstanceStore.insert(jobInstance, function (err, instance) {
+			
 			if(err) {
 				return callback(err, null);
 			}
 
-			if(numReplaced == 0) {
-				logger.warn('Job instance [' + jobInstance.instanceId + '] does not exist for ' + job.name + ' [' + job.id + ']');
-			} else {
-				logger.debug('Job instance [' + jobInstance.instanceId + '] updated for ' + job.name + ' [' + job.id + ']');
+			if(jobInstanceTransform) {
+				instance = jobInstanceTransform.transform(instance);
 			}
 
-			var tasks = [];
+			jobStore.find(query, function(err, docs){
+			
+				var job = docs[0];
 
-			tasks.push(function(cb){
-				jobStore.find(jobQuery, function(err, docs){
-					cb(null, docs[0]);
-				})
-			});
+				if(jobTransform) {
+					job = jobTransform.transform(job);
+				}
 
-			tasks.push(function(cb){
-				jobInstanceStore.find(instanceQuery, function(err, docs){
-					cb(null, docs[0]);
-				})
-			});
+				logger.debug('Job instance [' + instance.instanceId + '] created for ' + job.name + ' [' + job.id + ']');
 
-			async.parallel(tasks, function(err, result){
 				callback(null, {
-					job: result[0] || null,
-					instance: result[1] || null
+					job: job,
+					instance: instance
 				});
 			});
 		});
+
 	});
 };
 
-module.exports = MarkJobExecutedCommand;
+module.exports = MarkJobExecutingCommand;

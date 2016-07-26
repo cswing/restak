@@ -35,8 +35,8 @@ describe('restak core', function() {
 		var appContext = new ApplicationContext(config);
 
 		// Registration
-		restak.nedb.jobs.register(appContext);
-		restak.jobs.register(appContext);
+		restak.nedb.jobEngine.register(appContext);
+		restak.jobEngine.register(appContext);
 
 		appServer = new ApplicationServer(appContext);
 		appServer.start(function(){

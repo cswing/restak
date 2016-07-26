@@ -5,7 +5,7 @@ var log4js = global.log4js || require('log4js'),
 	moment = require('moment'),
 	Joi = require('joi'),
 	ValidationError = require('../../command').ValidationError,
-	models = require('../../job-scheduler/models'),
+	models = require('../../job-engine/models'),
 	JobInstanceStatus = models.JobInstanceStatus,
 	isoTimestampFormat = require('../../util').commonFormats.isoTimestamp;
 
