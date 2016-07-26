@@ -5,7 +5,7 @@ var log4js = global.log4js || require('log4js'),
 	BaseResourcePostEndpoint = require('../../rest/endpoints/resource-post-endpoint'),
 	jobUtil = require('./job-util'),
 	createJobResourceLink = jobUtil.createJobResourceLink,
-	createJobStatusesResourceLink = jobUtil.createJobStatusesResourceLink,
+	createJobStatusCollectionLink = jobUtil.createJobStatusCollectionLink,
 	createJobStatusResourceLink = jobUtil.createJobStatusResourceLink;;
 
 
@@ -13,7 +13,7 @@ var processItem = function(item, context){
 
 	item.links = [
 		createJobResourceLink(this, item, context),
-		createJobStatusesResourceLink(this, item, context)
+		createJobStatusCollectionLink(this, item, context)
 	];
 
 	return item;

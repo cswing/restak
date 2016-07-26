@@ -151,7 +151,7 @@ describe('scheduler > rest-endpoints > jobs > resource-post', function() {
 					});
 					
 					var item = res.body.payload;
-					expectLink(item, 'Test Job Status', 'job-status', '/api/jobs/status?filter=id=%221234-1%22');
+					expectLink(item, 'Test Job Status', 'job-status', '/api/jobs/status/1234-1');
 
 					done();
 				});
@@ -198,7 +198,7 @@ describe('scheduler > rest-endpoints > jobs > resource-post', function() {
 					});
 					
 					var item = res.body.payload;
-					expectLink(item, 'Test Job Status', 'job-status', '/api/jobs/status?filter=id=%221234-1%22');
+					expectLink(item, 'Test Job Status', 'job-status', '/api/jobs/status/1234-1');
 
 					done();
 				});

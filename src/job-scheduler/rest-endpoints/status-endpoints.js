@@ -8,8 +8,8 @@ var log4js = global.log4js || require('log4js'),
 	JobInstanceStatus = models.JobInstanceStatus,
 	jobUtil = require('./job-util'),
 	createJobResourceLink = jobUtil.createJobResourceLink,
-	createJobHistoryCollectionLink = jobUtil.createJobHistoryCollectionLink,
-	createJobHistoryResourceLink = jobUtil.createJobHistoryResourceLink;
+	createJobStatusCollectionLink = jobUtil.createJobStatusCollectionLink,
+	createJobStatusResourceLink = jobUtil.createJobStatusResourceLink;
 
 
 var processItem = function(item, context){
@@ -21,8 +21,8 @@ var processItem = function(item, context){
 
 	item.links = [
 		createJobResourceLink(this, job, context),
-		createJobHistoryCollectionLink(this, job, context),
-		createJobHistoryResourceLink(this, item, context)
+		createJobStatusCollectionLink(this, job, context),
+		createJobStatusResourceLink(this, item, context)
 	];
 
 	return item;
@@ -38,16 +38,11 @@ var processItem = function(item, context){
 var CollectionEndpoint = function(){
 	
 	BaseCollectionEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.job-history.CollectionEndpoint'), '/jobs/_/:jobId/history', 'restak.scheduler.JobInstanceQuery']);
+		log4js.getLogger('restak.scheduler.job-history.CollectionEndpoint'), '/jobs/status', 'restak.scheduler.JobInstanceQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
 util.inherits(CollectionEndpoint, BaseCollectionEndpoint);
-
-/** @inheritdoc */
-CollectionEndpoint.prototype.getFixedFilter = function(req){
-	return 'jobId=\'' + req.params.jobId + '\' AND (status=\'' + JobInstanceStatus.Error + '\' OR status=\'' + JobInstanceStatus.Completed + '\')';
-};
 
 /** @inheritdoc */
 CollectionEndpoint.prototype.postProcessItem = function(item, context){
@@ -65,7 +60,7 @@ module.exports.CollectionEndpoint = CollectionEndpoint;
  */
 var ResourceGetEndpoint = function(){
 	BaseResourceGetEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.job-history.endpoints.ResourceGetEndpoint'), '/jobs/_/:jobId/history/:instanceId', 'restak.scheduler.JobInstanceQuery']);
+		log4js.getLogger('restak.scheduler.job-history.endpoints.ResourceGetEndpoint'), '/jobs/status/:instanceId', 'restak.scheduler.JobInstanceQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -73,7 +68,7 @@ util.inherits(ResourceGetEndpoint, BaseResourceGetEndpoint);
 
 /** @inheritdoc */
 ResourceGetEndpoint.prototype.getFixedFilter = function(req){
-	return 'jobId=\'' + req.params.jobId + '\' AND _id=\'' + req.params.instanceId + '\' AND (status=\'' + JobInstanceStatus.Error + '\' OR status=\'' + JobInstanceStatus.Completed + '\')';
+	return '_id=\'' + req.params.instanceId + '\'';
 };
 
 /** @inheritdoc */

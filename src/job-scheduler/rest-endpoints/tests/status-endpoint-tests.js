@@ -7,9 +7,9 @@ var log4js = require('log4js'),
 	request = require('supertest'),
 	DefaultConfig = require('../../../app-server/config'),
 	RestServer = require('../../../rest/server'),
-	historyEndpoints = require('../history-endpoints'),
-	CollectionEndpoint = historyEndpoints.CollectionEndpoint,
-	ResourceGetEndpoint = historyEndpoints.ResourceGetEndpoint;
+	statusEndpoints = require('../status-endpoints'),
+	CollectionEndpoint = statusEndpoints.CollectionEndpoint,
+	ResourceGetEndpoint = statusEndpoints.ResourceGetEndpoint;
 
 var logger = log4js.getLogger('test'),
 	appDescriptor = {
@@ -21,12 +21,12 @@ var logger = log4js.getLogger('test'),
 	});
 
 var instance = {
-	instanceId: '1234-0',
+	id: '1234-0',
 	jobId: '1234',
 	name: 'Test Job'
 };
 
-describe.skip('scheduler > rest-endpoints > history > collection', function() {
+describe('scheduler > rest-endpoints > status > collection', function() {
 
 	describe('#onRequest', function(){
 
@@ -54,19 +54,19 @@ describe.skip('scheduler > rest-endpoints > history > collection', function() {
 			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
-				.get('/jobs/1234/history')
+				.get('/jobs/status?filter=jobId=%221234%22')
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res){
 					expect(err).to.be.null;
 
-					expect(queryFilter).to.equal('jobId=\'1234\' AND (status=\'ERROR\' OR status=\'COMPLETED\')');
+					expect(queryFilter).to.equal('jobId="1234"');
 
 					var item = res.body.payload.items[0];
 					expect(item).to.have.deep.property('links.length', 3);
-					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/1234');
-					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/jobs/1234/history');
-					expectLink(item.links[2], 'Test Job History Instance', 'job-history-instance', '/api/jobs/1234/history/1234-0');
+					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/_/1234');
+					expectLink(item.links[1], 'Test Job Status Collection', 'job-statuses', '/api/jobs/status?filter=jobId=%221234%22');
+					expectLink(item.links[2], 'Test Job Status', 'job-status', '/api/jobs/status/1234-0');
 
 					done();
 				});
@@ -74,7 +74,7 @@ describe.skip('scheduler > rest-endpoints > history > collection', function() {
 	});
 });
 
-describe.skip('scheduler > rest-endpoints > history > resource-get', function() {
+describe('scheduler > rest-endpoints > status > resource-get', function() {
 
 	describe('#onRequest', function(){
 
@@ -102,19 +102,19 @@ describe.skip('scheduler > rest-endpoints > history > resource-get', function() 
 			var server = new RestServer(appDescriptor, serverConfig, [endpoint]);
 
 			request(server.app)
-				.get('/jobs/1234/history/1234-0')
+				.get('/jobs/status/1234-0')
 				.expect('Content-Type', /json/)
 				.expect(200)
 				.end(function(err, res){
 					expect(err).to.be.null;
 					
-					expect(queryFilter).to.equal('jobId=\'1234\' AND _id=\'1234-0\' AND (status=\'ERROR\' OR status=\'COMPLETED\')');
+					expect(queryFilter).to.equal('_id=\'1234-0\'');
 					
 					var item = res.body.payload;
 					expect(item).to.have.deep.property('links.length', 3);
-					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/1234');
-					expectLink(item.links[1], 'Test Job History', 'job-history', '/api/jobs/1234/history');
-					expectLink(item.links[2], 'Test Job History Instance', 'job-history-instance', '/api/jobs/1234/history/1234-0');
+					expectLink(item.links[0], 'Test Job', 'job', '/api/jobs/_/1234');
+					expectLink(item.links[1], 'Test Job Status Collection', 'job-statuses', '/api/jobs/status?filter=jobId=%221234%22');
+					expectLink(item.links[2], 'Test Job Status', 'job-status', '/api/jobs/status/1234-0');
 
 					done();
 				});

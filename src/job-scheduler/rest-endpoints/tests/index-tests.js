@@ -15,8 +15,8 @@ describe('scheduler > rest-endpoints', function() {
 			expect(appContext.getEndpoint('restak.scheduler.rest-endpoints.JobResourceGet')).to.not.be.null;
 			expect(appContext.getEndpoint('restak.scheduler.rest-endpoints.JobResourcePost')).to.not.be.null;
 			
-			expect(appContext.getEndpoint('restak.scheduler.rest-endpoints.HistoryCollection')).to.not.be.null;
-			expect(appContext.getEndpoint('restak.scheduler.rest-endpoints.HistoryResourceGet')).to.not.be.null;
+			expect(appContext.getEndpoint('restak.scheduler.rest-endpoints.StatusCollection')).to.not.be.null;
+			expect(appContext.getEndpoint('restak.scheduler.rest-endpoints.StatusResourceGet')).to.not.be.null;
 		};
 
 		it('should register endpoints with the app server', function(done){
