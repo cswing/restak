@@ -16,7 +16,7 @@ var CommandExecutorMock = function(command){
 
 CommandExecutorMock.prototype.executeCommand = function(key, data, callback){
 	
-	if(key == 'restak.scheduler.MarkJobExecutingCommand') {
+	if(key == 'restak.job-engine.MarkJobExecutingCommand') {
 
 		this.job_pre = JSON.parse(JSON.stringify(data.job));
 		this.jobInstance_pre = JSON.parse(JSON.stringify(data.instance));
@@ -31,7 +31,7 @@ CommandExecutorMock.prototype.executeCommand = function(key, data, callback){
 		return;
 	}
 
-	if(key == 'restak.scheduler.MarkJobExecutedCommand') {
+	if(key == 'restak.job-engine.MarkJobExecutedCommand') {
 
 		this.job_post = JSON.parse(JSON.stringify(data.job));
 		this.jobInstance_post = JSON.parse(JSON.stringify(data.instance));

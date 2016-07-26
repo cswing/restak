@@ -1,14 +1,14 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.nedb.scheduler.UpdateJobScheduledTimestampCommand');
+	logger = log4js.getLogger('restak.nedb.job-engine.UpdateJobScheduledTimestampCommand');
 
 /**
  * Update the next scheduled instance for the job to execute.
  *
  * @constructor
  * @implements restak.commands.Command
- * @memberof restak.nedb.scheduler
+ * @memberof restak.nedb.job-engine
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
  * @param {restak.util.ObjectTransform} jobTransform - optional, a way to transform the job from what exists in the store to what should be returned.
  */

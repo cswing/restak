@@ -4,28 +4,28 @@
  * A descriptor object for a job that is or was scheduled to execute.  A job wraps a command.
  *
  * @typedef JobDescriptor
- * @memberof restak.scheduler
+ * @memberof restak.job-engine
  * @type {object}
  * @property {string} id - An id that uniquely identifies this job descriptor amongst all others.
  * @property {string} name - The name of the job.
  * @property {string} description - A description of what this job does.
- * @property {restak.scheduler.JobDescriptorStatus} status - The status of this job.
+ * @property {restak.job-engine.JobDescriptorStatus} status - The status of this job.
  * @property {object|string} schedule - For recurring jobs, this provides the schedule.  For one-time jobs, null.
  * @property {string} nextExecution - An ISO timestamp of when this job will execute.
  * @property {string} command - An identifier to locate the command to execute.
  * @property {object} data - Data to pass to the command.
- * @see restak.scheduler.Scheduler
+ * @see restak.job-engine.Scheduler
  * @see restak.command.Command
- * @see restak.scheduler.JobFactory
+ * @see restak.job-engine.JobFactory
  */
 
 /**
  * The different statuses for job descriptors.
  *
  * @readonly
- * @memberof restak.scheduler
+ * @memberof restak.job-engine
  * @enum {String}
- * @see restak.scheduler.JobDescriptor
+ * @see restak.job-engine.JobDescriptor
  */
 var JobDescriptorStatus = {
 	
@@ -48,24 +48,24 @@ module.exports.JobDescriptorStatus = JobDescriptorStatus;
  * A descriptor object for a job that is or was scheduled to execute.  A job wraps a command.
  *
  * @typedef JobInstance
- * @memberof restak.scheduler
+ * @memberof restak.job-engine
  * @extends restak.command.CommandInstructions
  * @type {object}
  * @property {string} jobId - The id of the job descriptor.
  * @property {string} name - The name of the job.
  * @property {string} instanceId - An id that uniquely identifies this job instance amongst all others.
- * @property {restak.scheduler.JobInstanceStatus} status - The status of the job instance.
- * @see restak.scheduler.Scheduler
- * @see restak.scheduler.JobDescriptor
+ * @property {restak.job-engine.JobInstanceStatus} status - The status of the job instance.
+ * @see restak.job-engine.Scheduler
+ * @see restak.job-engine.JobDescriptor
  */
 
 /**
  * The different statuses for job instances.
  *
  * @readonly
- * @memberof restak.scheduler
+ * @memberof restak.job-engine
  * @enum {String}
- * @see restak.scheduler.JobInstance
+ * @see restak.job-engine.JobInstance
  */
 var JobInstanceStatus = {
 	

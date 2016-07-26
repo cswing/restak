@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.nedb.scheduler.MarkJobExecutedCommand'),
+	logger = log4js.getLogger('restak.nedb.job-engine.MarkJobExecutedCommand'),
 	async = require('async'),
 	models = require('../../job-engine/models'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
@@ -11,8 +11,8 @@ var log4js = global.log4js || require('log4js'),
  * Mark a job and job instance as executed and persist to the file system.
  *
  * @constructor
- * @implements restak.scheduler.MarkJobExecutedCommand
- * @memberof restak.nedb.scheduler
+ * @implements restak.job-engine.MarkJobExecutedCommand
+ * @memberof restak.nedb.job-engine
  * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
  * @param {nedb.Datastore} jobInstanceStore - The NeDB datastore for job instances.
  * @param {restak.util.ObjectTransform} jobTransform - optional, a way to transform the job from what exists in the store to what should be returned.

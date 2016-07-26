@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.scheduler.Scheduler'),
+	logger = log4js.getLogger('restak.job-engine.Scheduler'),
 	async = require('async'),
 	nodeSchedule = require('node-schedule'),
 	moment = require('moment'),
@@ -15,8 +15,8 @@ var log4js = global.log4js || require('log4js'),
  * providing additional features including persistence, logging, etc.
  *
  * @constructor
- * @memberof restak.scheduler
- * @param {restak.query.Query} jobQuery - A query to provide access to {@link restak.scheduler.JobDescriptor}.
+ * @memberof restak.job-engine
+ * @param {restak.query.Query} jobQuery - A query to provide access to {@link restak.job-engine.JobDescriptor}.
  * @param {restak.command.CommandExecutor} commandExecutor - A command executor used to execute commands.
  */
 var Scheduler = function(jobQuery, commandExecutor){
@@ -133,7 +133,7 @@ Scheduler.prototype._updateNextExecution = function(jobId, timestamp, callback){
 	
 	var commandExecutor = this.commandExecutor;
 
-	commandExecutor.executeCommand('restak.scheduler.UpdateJobScheduledTimestampCommand', {
+	commandExecutor.executeCommand('restak.job-engine.UpdateJobScheduledTimestampCommand', {
 		jobId: jobId,
 		timestamp: timestamp
 	}, function(err, commandResult){
@@ -152,19 +152,19 @@ Scheduler.prototype._updateNextExecution = function(jobId, timestamp, callback){
  * A descriptor object for a job that is or was scheduled to execute.  A job wraps a command.
  *
  * @typedef InvocationContext
- * @memberof restak.scheduler.Scheduler
+ * @memberof restak.job-engine.Scheduler
  * @type {object}
- * @property {restak.scheduler.JobDescriptor} job - The job that is having it's command executing.
- * @property {restak.scheduler.Scheduler} scheduler - The scheduler responsible for maintaining schedules.
+ * @property {restak.job-engine.JobDescriptor} job - The job that is having it's command executing.
+ * @property {restak.job-engine.Scheduler} scheduler - The scheduler responsible for maintaining schedules.
  * @property {restak.command.Command} command - The command to execute.
- * @see restak.scheduler.Scheduler#invokeJobCommand
+ * @see restak.job-engine.Scheduler#invokeJobCommand
  */
 
 
 
 /**
  * Function responsible for invoking the command related to a job.  The function assumes that
- * it has been binded to a {@link restak.scheduler.Scheduler#InvocationContext} object.
+ * it has been binded to a {@link restak.job-engine.Scheduler#InvocationContext} object.
  *
  * @protected
  */

@@ -29,7 +29,7 @@ describe('scheduler > application-context', function() {
 
 			expect(appContext.getCommand('test.job')).to.equal(command);
 			expect(appContext.deferreds).to.have.deep.members([{
-				commandKey: 'restak.scheduler.InstallJobCommand',
+				commandKey: 'restak.job-engine.InstallJobCommand',
 				description: 'Install job: Test Job',
 				data: {
 					commandKey: 'test.job',

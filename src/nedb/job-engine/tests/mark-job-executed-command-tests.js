@@ -41,14 +41,14 @@ describe('nedb > scheduler > mark-job-executed', function() {
 			async.parallel(insertTasks, function(err){
 				if(err) return done(err);
 
-				var job = { // restak.scheduler.JobDescriptor
+				var job = { // restak.job-engine.JobDescriptor
 						id: "12345", 
 						name: "test job", 
 						data: {}, 
 						status: JobDescriptorStatus.Executing,
 						schedule: '* * * * *',
 					},
-					instance = { // restak.scheduler.JobInstance
+					instance = { // restak.job-engine.JobInstance
 						jobId: '12345',
 						name: 'test job', 
 						instanceId: '0123456-1',
@@ -109,14 +109,14 @@ describe('nedb > scheduler > mark-job-executed', function() {
 				jobInstanceStore = new Datastore(),
 				command = new MarkJobExecutedCommand(jobStore, jobInstanceStore, transforms.jobTransform, transforms.jobInstanceTransform);
 
-			var job = { // restak.scheduler.JobDescriptor
+			var job = { // restak.job-engine.JobDescriptor
 					id: "12345", 
 					name: "test job", 
 					data: {}, 
 					status: JobDescriptorStatus.Executing,
 					schedule: '* * * * *',
 				},
-				instance = { // restak.scheduler.JobInstance
+				instance = { // restak.job-engine.JobInstance
 					jobId: '12345',
 					name: 'test job', 
 					instanceId: '0123456-1',
@@ -159,14 +159,14 @@ describe('nedb > scheduler > mark-job-executed', function() {
 			async.parallel(insertTasks, function(err){
 				if(err) return done(err);
 
-				var job = { // restak.scheduler.JobDescriptor
+				var job = { // restak.job-engine.JobDescriptor
 						id: "12345", 
 						name: "test job", 
 						data: {}, 
 						status: JobDescriptorStatus.Executing,
 						schedule: '* * * * *',
 					},
-					instance = { // restak.scheduler.JobInstance
+					instance = { // restak.job-engine.JobInstance
 						jobId: '12345',
 						name: 'test job', 
 						instanceId: '0123456-1',

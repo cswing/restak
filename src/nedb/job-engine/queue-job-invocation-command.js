@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.nedb.scheduler.QueueJobInvocationCommand'),
+	logger = log4js.getLogger('restak.nedb.job-engine.QueueJobInvocationCommand'),
 	moment = require('moment'),
 	Joi = require('joi'),
 	ValidationError = require('../../command').ValidationError,
@@ -13,12 +13,12 @@ var log4js = global.log4js || require('log4js'),
  * The data expected as part of the {@link restak.command.CommandInstructions} passed to the execute method.
  *
  * @typedef QueueJobInvocationData
- * @memberof restak.nedb.scheduler
+ * @memberof restak.nedb.job-engine
  * @type {Object}
  * @param {String} jobId - The id of the job to queue.
  *
  * @see restak.command.CommandInstructions#data
- * @see restak.nedb.scheduler.QueueJobInvocationCommand#execute
+ * @see restak.nedb.job-engine.QueueJobInvocationCommand#execute
  */
 var validation = {
 	jobId: Joi.string().required(),
@@ -29,7 +29,7 @@ var validation = {
  * Queues a job to be invoked.
  *
  * @constructor
- * @memberof restak.nedb.scheduler
+ * @memberof restak.nedb.job-engine
  * @param {nedb.Datastore} jobCollection - The NeDB datastore for jobs.
  * @param {nedb.Datastore} instanceCollection - The NeDB datastore for instances of jobs.
  * @param {restak.util.ObjectTransform} instanceTransform - optional, a way to transform the instance from what exists in the store to what should be returned.
@@ -65,7 +65,7 @@ var QueueJobInvocationCommand = function(jobCollection, instanceCollection, inst
 };
 
 /**
- * Validation logic for the command and {@link restak.nedb.scheduler.QueueJobInvocationData}
+ * Validation logic for the command and {@link restak.nedb.job-engine.QueueJobInvocationData}
  */
 QueueJobInvocationCommand.validation = validation;
 

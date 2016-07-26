@@ -23,13 +23,13 @@ var processItem = function(item, context){
  * Collection endpoint to provide access to jobs.
  *
  * @constructor
- * @memberof namespace restak.scheduler.rest-endpoints.jobs
+ * @memberof namespace restak.job-engine.rest-endpoints.jobs
  * @extends restak.rest.endpoints.CollectionEndpoint
  */
 var CollectionEndpoint = function(){
 	
 	BaseCollectionEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.endpoints.CollectionEndpoint'), '/jobs', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('restak.job-engine.jobs.endpoints.CollectionEndpoint'), '/jobs', 'restak.job-engine.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -44,12 +44,12 @@ CollectionEndpoint.prototype.postProcessItem = function(item, context){
  * Resource endpoint to provide access to a job.
  *
  * @constructor
- * @memberof namespace restak.scheduler.rest-endpoints.jobs
+ * @memberof namespace restak.job-engine.rest-endpoints.jobs
  * @extends restak.rest.endpoints.ResourceQueryEndpoint
  */
 var ResourceGetEndpoint = function(){
 	BaseResourceGetEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourceGetEndpoint'), '/jobs/_/:jobId', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('restak.job-engine.jobs.endpoints.ResourceGetEndpoint'), '/jobs/_/:jobId', 'restak.job-engine.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -69,13 +69,13 @@ ResourceGetEndpoint.prototype.postProcessItem = function(item, context){
  * Resource endpoint to invoke a job manually.
  *
  * @constructor
- * @memberof restak.scheduler.rest-endpoints.jobs
+ * @memberof restak.job-engine.rest-endpoints.jobs
  * @extends restak.rest.endpoints.ResourcePostEndpoint
  * @param {restak.commands.Command} command - Command to use to invoke a job
  */
 var ResourcePostEndpoint = function(command){
 	BaseResourcePostEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourcePostEndpoint'), '/jobs/_/:jobId', command]);
+		log4js.getLogger('restak.job-engine.jobs.endpoints.ResourcePostEndpoint'), '/jobs/_/:jobId', command]);
 };
 util.inherits(ResourcePostEndpoint, BaseResourcePostEndpoint);
 

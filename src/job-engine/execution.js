@@ -1,7 +1,7 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.scheduler.Execution'),
+	logger = log4js.getLogger('restak.job-engine.Execution'),
 	moment = require('moment'),
 	models = require('./models'),
 	JobDescriptorStatus = models.JobDescriptorStatus,
@@ -21,14 +21,14 @@ var Execution = function(commandExecutor, job){
 	/**
 	 *
 	 * @protected
-	 * @type {restak.scheduler.JobDescriptor}
+	 * @type {restak.job-engine.JobDescriptor}
 	 */
 	this.job = job;
 
 	/**
 	 *
 	 * @protected
-	 * @type {restak.scheduler.JobInstance}
+	 * @type {restak.job-engine.JobInstance}
 	 */
 	this.jobInstance = {
 		jobId: job.id,
@@ -56,7 +56,7 @@ Execution.prototype._markExecuting = function(callback){
 	jobInstance.startTimestamp = moment().toISOString();
 	jobInstance.status = JobInstanceStatus.Executing;
 
-	commandExecutor.executeCommand('restak.scheduler.MarkJobExecutingCommand', {
+	commandExecutor.executeCommand('restak.job-engine.MarkJobExecutingCommand', {
 			job: job,
 			instance: jobInstance
 		}, function(err, result){
@@ -104,7 +104,7 @@ Execution.prototype._markExecuted = function(){
 		job = this.job,
 		jobInstance = this.jobInstance;
 	
-	commandExecutor.executeCommand('restak.scheduler.MarkJobExecutedCommand', {
+	commandExecutor.executeCommand('restak.job-engine.MarkJobExecutedCommand', {
 		job: job,
 		instance: jobInstance
 	}, function(err, result){

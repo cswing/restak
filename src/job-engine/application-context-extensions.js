@@ -18,7 +18,7 @@ ApplicationContext.prototype.registerJob = function(key, jobCommand, configPrope
 		description: description
 	};
 
-	this.registerDeferredExecution('restak.scheduler.InstallJobCommand', 'Install job: ' + name, data);
+	this.registerDeferredExecution('restak.job-engine.InstallJobCommand', 'Install job: ' + name, data);
 };
 
 module.exports = ApplicationContext;

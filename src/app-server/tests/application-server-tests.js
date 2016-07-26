@@ -133,7 +133,7 @@ describe('app-server > application-server', function() {
 					cb();
 				}
 			};
-			appContext.registerObject('restak.scheduler.Scheduler', scheduler);
+			appContext.registerObject('restak.job-engine.Scheduler', scheduler);
 
 			appServer = new ApplicationServer();
 			appServer.initialize(appContext);

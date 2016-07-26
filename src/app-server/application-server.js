@@ -80,7 +80,7 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	appContext.registerObject('restak.app-server.ApplicationServer', this);
 
 	// Setup scheduler
-	this.scheduler = appContext.getObject('restak.scheduler.Scheduler');
+	this.scheduler = appContext.getObject('restak.job-engine.Scheduler');
 	if(!this.scheduler){
 		logger.warn('No scheduler was found in the app context.');
 	}

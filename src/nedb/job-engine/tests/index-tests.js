@@ -15,19 +15,19 @@ describe('nedb > scheduler', function() {
 	describe('#register', function(){
 
 		var expectObjects = function(appContext) {
-			expect(appContext.getObject('restak.nedb.scheduler.JobDb')).to.not.be.null;
-			expect(appContext.getObject('restak.nedb.scheduler.JobTransform')).to.not.be.null;
-			expect(appContext.hasQuery('restak.scheduler.JobQuery')).to.equal(true);
+			expect(appContext.getObject('restak.nedb.job-engine.JobDb')).to.not.be.null;
+			expect(appContext.getObject('restak.nedb.job-engine.JobTransform')).to.not.be.null;
+			expect(appContext.hasQuery('restak.job-engine.JobQuery')).to.equal(true);
 
-			expect(appContext.getObject('restak.nedb.scheduler.JobInstanceDb')).to.not.be.null;
-			expect(appContext.getObject('restak.nedb.scheduler.JobInstanceTransform')).to.not.be.null;
-			expect(appContext.hasQuery('restak.scheduler.JobInstanceQuery')).to.equal(true);
+			expect(appContext.getObject('restak.nedb.job-engine.JobInstanceDb')).to.not.be.null;
+			expect(appContext.getObject('restak.nedb.job-engine.JobInstanceTransform')).to.not.be.null;
+			expect(appContext.hasQuery('restak.job-engine.JobInstanceQuery')).to.equal(true);
 
-			expect(appContext.hasCommand('restak.scheduler.CreateJobCommand')).to.equal(true);
-			expect(appContext.hasCommand('restak.scheduler.QueueJobInvocationCommand')).to.equal(true);
-			expect(appContext.hasCommand('restak.scheduler.UpdateJobScheduledTimestampCommand')).to.equal(true);
-			expect(appContext.hasCommand('restak.scheduler.MarkJobExecutingCommand')).to.equal(true);
-			expect(appContext.hasCommand('restak.scheduler.MarkJobExecutedCommand')).to.equal(true);
+			expect(appContext.hasCommand('restak.job-engine.CreateJobCommand')).to.equal(true);
+			expect(appContext.hasCommand('restak.job-engine.QueueJobInvocationCommand')).to.equal(true);
+			expect(appContext.hasCommand('restak.job-engine.UpdateJobScheduledTimestampCommand')).to.equal(true);
+			expect(appContext.hasCommand('restak.job-engine.MarkJobExecutingCommand')).to.equal(true);
+			expect(appContext.hasCommand('restak.job-engine.MarkJobExecutedCommand')).to.equal(true);
 		};
 
 		beforeEach(function(done){
@@ -73,7 +73,7 @@ describe('nedb > scheduler', function() {
 			var expectTasks = [];
 
 			expectTasks.push(function(cb){
-				var jobsDb = appContext.getObject('restak.nedb.scheduler.JobDb');
+				var jobsDb = appContext.getObject('restak.nedb.job-engine.JobDb');
 				jobsDb.find({}, function(err, docs){
 					
 					// TODO inspect documents
@@ -83,7 +83,7 @@ describe('nedb > scheduler', function() {
 			});
 
 			expectTasks.push(function(cb){
-				var instancesDb = appContext.getObject('restak.nedb.scheduler.JobInstanceDb');
+				var instancesDb = appContext.getObject('restak.nedb.job-engine.JobInstanceDb');
 				instancesDb.find({}, function(err, docs){
 					
 					// TODO inspect documents

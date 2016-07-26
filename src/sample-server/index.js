@@ -14,7 +14,7 @@ var	logger = log4js.getLogger('restak.sample-server'),
 	ApplicationContext = restak.appServer.ApplicationContext,
 	ApplicationServer = restak.appServer.ApplicationServer,
 	ResourceEndpoint = restak.rest.endpoints.ResourceEndpoint,
-	createJobCollectionLink = restak.scheduler.restEndpoints.util.createJobCollectionLink;
+	createJobCollectionLink = restak.job-engine.restEndpoints.util.createJobCollectionLink;
 
 var MainEndpoint = function(logger, path){
 	ResourceEndpoint.apply(this, arguments);
@@ -38,9 +38,9 @@ var appDescriptor = {
 
 
 // Registration
-restak.nedb.scheduler.register(appContext);
-restak.scheduler.register(appContext);
-restak.scheduler.restEndpoints.register(appContext);
+restak.nedb.job-engine.register(appContext);
+restak.job-engine.register(appContext);
+restak.job-engine.restEndpoints.register(appContext);
 
 appContext.registerEndpoint('main', new MainEndpoint(logger, '/'));
 
