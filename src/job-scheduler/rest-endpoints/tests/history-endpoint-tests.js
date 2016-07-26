@@ -26,7 +26,7 @@ var instance = {
 	name: 'Test Job'
 };
 
-describe('scheduler > rest-endpoints > history > collection', function() {
+describe.skip('scheduler > rest-endpoints > history > collection', function() {
 
 	describe('#onRequest', function(){
 
@@ -74,7 +74,7 @@ describe('scheduler > rest-endpoints > history > collection', function() {
 	});
 });
 
-describe('scheduler > rest-endpoints > history > resource-get', function() {
+describe.skip('scheduler > rest-endpoints > history > resource-get', function() {
 
 	describe('#onRequest', function(){
 

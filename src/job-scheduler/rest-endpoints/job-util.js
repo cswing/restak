@@ -5,7 +5,7 @@ module.exports.createJobCollectionLink = function(endpoint, context){
 };
 
 module.exports.createJobResourceLink = function(endpoint, job, context){
-	return endpoint.buildResourceLink(context.req, job.name, 'job', '/jobs/' + job.id);
+	return endpoint.buildResourceLink(context.req, job.name, 'job', '/jobs/_/' + job.id);
 };
 
 module.exports.createJobStatusesResourceLink = function(endpoint, job, context){

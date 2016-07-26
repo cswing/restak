@@ -49,7 +49,7 @@ CollectionEndpoint.prototype.postProcessItem = function(item, context){
  */
 var ResourceGetEndpoint = function(){
 	BaseResourceGetEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourceGetEndpoint'), '/jobs/:jobId', 'restak.scheduler.JobQuery']);
+		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourceGetEndpoint'), '/jobs/_/:jobId', 'restak.scheduler.JobQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -75,7 +75,7 @@ ResourceGetEndpoint.prototype.postProcessItem = function(item, context){
  */
 var ResourcePostEndpoint = function(command){
 	BaseResourcePostEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourcePostEndpoint'), '/jobs/:jobId', command]);
+		log4js.getLogger('restak.scheduler.jobs.endpoints.ResourcePostEndpoint'), '/jobs/_/:jobId', command]);
 };
 util.inherits(ResourcePostEndpoint, BaseResourcePostEndpoint);
 

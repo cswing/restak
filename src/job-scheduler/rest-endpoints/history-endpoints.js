@@ -38,7 +38,7 @@ var processItem = function(item, context){
 var CollectionEndpoint = function(){
 	
 	BaseCollectionEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.job-history.CollectionEndpoint'), '/jobs/:jobId/history', 'restak.scheduler.JobInstanceQuery']);
+		log4js.getLogger('restak.scheduler.job-history.CollectionEndpoint'), '/jobs/_/:jobId/history', 'restak.scheduler.JobInstanceQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
@@ -65,7 +65,7 @@ module.exports.CollectionEndpoint = CollectionEndpoint;
  */
 var ResourceGetEndpoint = function(){
 	BaseResourceGetEndpoint.apply(this, [
-		log4js.getLogger('restak.scheduler.job-history.endpoints.ResourceGetEndpoint'), '/jobs/:jobId/history/:instanceId', 'restak.scheduler.JobInstanceQuery']);
+		log4js.getLogger('restak.scheduler.job-history.endpoints.ResourceGetEndpoint'), '/jobs/_/:jobId/history/:instanceId', 'restak.scheduler.JobInstanceQuery']);
 
 	this.itemPostProcessor = processItem.bind(this);
 };
