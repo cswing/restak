@@ -2,39 +2,28 @@
 
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.nedb.job-engine.MarkJobExecutingCommand'),
-	async = require('async'),
+	moment = require('moment'),
 	models = require('../../job-engine/models'),
-	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus;
 
 /**
- * Mark a job and job instance as executing and persist using NeDB.
+ * Mark a job instance as executing and persist using NeDB.
  *
  * @constructor
  * @implements restak.job-engine.MarkJobExecutingCommand
  * @memberof restak.nedb.job-engine
- * @param {nedb.Datastore} jobStore - The NeDB datastore for jobs.
- * @param {nedb.Datastore} jobInstanceStore - The NeDB datastore for job instances.
- * @param {restak.util.ObjectTransform} jobTransform - optional, a way to transform the job from what exists in the store to what should be returned.
- * @param {restak.util.ObjectTransform} jobInstanceTransform - optional, a way to transform the instance from what exists in the store to what should be returned.
+ * @param {nedb.Datastore} instanceCollection - The NeDB datastore for job instances.
+ * @param {restak.util.ObjectTransform} instanceTransform - optional, a way to transform the instance from what exists in the store to what should be returned.
  */
-var MarkJobExecutingCommand = function(jobStore, jobInstanceStore, jobTransform, jobInstanceTransform){
+var MarkJobExecutingCommand = function(instanceCollection, instanceTransform){
 	
-	/**
-	 * The datastore that contains jobs.
-	 *
-	 * @protected
-	 * @type nedb.Datastore
-	 */
-	this.jobStore = jobStore;
-
 	/**
 	 * The datastore that contains job instances.
 	 *
 	 * @protected
 	 * @type nedb.Datastore
 	 */
-	this.jobInstanceStore = jobInstanceStore;
+	this.instanceCollection = instanceCollection;
 
 	/**
 	 * A transform that will modify what is returned from the datastore before beeing returned to the caller.
@@ -42,74 +31,39 @@ var MarkJobExecutingCommand = function(jobStore, jobInstanceStore, jobTransform,
 	 * @protected
 	 * @type restak.util.ObjectTransform
 	 */
-	this.jobTransform = jobTransform;
-
-	/**
-	 * A transform that will modify what is returned from the datastore before beeing returned to the caller.
-	 *
-	 * @protected
-	 * @type restak.util.ObjectTransform
-	 */
-	this.jobInstanceTransform = jobInstanceTransform;
+	this.instanceTransform = instanceTransform;
 };
 
 /** @inheritdoc */
 MarkJobExecutingCommand.prototype.execute = function(cmdInstr, callback){
 
-	var jobStore = this.jobStore,
-		jobInstanceStore = this.jobInstanceStore,
+	var instanceCollection = this.instanceCollection,
 		data = cmdInstr.data,
-		job = data.job,
-		jobInstance = data.instance,
-		jobTransform = this.jobTransform,
-		jobInstanceTransform = this.jobInstanceTransform;
-
-	var query = { _id: job.id },
-		update = {
-			$set: { 
-				status: JobDescriptorStatus.Executing
+		instanceId = data.instanceId,
+		instanceTransform = this.instanceTransform,
+		queryObject = {
+			_id: instanceId,
+			status: JobInstanceStatus.Queued
+		},
+		now = moment(),
+		updateObject = {
+			$set: {
+				status: JobInstanceStatus.Executing,
+				executionStartTimestamp: now.toISOString(), 
+				executionStartUts: now.unix()
 			}
 		};
 
-	jobStore.update(query, update, function (err, numReplaced) {
-		if(err) {
-			return callback(err, null);
-		}
+	instanceCollection.update(queryObject, updateObject, { returnUpdatedDocs: true }, function (err, numReplaced, doc) {
+		if(err) return callback(err, null);
 
 		if(numReplaced == 0) {
-			var msg = 'Job [' + job.id + '] does not exist';
-			logger.warn(msg);
-			return callback(msg, null);
+			return callback('Unable to find an instance[' + instanceId + '] in a queued status.', null);
 		}
 
-		jobInstance.status = JobInstanceStatus.Executing;
-		jobInstanceStore.insert(jobInstance, function (err, instance) {
-			
-			if(err) {
-				return callback(err, null);
-			}
+		var instance = instanceTransform ? instanceTransform.transform(doc) : doc;
 
-			if(jobInstanceTransform) {
-				instance = jobInstanceTransform.transform(instance);
-			}
-
-			jobStore.find(query, function(err, docs){
-			
-				var job = docs[0];
-
-				if(jobTransform) {
-					job = jobTransform.transform(job);
-				}
-
-				logger.debug('Job instance [' + instance.instanceId + '] created for ' + job.name + ' [' + job.id + ']');
-
-				callback(null, {
-					job: job,
-					instance: instance
-				});
-			});
-		});
-
+		callback(null, instance);
 	});
 };
 

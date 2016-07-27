@@ -2,16 +2,11 @@
 
 var expect = require('chai').expect,
 	assert = require('chai').assert,
-	mock = require('mock-fs'),
-	moment = require('moment'),
 	Datastore = require('nedb'),
 	models = require('../../../job-engine/models'),
 	transforms = require('../transforms'),
-	JobDescriptorStatus = models.JobDescriptorStatus,
 	JobInstanceStatus = models.JobInstanceStatus,
 	MarkJobExecutingCommand = require('../mark-job-executing-command');
-
-var testJob = { "id": "12345", "name": "testJob", "data": {} };
 
 describe('nedb > job-engine > mark-job-executing', function() {
 
@@ -19,94 +14,75 @@ describe('nedb > job-engine > mark-job-executing', function() {
 
 		it('should update the job', function(done) {
 
-			var jobStore = new Datastore(),
-				jobInstanceStore = new Datastore(),
-				command = new MarkJobExecutingCommand(jobStore, jobInstanceStore, transforms.jobTransform, transforms.jobInstanceTransform);
+			var instanceStore = new Datastore(),
+				command = new MarkJobExecutingCommand(instanceStore, transforms.jobInstanceTransform);
 
-			jobStore.insert([{
+			instanceStore.insert([{
 					"_id": "12345",
-					"name": "Test Job"
-				}], function (err, newDocs) {
+					"status": JobInstanceStatus.Queued
+				}], function (err) {
+					
 					var instr = {
 						data: {
-							job: {
-								id: testJob.id,
-								name: testJob.name,
-								status: null
-							},
-							instance: {
-								jobId: testJob.id,
-								name: testJob.name,
-								instanceId: null,
-								status: null,
-								user: {
-									id: 'SYSTEM',
-									name: 'System'
-								},
-								data: testJob.data
-							}
+							instanceId: '12345'
 						}
 					};
 
 					command.execute(instr, function(err, result){
 						expect(err).to.be.null;
 						
-						expect(result).to.have.deep.property('job.status', JobDescriptorStatus.Executing);
-						expect(result).to.have.deep.property('instance.instanceId');
-						expect(result).to.have.deep.property('instance.status', JobInstanceStatus.Executing);
+						expect(result).to.not.be.null;						
+						expect(result).to.have.deep.property('id', '12345');
+						expect(result).to.have.deep.property('status', JobInstanceStatus.Executing);
+						expect(result.executionStartTimestamp).to.not.be.null;
+						expect(result.executionStartUts).to.not.be.null;
 						
-						jobStore.find({ _id: testJob.id }, function(err, jobs){
-							if(err) 
-								return done(err);
+						instanceStore.findOne({ _id: '12345' }, function(err, instance){
+							
+							expect(err).to.be.null;
+							expect(instance).to.not.be.null;						
+							expect(instance).to.have.property('_id', '12345');
+							expect(instance).to.have.property('status', JobInstanceStatus.Executing);
+							expect(instance.executionStartTimestamp).to.not.be.null;
+							expect(instance.executionStartUts).to.not.be.null;
 
-							var job = jobs[0];
-
-							expect(job).to.have.property('status', JobDescriptorStatus.Executing);
-
-							jobInstanceStore.find({_id: result.instance.instanceId}, function(err, instances){
-								if(err) 
-									return done(err);
-
-								var instance = instances[0];
-
-								expect(instance).to.have.property('status', JobInstanceStatus.Executing);
-								done();
-							});
+							done();
 						});
 					});
-				}); // jobStore.insert
+				}); // instanceStore.insert
 		});
 
-		it('it should err if the job does not exist', function(done) {
+		it('it should err if it cannot find the instance in the queued status', function(done) {
 
-			var jobStore = new Datastore(),
-				jobInstanceStore = new Datastore(),
-				command = new MarkJobExecutingCommand(jobStore, jobInstanceStore, transforms.jobTransform, transforms.jobInstanceTransform),
-				instr = {
-					data: {
-						job: {
-							id: testJob.id,
-							name: testJob.name,
-							status: null
-						},
-						instance: {
-							jobId: testJob.id,
-							name: testJob.name,
-							instanceId: null,
-							status: null,
-							user: {
-								id: 'SYSTEM',
-								name: 'System'
-							},
-							data: testJob.data
+			var instanceStore = new Datastore(),
+				command = new MarkJobExecutingCommand(instanceStore, transforms.jobInstanceTransform);
+
+			instanceStore.insert([{
+					"_id": "12345",
+					"status": JobInstanceStatus.Completed
+				}], function (err) {
+					
+					var instr = {
+						data: {
+							instanceId: '12345'
 						}
-					}
-				};
+					};
 
-			command.execute(instr, function(err, result){
-				expect(err).to.equal('Job [12345] does not exist');
-				done();
-			});
+					command.execute(instr, function(err, result){
+						expect(err).to.equal('Unable to find an instance[12345] in a queued status.');
+						expect(result).to.be.null;						
+						
+						instanceStore.findOne({ _id: '12345' }, function(err, instance){
+							
+							expect(err).to.be.null;
+							expect(instance).to.not.be.null;						
+							expect(instance).to.have.property('_id', '12345');
+							expect(instance).to.have.property('status', JobInstanceStatus.Completed);
+							
+							done();
+						});
+					});
+				}); // instanceStore.insert
 		});
 	});
 });
