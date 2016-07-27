@@ -14,8 +14,7 @@ var config = new DefaultConfig({
 		'http.port': 21314,
 		'appName': 'test app server',
 		'appVersion': '0.1.0-TEST'
-	}),
-	appContext = new ApplicationContext(config);
+	});
 
 var TestEndpoint = function(){
 	ResourceEndpoint.apply(this, [log4js.getLogger('restak.test.TestEndpoint'),	'/']);
@@ -26,9 +25,15 @@ TestEndpoint.prototype.getPayload = function(req, callback){
 	callback(null, { test: 'test content'});
 };
 
-var appServer;
-
 describe('app-server > application-server', function() {
+
+	var appServer,
+		appContext;
+
+	beforeEach(function(done){
+		appContext = new ApplicationContext(config);
+		done();
+	});
 
 	afterEach(function(done){
 		if(appServer){
