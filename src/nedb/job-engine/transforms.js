@@ -33,6 +33,7 @@ var instanceDescriptor = {
 	executionEndUts: null, 	
 	status: null,
 	params: null,
+	result: null,
 
 	//legacy
 	instanceId: '_id'
