@@ -1,7 +1,8 @@
 'use strict';
 
 var log4js = global.log4js || require('log4js'),
-	logger = log4js.getLogger('restak.command.CommandExecutor');
+	logger = log4js.getLogger('restak.command.CommandExecutor'),
+	Joi = require('joi');
 
 /** 
  * An executor that will execute commands for the caller.
@@ -37,35 +38,44 @@ var CommandExecutor = function(commandFactory){
  * @param {object} data - The data to pass to the command.
  * @param {restak.command.CommandExecutor~Callback} The callback that handles the command result.
  */
-CommandExecutor.prototype.executeCommand = function(commandKey, data, callback){
+CommandExecutor.prototype.executeCommand = function(commandKey, data, context, callback){
 	
 	var instr = {
 		data: data
 	};
 
-	this._execute(commandKey, instr, callback);
+	this._execute(commandKey, instr, context, callback);
 };
 
-CommandExecutor.prototype._execute = function(commandKey, commandInstructions, callback){
+CommandExecutor.prototype._execute = function(commandKey, commandInstructions, options, callback){
 
-	var command;
+	var command,
+		data = commandInstructions.data;
 
 	try{
 		command = this.commandFactory.getCommand(commandKey);	
 	
 	} catch(err) { 
-		callback(err, null);
-		return;
+		return callback(err, null);
 	}
 
-	command.execute(commandInstructions, function(err, result){
+	if(command.validation && options.skipValidation !== true) {
+		var joiOptions = {
+			abortEarly: false
+		};
 
-		var cmdResult = {
-			data: result
-		};	
+		Joi.validate(data, command.validation, joiOptions, function (errors, value) {
+			
+			if (errors && errors.details.length > 0) {
+				return callback(errors.details, null);
+			}
 
-		callback(err, cmdResult);
-	});	
+			command.execute(commandInstructions, callback);
+		});	
+	
+	} else {
+		command.execute(commandInstructions, callback);
+	}
 };
 
 module.exports = CommandExecutor;
