@@ -93,6 +93,7 @@ ExecutionEngine.prototype.execute = function(callback){
 						var instr = {
 							data: {
 								instanceId: instance.id,
+								status: err ? JobInstanceStatus.Error : JobInstanceStatus.Completed,
 								result: err || result
 							}
 						};

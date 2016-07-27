@@ -129,9 +129,9 @@ describe('job-engine > execution-engine', function() {
 							}
 						]);
 					expect(markInstanceExecutedCommandData).to.have.deep.members([
-							{ instanceId: '1', result: null },
-							{ instanceId: '2', result: null },
-							{ instanceId: '3', result: null }
+							{ instanceId: '1', result: null, status: JobInstanceStatus.Completed },
+							{ instanceId: '2', result: null, status: JobInstanceStatus.Completed },
+							{ instanceId: '3', result: null, status: JobInstanceStatus.Completed }
 						]);
 
 					done();
@@ -237,6 +237,7 @@ describe('job-engine > execution-engine', function() {
 					expect(markInstanceExecutedCommandData).to.have.deep.members([
 							{ 
 								instanceId: 'A',
+								status: JobInstanceStatus.Completed,
 								result: {
 									arg1: 'a',
 									arg2: 'b'
@@ -290,6 +291,7 @@ describe('job-engine > execution-engine', function() {
 					expect(markInstanceExecutedCommandData).to.have.deep.members([
 							{ 
 								instanceId: 'A',
+								status: JobInstanceStatus.Error,
 								result: 'An error occurred'
 							}
 						]);
@@ -337,6 +339,7 @@ describe('job-engine > execution-engine', function() {
 					expect(markInstanceExecutedCommandData).to.have.deep.members([
 							{ 
 								instanceId: 'A',
+								status: JobInstanceStatus.Error,
 								result: 'An uncaught error'
 							}
 						]);
