@@ -41,7 +41,8 @@ describe('restak core', function() {
 		appServer = new ApplicationServer(appContext);
 		appServer.start(function(){
 			
-			expect(appContext.getObject('restak.job-engine.Scheduler')).to.not.be.null;
+			//expect(appContext.getObject('restak.job-engine.Scheduler')).to.not.be.null;
+			expect(appContext.getObject('restak.job-engine.ExecutionEngine')).to.not.be.null;
 			
 			done();
 		});		

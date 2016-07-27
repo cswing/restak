@@ -97,7 +97,7 @@ describe('job-engine > execution-engine', function() {
 				},
 				commandExecutorData = [],
 				commandExecutor = {
-					_execute: function(key, data, callback){
+					executeCommand: function(key, data, context, callback){
 						commandExecutorData.push({
 							key: key,
 							data: data
@@ -128,6 +128,7 @@ describe('job-engine > execution-engine', function() {
 								data: null
 							}
 						]);
+					
 					expect(markInstanceExecutedCommandData).to.have.deep.members([
 							{ instanceId: '1', result: null, status: JobInstanceStatus.Completed },
 							{ instanceId: '2', result: null, status: JobInstanceStatus.Completed },
@@ -169,7 +170,7 @@ describe('job-engine > execution-engine', function() {
 				},
 				commandExecutorData = [],
 				commandExecutor = {
-					_execute: function(key, data, callback){
+					executeCommand: function(key, data, context, callback){
 						commandExecutorData.push({
 							key: key,
 							data: data
@@ -223,7 +224,7 @@ describe('job-engine > execution-engine', function() {
 					}
 				},
 				commandExecutor = {
-					_execute: function(key, data, callback){
+					executeCommand: function(key, data, context, callback){
 						callback(null, {
 							arg1: 'a',
 							arg2: 'b'
@@ -277,7 +278,7 @@ describe('job-engine > execution-engine', function() {
 					}
 				},
 				commandExecutor = {
-					_execute: function(key, data, callback){
+					executeCommand: function(key, data, context, callback){
 						callback('An error occurred', {
 							arg1: 'a',
 							arg2: 'b'
@@ -328,8 +329,63 @@ describe('job-engine > execution-engine', function() {
 					}
 				},
 				commandExecutor = {
-					_execute: function(key, data, callback){
+					executeCommand: function(key, data, context, callback){
 						throw 'An uncaught error';
+					}
+				},
+				engine = new ExecutionEngine(instanceQuery, markInstanceExecutingCommand, markInstanceExecutedCommand, commandExecutor);
+
+				engine.execute(function(err){
+					expect(err).to.be.null;
+					expect(markInstanceExecutedCommandData).to.have.deep.members([
+							{ 
+								instanceId: 'A',
+								status: JobInstanceStatus.Error,
+								result: 'An uncaught error'
+							}
+						]);
+					
+					done();
+				});
+		});
+
+		it.skip('should handle when the an unexpected exception is thrown in a callback with the command', function(done){
+
+			var instance = {
+				id: 'A',
+				name: 'test job a',
+				commandKey: 'test.jobA'
+			};
+
+			var instanceQuery = {
+					execute: function(qr, callback){
+						callback(null, {
+							items: [ instance ]
+						});
+					}
+				},
+				markInstanceExecutingCommand = {
+					execute: function(instr, callback){
+						callback(null, instance);
+					}
+				}, 
+				markInstanceExecutedCommandData = [],
+				markInstanceExecutedCommand = {
+					execute: function(instr, callback){
+						markInstanceExecutedCommandData.push(instr.data);
+						callback(null, instance);
+					}
+				},
+				subCommand = {
+					execute: function(instr, callback){
+						setTimeout(callback, 500);
+					}
+				},
+				commandExecutor = {
+					executeCommand: function(key, data, context, callback){
+						subCommand.execute({}, function(){
+							throw new Error('An uncaught error');
+						});
 					}
 				},
 				engine = new ExecutionEngine(instanceQuery, markInstanceExecutingCommand, markInstanceExecutedCommand, commandExecutor);

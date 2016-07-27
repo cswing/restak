@@ -127,7 +127,28 @@ describe('app-server > application-server', function() {
 			done('Error expected');
 		});
 
-		it('should start a scheduler', function(done){
+		it('should start a job engine', function(done){
+
+			var appContext = new ApplicationContext(config);
+
+			var engineInitialized = false,
+				engine = {
+				initialize: function(cb){
+					engineInitialized = true;
+					cb();
+				}
+			};
+			appContext.registerObject('restak.job-engine.ExecutionEngine', engine);
+
+			appServer = new ApplicationServer();
+			appServer.initialize(appContext);
+			appServer.start(function(){
+				expect(engineInitialized).to.equal(true);
+				done();
+			});
+		});
+
+		it.skip('should start a scheduler', function(done){
 
 			var appContext = new ApplicationContext(config);
 

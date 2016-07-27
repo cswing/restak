@@ -3,7 +3,8 @@
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.job-engine'),
 	Scheduler = require('./scheduler'),
-	InstallJobCommand = require('./install-job-command');
+	InstallJobCommand = require('./install-job-command'),
+	ExecutionEngine = require('./execution-engine');
 
 // Application Context Extensions
 require('./application-context-extensions');
@@ -80,9 +81,15 @@ module.exports.restEndpoints = require('./rest-endpoints');
  */
 module.exports.register = function(appContext) {
 	
-	var jobsQuery = appContext.getQuery('restak.job-engine.JobQuery'),
+	var commandExecutor = appContext.commandExecutor,
+		jobsQuery = appContext.getQuery('restak.job-engine.JobQuery'),
+		instanceQuery = appContext.getQuery('restak.job-engine.JobInstanceQuery'),
+		markInstanceExecutingCommand = appContext.getCommand('restak.job-engine.MarkJobExecutingCommand'), 
+		markInstanceExecutedCommand = appContext.getCommand('restak.job-engine.MarkJobExecutedCommand'),
 		createJobCommand = appContext.getCommand('restak.job-engine.CreateJobCommand');
 
-	appContext.registerObject('restak.job-engine.Scheduler', new Scheduler(jobsQuery, appContext.commandExecutor));
+	appContext.registerObject('restak.job-engine.ExecutionEngine', new ExecutionEngine(instanceQuery, markInstanceExecutingCommand, markInstanceExecutedCommand, commandExecutor));
+
+	//appContext.registerObject('restak.job-engine.Scheduler', new Scheduler(jobsQuery, appContext.commandExecutor));
 	appContext.registerCommand('restak.job-engine.InstallJobCommand', new InstallJobCommand(createJobCommand));
 };

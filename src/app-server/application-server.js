@@ -79,11 +79,16 @@ ApplicationServer.prototype.initialize = function(appContext, andStart){
 	
 	appContext.registerObject('restak.app-server.ApplicationServer', this);
 
-	// Setup scheduler
-	this.scheduler = appContext.getObject('restak.job-engine.Scheduler');
-	if(!this.scheduler){
-		logger.warn('No scheduler was found in the app context.');
+	// Setup job-engine
+	this.jobEngine = appContext.getObject('restak.job-engine.ExecutionEngine');
+	if(!this.jobEngine){
+		logger.warn('No job engine was found in the app context.');
 	}
+
+	//this.scheduler = appContext.getObject('restak.job-engine.Scheduler');
+	//if(!this.scheduler){
+	//	logger.warn('No scheduler was found in the app context.');
+	//}
 
 	this.app = express();
 
@@ -153,6 +158,12 @@ ApplicationServer.prototype.start = function(callback){
 			});
 		};
 	});
+
+	if(this.jobEngine){
+		tasks.splice(0, 0, function(cb){
+			_t.jobEngine.initialize(cb);
+		});
+	}
 
 	if(this.scheduler){
 		tasks.splice(0, 0, function(cb){

@@ -17,6 +17,19 @@ var ExecutionEngine = function(instanceQuery, markInstanceExecutingCommand, mark
 	this.commandExecutor = commandExecutor;
 };
 
+var schedule = function(engine) {
+	setTimeout(function(){
+		engine.execute(function(){
+			schedule(engine);
+		});
+	}, 5000);
+};
+
+ExecutionEngine.prototype.initialize = function(callback){
+	schedule(this);
+	callback();
+};
+
 ExecutionEngine.prototype.executeJob = function(instance, callback){
 
 	var _t = this,
@@ -24,12 +37,12 @@ ExecutionEngine.prototype.executeJob = function(instance, callback){
 
 	try {
 
-		commandExecutor._execute(instance.commandKey, instance.params || null, callback);
+		commandExecutor.executeCommand(instance.commandKey, instance.params || null, {}, callback);
 
 	} catch(err){
 		
 		var err = err || 'An error occurred';
-		
+		console.dir(err);
 		if(err instanceof Error) {
 			callback(err.message, null);
 		} else {
@@ -71,7 +84,7 @@ ExecutionEngine.prototype.execute = function(callback){
 			markInstanceExecutingCommand.execute(instr, function(err, updatedInstance){
 				if(err){
 					logger.error('An error occurred preparing for job execution [instance: ' + instance.id + ']: ' + err);
-					cb(null, null); // an error here should not prevent other jobs from executing
+					return cb(null, null); // an error here should not prevent other jobs from executing
 				}
 
 				cb(null, updatedInstance);

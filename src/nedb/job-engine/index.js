@@ -46,10 +46,13 @@ module.exports.register = function(appContext, callback) {
 	appContext.registerObject('restak.nedb.job-engine.JobInstanceTransform', instanceTransform);
 	appContext.registerQuery('restak.job-engine.JobInstanceQuery', new NeDBQuery(instancesCollection, instanceTransform));
 
+	// Execution Engine
+	appContext.registerCommand('restak.job-engine.MarkJobExecutingCommand', new MarkJobExecutingCommand(instancesCollection, instanceTransform));
+	appContext.registerCommand('restak.job-engine.MarkJobExecutedCommand', new MarkJobExecutedCommand(instancesCollection, instanceTransform));
+
 	// Scheduler Commands
 	appContext.registerCommand('restak.job-engine.UpdateJobScheduledTimestampCommand', new UpdateJobScheduledTimestampCommand(jobsCollection, jobTransform));
-	appContext.registerCommand('restak.job-engine.MarkJobExecutingCommand', new MarkJobExecutingCommand(jobsCollection, instancesCollection, jobTransform, instanceTransform));
-	appContext.registerCommand('restak.job-engine.MarkJobExecutedCommand', new MarkJobExecutedCommand(jobsCollection, instancesCollection, jobTransform, instanceTransform));
+	
 
 
 	async
