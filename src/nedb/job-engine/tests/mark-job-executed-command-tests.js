@@ -11,7 +11,7 @@ var expect = require('chai').expect,
 	JobInstanceStatus = models.JobInstanceStatus,
 	MarkJobExecutedCommand = require('../mark-job-executed-command');
 
-describe('nedb > scheduler > mark-job-executed', function() {
+describe('nedb > job-engine > mark-job-executed', function() {
 
 	describe('#execute', function(){
 

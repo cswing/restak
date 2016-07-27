@@ -6,7 +6,7 @@ var expect = require('chai').expect,
 	DefaultConfig =  require('../../../app-server/config'),
 	register = require('../index').register;
 
-describe('scheduler > rest-endpoints', function() {
+describe('job-engine > rest-endpoints', function() {
 
 	describe('#register', function(){
 

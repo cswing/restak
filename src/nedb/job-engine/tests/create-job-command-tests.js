@@ -10,7 +10,7 @@ var expect = require('chai').expect,
 	JobInstanceStatus = models.JobInstanceStatus,
 	CreateJobCommand = require('../create-job-command');
 
-describe('nedb > scheduler > create-job', function() {
+describe('nedb > job-engine > create-job', function() {
 
 	describe('#execute', function(){
 

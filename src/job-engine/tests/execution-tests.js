@@ -9,7 +9,7 @@ var util = require('util'),
 	Execution = require('../execution'),
 	CommandExecutorMock = require('./command-executor-mock');
 
-describe('scheduler > execution', function() {
+describe('job-engine > execution', function() {
 
 	describe('#invoke', function(){
 

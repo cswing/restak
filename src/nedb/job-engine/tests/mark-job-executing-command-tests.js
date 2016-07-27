@@ -13,7 +13,7 @@ var expect = require('chai').expect,
 
 var testJob = { "id": "12345", "name": "testJob", "data": {} };
 
-describe('nedb > scheduler > mark-job-executing', function() {
+describe('nedb > job-engine > mark-job-executing', function() {
 
 	describe('#execute', function(){
 

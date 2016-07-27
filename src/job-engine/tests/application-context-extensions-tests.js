@@ -6,7 +6,7 @@ var util = require('util'),
 	ApplicationContext = require('../application-context-extensions'),
 	DefaultConfig = require('../../app-server').DefaultConfig;
 
-describe('scheduler > application-context', function() {
+describe('job-engine > application-context', function() {
 
 	var config = new DefaultConfig({
 		'appName': 'Custom app name',

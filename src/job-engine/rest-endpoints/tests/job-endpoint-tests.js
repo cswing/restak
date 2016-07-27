@@ -26,7 +26,7 @@ var job = {
 	name: 'Test Job'
 };
 
-describe('scheduler > rest-endpoints > jobs > collection', function() {
+describe('job-engine > rest-endpoints > jobs > collection', function() {
 
 	describe('#onRequest', function(){
 
@@ -68,7 +68,7 @@ describe('scheduler > rest-endpoints > jobs > collection', function() {
 	});
 });
 
-describe('scheduler > rest-endpoints > jobs > resource-get', function() {
+describe('job-engine > rest-endpoints > jobs > resource-get', function() {
 
 	describe('#onRequest', function(){
 
@@ -116,7 +116,7 @@ describe('scheduler > rest-endpoints > jobs > resource-get', function() {
 	});
 });
 
-describe('scheduler > rest-endpoints > jobs > resource-post', function() {
+describe('job-engine > rest-endpoints > jobs > resource-post', function() {
 
 	describe('#onRequest', function(){
 

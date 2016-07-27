@@ -5,7 +5,7 @@ var expect = require('chai').expect,
 	ValidationError = require('../../command').ValidationError,
 	InstallJobCommand = require('../install-job-command');
 
-describe('scheduler > install-job', function() {
+describe('job-engine > install-job', function() {
 
 	describe('#execute', function(){
 

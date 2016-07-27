@@ -26,7 +26,7 @@ var instance = {
 	name: 'Test Job'
 };
 
-describe('scheduler > rest-endpoints > status > collection', function() {
+describe('job-engine > rest-endpoints > status > collection', function() {
 
 	describe('#onRequest', function(){
 
@@ -74,7 +74,7 @@ describe('scheduler > rest-endpoints > status > collection', function() {
 	});
 });
 
-describe('scheduler > rest-endpoints > status > resource-get', function() {
+describe('job-engine > rest-endpoints > status > resource-get', function() {
 
 	describe('#onRequest', function(){
 

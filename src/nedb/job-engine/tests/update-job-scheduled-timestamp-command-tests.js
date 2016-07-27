@@ -9,7 +9,7 @@ var util = require('util'),
 	Datastore = require('nedb'),
 	UpdateJobScheduledTimestampCommand = require('../update-job-scheduled-timestamp-command');
 
-describe('nedb > scheduler > update-job-scheduled-timestamp', function() {
+describe('nedb > job-engine > update-job-scheduled-timestamp', function() {
 
 	describe('#execute', function(){
 
