@@ -17,16 +17,17 @@ var ExecutionEngine = function(instanceQuery, markInstanceExecutingCommand, mark
 	this.commandExecutor = commandExecutor;
 };
 
-var schedule = function(engine) {
-	setTimeout(function(){
-		engine.execute(function(){
-			schedule(engine);
-		});
-	}, 5000);
+ExecutionEngine.prototype.invoke = function() {
+	var _t = this;
+	this.execute(function(){
+		setTimeout(function(){
+			process.nextTick(_t.invoke.bind(_t));
+		}, 5000);
+	});
 };
 
 ExecutionEngine.prototype.initialize = function(callback){
-	schedule(this);
+	process.nextTick(this.invoke.bind(this));
 	callback();
 };
 
@@ -71,10 +72,13 @@ ExecutionEngine.prototype.execute = function(callback){
 			return callback(message);
 		}
 
+		if(result.items.length <= 0)
+			return callback(null);
+
 		logger.debug('Found ' + result.items.length + ' queued jobs.');
 
-		async.map(result.items, function(instance, cb){
-
+		var queue = async.queue(function(instance, cb) {
+			
 			var instr = {
 				data: {
 					instanceId: instance.id
@@ -84,50 +88,41 @@ ExecutionEngine.prototype.execute = function(callback){
 			markInstanceExecutingCommand.execute(instr, function(err, updatedInstance){
 				if(err){
 					logger.error('An error occurred preparing for job execution [instance: ' + instance.id + ']: ' + err);
-					return cb(null, null); // an error here should not prevent other jobs from executing
+					return cb();
 				}
 
-				cb(null, updatedInstance);
-			});
+				_t.executeJob(instance, function(err, result){
 
-		}, function(err, jobsToExecute) {
-			
-			if(err){ // should never be true
-				logger.error('An error occurred preparing jobs for execution: ' + err);
-				return;
-			}
+					var instr = {
+						data: {
+							instanceId: instance.id,
+							status: err ? JobInstanceStatus.Error : JobInstanceStatus.Completed,
+							result: err || result
+						}
+					};
 
-			var tasks = jobsToExecute.filter(function(instance){
-				return instance !== null;
-			}).map(function(instance){
-				return function(cb){
-					_t.executeJob(instance, function(err, result){
-
-						var instr = {
-							data: {
-								instanceId: instance.id,
-								status: err ? JobInstanceStatus.Error : JobInstanceStatus.Completed,
-								result: err || result
-							}
-						};
-
+					setImmediate(function() {
 						markInstanceExecutedCommand.execute(instr, function(err, result){
 							if(err){
-								logger.error('An error occurred preparing for job execution [instance: ' + instance.id + ']: ' + err);
+								logger.error('An error updating job after execution [instance: ' + instance.id + ']: ' + err);
 							}
 
 							cb();
 						});
 					});
-				};
+				});
 			});
 
-			async.parallel(tasks, function(err){
-				logger.debug('Execution complete for ' + result.items.length + ' queued jobs.');
-				callback(null);
-			});
+		}, 5);
 
-		}); // async.map
+		queue.drain = function() {
+			callback(null);
+		};
+
+		result.items.forEach(function(instance){
+			queue.push(instance);
+		});
+		
 	}); // instanceQuery.execute
 };
 

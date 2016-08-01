@@ -47,14 +47,20 @@ CommandExecutor.prototype.executeCommand = function(commandKey, data, context, c
 	this._execute(commandKey, instr, context, callback);
 };
 
+var _exec = function(command, instr, callback) {
+	process.nextTick(function(){
+		command.execute(instr, callback);
+	});
+};
+
 CommandExecutor.prototype._execute = function(commandKey, commandInstructions, options, callback){
 
 	var command,
 		data = commandInstructions.data;
 
 	try{
-		command = this.commandFactory.getCommand(commandKey);	
-	
+		command = this.commandFactory.getCommand(commandKey);
+
 	} catch(err) { 
 		return callback(err, null);
 	}
@@ -70,11 +76,11 @@ CommandExecutor.prototype._execute = function(commandKey, commandInstructions, o
 				return callback(errors.details, null);
 			}
 
-			command.execute(commandInstructions, callback);
+			_exec(command, commandInstructions, callback);
 		});	
 	
 	} else {
-		command.execute(commandInstructions, callback);
+		_exec(command, commandInstructions, callback);
 	}
 };
 
