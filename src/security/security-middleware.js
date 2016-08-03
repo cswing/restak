@@ -33,6 +33,7 @@ SecurityMiddleware.prototype.onRequest = function(req, res, next) {
 		security = {
 			isAnonymous: true,
 			isAuthenticated: false,
+			username: null,
 			token: null
 		};
 
@@ -54,7 +55,8 @@ SecurityMiddleware.prototype.onRequest = function(req, res, next) {
 			} else {
 				security.isAnonymous = false;
 				security.isAuthenticated = true;
-				security.token = decoded;
+				security.username = decoded;
+				security.token = token;
 			}
 
 			process();	

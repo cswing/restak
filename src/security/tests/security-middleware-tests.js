@@ -36,6 +36,7 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', true);
 				expect(security).to.have.property('isAuthenticated', false);
+				expect(security).to.have.property('username', null);
 				expect(security).to.have.property('token', null);
 
 				done();
@@ -59,6 +60,7 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', true);
 				expect(security).to.have.property('isAuthenticated', false);
+				expect(security).to.have.property('username', null);
 				expect(security).to.have.property('token', null);
 
 				done();
@@ -85,7 +87,8 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', false);
 				expect(security).to.have.property('isAuthenticated', true);
-				expect(security).to.have.property('token', 'John.Doe@email.com');
+				expect(security).to.have.property('username', 'John.Doe@email.com');
+				expect(security).to.have.property('token', token);
 
 				done();
 			});
@@ -111,7 +114,8 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', false);
 				expect(security).to.have.property('isAuthenticated', true);
-				expect(security).to.have.property('token', 'John.Doe@email.com');
+				expect(security).to.have.property('username', 'John.Doe@email.com');
+				expect(security).to.have.property('token', token);
 
 				done();
 			});
@@ -137,7 +141,8 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', false);
 				expect(security).to.have.property('isAuthenticated', true);
-				expect(security).to.have.property('token', 'John.Doe@email.com');
+				expect(security).to.have.property('username', 'John.Doe@email.com');
+				expect(security).to.have.property('token', token);
 
 				done();
 			});
@@ -162,6 +167,7 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', true);
 				expect(security).to.have.property('isAuthenticated', false);
+				expect(security).to.have.property('username', null);
 				expect(security).to.have.property('token', null);
 
 				done();
@@ -188,6 +194,7 @@ describe('security > security-middleware', function() {
 				expect(security).to.not.be.null;
 				expect(security).to.have.property('isAnonymous', true);
 				expect(security).to.have.property('isAuthenticated', false);
+				expect(security).to.have.property('username', null);
 				expect(security).to.have.property('token', null);
 
 				done();
