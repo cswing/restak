@@ -1,0 +1,8 @@
+ASC=1
+DESC=2
+SPACE=3
+ID=4
+SEMICOLON=5
+COMMA=6
+';'=5
+','=6
