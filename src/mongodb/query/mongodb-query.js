@@ -16,8 +16,9 @@ var log4js = global.log4js || require('log4js'),
  * @implements restak.query.Query
  * @param {nedb.Datastore} collection - The MongoDB collection.
  * @param {restak.util.ObjectTransform} objectTransform - optional, a way to transform the object from what exists in the store to what should be returned.
+ * @param {String[]} objectIdProperties - optional, the ids of properties that are stored as ObjectIds
  */
-var MongoDBQuery = function(collection, objectTransform){
+var MongoDBQuery = function(collection, objectTransform, objectIdProperties){
 
 	/**
 	 * The datastore to query for data.
@@ -40,7 +41,7 @@ var MongoDBQuery = function(collection, objectTransform){
 	 * @protected
 	 * @type restak.nedb.query.NeDBFilterListener
 	 */
-	this.filterListener = new NeDBFilterListener();
+	this.filterListener = new NeDBFilterListener(objectIdProperties);
 
 	/**
 	 * The listener used in the parsing of the sort expression.
