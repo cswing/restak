@@ -21,9 +21,20 @@ var ResourcePostEndpoint = function(logger, path, command){
 	args.push(201);
 	CommandEndpoint.apply(this, args);
 
-	this.registerMiddleware(validate(this.getValidationDefinition()));
+	this.registerValidationMiddleware();
 };
 util.inherits(ResourcePostEndpoint, CommandEndpoint);
+
+/**
+ * Registers the middleware for validating a request.  The default implementation builds the validation 
+ * object once and uses it for all requests.
+ * 
+ * If dynamic validation is needed, this function can be overridden and the validation object can be built 
+ * per request.
+ */
+ResourcePostEndpoint.prototype.registerValidationMiddleware = function(){
+	this.registerMiddleware(validate(this.getValidationDefinition()));
+};
 
 /**
  * Provide a validation definition to be used in middleware.  By default, it uses the validation object
