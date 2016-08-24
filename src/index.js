@@ -2,6 +2,7 @@
 
 module.exports.appServer = require('./app-server');
 module.exports.command = require('./command');
+module.exports.domainEvents = require('./domain-events');
 module.exports.mongodb = require('./mongodb');
 module.exports.nedb = require('./nedb');
 module.exports.query = require('./query');
