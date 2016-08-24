@@ -5,7 +5,7 @@ var expect = require('chai').expect,
 	ObjectId = require('mongodb').ObjectId,
 	MongoDBFilterListener = require('../mongodb-filter-listener');
 
-describe.only('mongodb > query > filter-listener', function() {
+describe('mongodb > query > filter-listener', function() {
 
 	describe('#_setValue', function(){
 
