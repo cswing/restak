@@ -216,7 +216,7 @@ NeDBFilterListener.prototype.enterComparison_operator = function(ctx) {
 		
 };
 
-var setValue = function(literalCtx, val){
+NeDBFilterListener.prototype._setValue = function(literalCtx, val){
 
 	var predicateCtx = literalCtx.parentCtx.parentCtx,
 		predicate = predicateCtx.__currentPredicate,
@@ -232,12 +232,12 @@ NeDBFilterListener.prototype.enterStringLiteral = function(ctx) {
 	var result = ctx.getText().substring(1);
 	result = result.substring(0, result.length-1);
 
-	setValue(ctx, result);
+	this._setValue(ctx, result);
 };
 
 /** @inheritdoc */
 NeDBFilterListener.prototype.enterNumericLiteral = function(ctx) {
-	setValue(ctx, Number(ctx.getText()));
+	this._setValue(ctx, Number(ctx.getText()));
 };
 
 /** @inheritdoc */
@@ -247,7 +247,7 @@ NeDBFilterListener.prototype.enterIdLiteral = function(ctx) {
 	if(val == 'true') val = true;
 	if(val == 'false') val = false;
 
-	setValue(ctx, val);
+	this._setValue(ctx, val);
 };
 
 module.exports = NeDBFilterListener;

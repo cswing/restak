@@ -3,7 +3,7 @@
 var log4js = global.log4js || require('log4js'),
 	logger = log4js.getLogger('restak.mongodb.query.MongoDBQuery'),
 	FilterParser = require('../../query/antlr/filter-parser'),
-	NeDBFilterListener = require('../../nedb/query/nedb-filter-listener'),
+	MongoDBFilterListener = require('./mongodb-filter-listener'),
 	SortParser = require('../../query/antlr/sort-parser'),
 	NeDBSortListener = require('../../nedb/query/nedb-sort-listener'),
 	queryUtil = require('../../query/query-util');
@@ -16,8 +16,9 @@ var log4js = global.log4js || require('log4js'),
  * @implements restak.query.Query
  * @param {nedb.Datastore} collection - The MongoDB collection.
  * @param {restak.util.ObjectTransform} objectTransform - optional, a way to transform the object from what exists in the store to what should be returned.
+ * @param {String[]} objectIdProperties - optional, the ids of properties that are stored as ObjectIds
  */
-var MongoDBQuery = function(collection, objectTransform){
+var MongoDBQuery = function(collection, objectTransform, objectIdProperties){
 
 	/**
 	 * The datastore to query for data.
@@ -38,9 +39,9 @@ var MongoDBQuery = function(collection, objectTransform){
 	 * The listener used in the parsing of the filter expression.
 	 *
 	 * @protected
-	 * @type restak.nedb.query.NeDBFilterListener
+	 * @type restak.mongodb.query.MongoDBFilterListener
 	 */
-	this.filterListener = new NeDBFilterListener();
+	this.filterListener = new MongoDBFilterListener(objectIdProperties);
 
 	/**
 	 * The listener used in the parsing of the sort expression.
